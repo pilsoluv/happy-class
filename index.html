@@ -1,230 +1,60 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>우리반 대시보드 V6</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <style>
-    :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --accent-red: #ff6b6b; }
-    * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
+function updateTime() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const total = h * 60 + m; // 현재 시각을 분으로 환산
+
+    // 1. 상단 현재 시간 표시 (교시 이름 + 시간)
+    const displayH = h % 12 || 12;
+    const displayM = m < 10 ? '0' + m : m;
     
-    body { padding: 40px 60px; display: flex; flex-direction: column; }
+    // 교시 판별용
+    let periodName = "";
+    if (total < 520) periodName = "등교시간";
+    else if (total < 540) periodName = "아침활동";
+    else if (total < 580) periodName = "1교시";
+    else if (total < 590) periodName = "쉬는시간";
+    else if (total < 630) periodName = "2교시";
+    else if (total < 640) periodName = "쉬는시간";
+    else if (total < 680) periodName = "3교시";
+    else if (total < 740) periodName = "점심시간";
+    else if (total < 780) periodName = "4교시";
+    else if (total < 790) periodName = "쉬는시간";
+    else if (total < 830) periodName = "5교시";
+    else periodName = "일과종료";
 
-    /* 1페이지 전용 헤더 */
-    .header-p1 { display: grid; grid-template-columns: 1fr 1fr; align-items: flex-start; margin-bottom: 20px; }
-    .header-left { font-size: 48px; font-weight: 800; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: -1px; }
-    .header-right { text-align: right; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-    .status-line { font-size: 110px; font-weight: 950; letter-spacing: -3px; line-height: 1; }
-    .status-line .yellow-text { color: var(--yellow); margin-right: 20px; }
-    .countdown-msg { font-size: 42px; font-weight: 800; margin-top: 10px; }
-    .countdown-msg b { color: var(--yellow); font-weight: 800; }
+    // 상단 라인: [교시(노랑)] [시간(흰색)]
+    document.getElementById("statusLine").innerHTML = `<span style="color:#ffca1b; margin-right:20px;">${periodName}</span> ${displayH}시 ${displayM}분`;
 
-    /* 카드 스타일 */
-    .glass-card { background: white; border-radius: 35px; color: var(--black); box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; }
+    // 2. 하단 남은 시간 표시
+    let countdownText = "";
 
-    /* 1페이지 레이아웃 */
-    .view-page { display: none; height: 100%; }
-    .view-page.active { display: grid; }
-    .p1-grid { grid-template-columns: 1.15fr 0.85fr; gap: 40px; height: calc(100vh - 380px); }
-    .tab-container { display: flex; background: #f1f3f5; padding: 12px; gap: 10px; }
-    .tab-btn { flex: 1; padding: 18px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 18px; font-size: 24px; }
-    .tab-btn.active { background: #0a2a63; color: var(--white); }
-    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 45px; font-weight: 800; resize: none; line-height: 1.6; font-size: 48px; }
-    .meal-list { font-size: 42px; font-weight: 800; text-align: center; color: #333; line-height: 1.8; padding: 20px; }
+    if (total < 830) {
+        // [목표시간(분), 표시될 이름] - "시작" 글자 뺐습니다!
+        const schedule = [
+            [520, "아침활동"],    // 08:40
+            [540, "1교시"],      // 09:00
+            [580, "쉬는시간"],    // 09:40
+            [590, "2교시"],      // 09:50
+            [630, "쉬는시간"],    // 10:30
+            [640, "3교시"],      // 10:40
+            [680, "점심시간"],    // 11:20
+            [740, "4교시"],      // 12:20
+            [780, "쉬는시간"],    // 13:00
+            [790, "5교시"],      // 13:10
+            [830, "하교"]        // 13:50
+        ];
 
-    /* 2페이지 레이아웃 */
-    .p2-layout { display: flex; flex-direction: column; height: 100%; gap: 25px; }
-    .p2-header { display: flex; justify-content: center; align-items: center; position: relative; padding: 10px 0; }
-    .p2-date-nav { font-size: 65px; font-weight: 950; color: white; display: flex; align-items: center; gap: 40px; text-shadow: 3px 3px 6px rgba(0,0,0,0.6); }
-    .p2-date-nav span { cursor: pointer; color: var(--yellow); padding: 0 15px; user-select: none; }
-    .p2-card { flex: 1; min-height: 400px; }
-    .p2-textarea { width: 100%; height: 100%; border: none; outline: none; padding: 50px; font-weight: 800; resize: none; line-height: 1.4; font-size: 48px; }
+        const target = schedule.find(item => total < item[0]);
 
-    /* 학생 그리드 (이름 크게) */
-    .student-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
-    .student-item { padding: 25px 5px; background: white; border-radius: 15px; color: var(--black); font-size: 32px; font-weight: 900; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.2); transition: 0.2s; }
-    .student-item.checked { background: var(--accent-red); color: white; }
-
-    /* 하단 유틸 버튼 */
-    .util-container { position: fixed; bottom: 40px; right: 40px; display: flex; gap: 15px; }
-    .util-btn { width: 65px; height: 65px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.5); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-  </style>
-</head>
-<body>
-
-  <header class="header-p1" id="p1Header">
-    <div class="header-left" id="sheetData">데이터 로딩 중...</div>
-    <div class="header-right">
-        <div id="p1Date" style="font-size: 55px; font-weight: 900; margin-bottom: -10px;"></div>
-        <div class="status-line" id="statusLine"></div>
-        <div class="countdown-msg" id="countdownText"></div>
-    </div>
-  </header>
-
-  <main id="page1" class="view-page active">
-    <div class="p1-grid">
-      <section class="glass-card">
-        <div class="tab-container">
-          <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-          <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-          <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-          <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
-        </div>
-        <textarea id="noticeInput" class="notice-input" placeholder="이곳에 안내사항을 적으세요."></textarea>
-      </section>
-      <section class="glass-card" style="align-items: center; justify-content: center; padding: 40px;">
-        <div style="font-size: 60px; font-weight: 900; color: #0a2a63; margin-bottom: 25px; border-bottom: 8px solid var(--yellow); padding-bottom: 10px;">오늘의 급식 🍱</div>
-        <div id="mealList" class="meal-list">식단 정보를 가져오는 중...</div>
-      </section>
-    </div>
-  </main>
-
-  <main id="page2" class="view-page">
-    <div class="p2-layout">
-      <div class="p2-header">
-        <div class="p2-date-nav">
-          <span onclick="changeDate(-1)">&lt;</span>
-          <div id="p2DateDisplay"></div>
-          <span onclick="changeDate(1)">&gt;</span>
-        </div>
-      </div>
-      <section class="glass-card p2-card">
-        <div style="background: #f8f9fa; padding: 15px; text-align: center; font-size: 30px; font-weight: 900; color: #0a2a63; border-bottom: 2px solid #ddd;">알 림 장</div>
-        <textarea class="p2-textarea" id="boardMemo" placeholder="아이들에게 보여줄 알림장을 입력하세요."></textarea>
-      </section>
-      <div class="student-grid" id="studentList"></div>
-    </div>
-  </main>
-
-  <div class="util-container">
-    <button class="util-btn" onclick="toggleFS()">🎞️</button>
-    <button class="util-btn" onclick="switchPg()" style="font-size: 30px;">↔️</button>
-  </div>
-
-  <script>
-    const students = ["김민채", "김아준", "민예린", "송유하", "신서울", "신수호", "안동윤", "안동은", "안시윤", "오준서", "윤노아", "이도희", "이유나", "이은서", "전민서", "조우준", "최민국", "최승효", "황민영", "황슬아", "김세아"];
-    
-    let viewingDate = new Date();
-    let currentTab = "";
-
-    function init() {
-      const listWrap = document.getElementById('studentList');
-      students.forEach(name => {
-        const div = document.createElement('div');
-        div.className = 'student-item';
-        div.innerText = name;
-        div.onclick = () => div.classList.toggle('checked');
-        listWrap.appendChild(div);
-      });
-      loadBoardData();
-      updateTime();
-      fetchSheet();
-      setInterval(updateTime, 1000);
+        if (target) {
+            const remain = target[0] - total;
+            // 목표 이름과 남은 분수 모두 노란색(#ffca1b) 적용
+            countdownText = `<span style="color:#ffca1b">${target[1]}</span>까지 <span style="color:#ffca1b">${remain}분</span> 남았습니다.`;
+        }
+    } else {
+        countdownText = ""; // 1시 50분 이후엔 빈칸
     }
 
-    function updateTime() {
-      const now = new Date();
-      const h = now.getHours(); const m = now.getMinutes();
-      const total = h * 60 + m;
-      const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-      
-      document.getElementById("p1Date").innerText = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-
-      let periodName = ""; let countdownGoal = ""; let targetTime = 0;
-
-      // 선생님 요청 시정표 (8:40 아침활동 시작 / 11:20 점심 / 12:20 4교시 시작)
-      if (total < 520) { periodName = "등교시간"; countdownGoal = "아침활동"; targetTime = 520; }
-      else if (total < 540) { periodName = "아침활동"; countdownGoal = "1교시"; targetTime = 540; }
-      else if (total < 580) { periodName = "1교시"; countdownGoal = "쉬는시간"; targetTime = 580; }
-      else if (total < 590) { periodName = "쉬는시간"; countdownGoal = "2교시"; targetTime = 590; }
-      else if (total < 630) { periodName = "2교시"; countdownGoal = "쉬는시간"; targetTime = 630; }
-      else if (total < 640) { periodName = "쉬는시간"; countdownGoal = "3교시"; targetTime = 640; }
-      else if (total < 680) { periodName = "3교시"; countdownGoal = "점심시간"; targetTime = 680; }
-      else if (total < 740) { periodName = "점심시간"; countdownGoal = "4교시"; targetTime = 740; }
-      else if (total < 780) { periodName = "4교시"; countdownGoal = "쉬는시간"; targetTime = 780; }
-      else if (total < 790) { periodName = "쉬는시간"; countdownGoal = "5교시"; targetTime = 790; }
-      else if (total < 830) { periodName = "5교시"; countdownGoal = "하교"; targetTime = 830; }
-
-      const displayH = h % 12 || 12;
-      const displayM = m < 10 ? '0'+m : m;
-      const statusLineEl = document.getElementById("statusLine");
-      const countdownEl = document.getElementById("countdownText");
-
-      if (total >= 830) {
-        statusLineEl.innerHTML = `${displayH}시 ${displayM}분`;
-        countdownEl.innerHTML = ""; // 1시 50분 이후 비우기
-      } else {
-        statusLineEl.innerHTML = `<span class="yellow-text">${periodName}</span>${displayH}시 ${displayM}분`;
-        const remain = targetTime - total;
-        countdownEl.innerHTML = `<b>${countdownGoal}</b>까지 <b>${remain}분</b> 남았습니다.`;
-      }
-      
-      // 자동 탭 전환
-      if(!currentTab) {
-        if (total < 540) selectTab('morning');
-        else if (total < 680) selectTab('class');
-        else if (total < 740) selectTab('lunch');
-        else selectTab('class');
-      }
-    }
-
-    function changeDate(delta) {
-      viewingDate.setDate(viewingDate.getDate() + delta);
-      const d = viewingDate;
-      const days = ["일", "월", "화", "수", "목", "금", "토"];
-      document.getElementById("p2DateDisplay").innerText = `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}(${days[d.getDay()]})`;
-      loadBoardData();
-    }
-
-    function loadBoardData() {
-      const key = viewingDate.toISOString().split('T')[0];
-      document.getElementById("boardMemo").value = localStorage.getItem('memo_' + key) || "";
-    }
-
-    document.getElementById("boardMemo").oninput = (e) => {
-      const key = viewingDate.toISOString().split('T')[0];
-      localStorage.setItem('memo_' + key, e.target.value);
-    };
-
-    function selectTab(type) {
-      currentTab = type;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-${type}`));
-      document.getElementById("noticeInput").value = JSON.parse(localStorage.getItem('userEdits') || '{}')[type] || "";
-    }
-
-    document.getElementById("noticeInput").oninput = (e) => {
-      let edits = JSON.parse(localStorage.getItem('userEdits') || '{}');
-      edits[currentTab] = e.target.value;
-      localStorage.setItem('userEdits', JSON.stringify(edits));
-    };
-
-    async function fetchSheet() {
-      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh0ND1N2lqnfgek8TE1vO0gztHKWsfcLif7tilCzh_Ibkau0i33CcKrfQGCu7n2rrRQDqYoCvsEIk/pub?gid=1958992156&single=true&output=csv";
-      try {
-        const res = await fetch(url);
-        const data = await res.text();
-        const rows = data.split('\n').map(r => r.split(','));
-        document.getElementById("sheetData").innerHTML = `${rows[0][0]}<br>${rows[1][0]}`;
-      } catch (e) {}
-    }
-
-    function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-    
-    function switchPg() { 
-      const p1 = document.getElementById('page1');
-      const p2 = document.getElementById('page2');
-      const h1 = document.getElementById('p1Header');
-      if(p1.classList.contains('active')) {
-        p1.classList.remove('active'); h1.style.display = 'none'; p2.classList.add('active');
-        viewingDate = new Date(); // 2페이지 갈 때 오늘로 초기화
-        changeDate(0);
-      } else {
-        p2.classList.remove('active'); h1.style.display = 'grid'; p1.classList.add('active');
-      }
-    }
-    
-    init();
-  </script>
-</body>
-</html>
+    document.getElementById("countdownText").innerHTML = countdownText;
+}
