@@ -70,6 +70,9 @@
     // (메모기본값) 시트 로딩 실패 시 사용할 예비 안내문
     const DEFAULT_NOTICE={ morning:"• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기", class:"• 가방 문 닫기\n• 연필 한 자루, 지우개 하나\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기", break:"• 책상 정리하기\n• 물 떠오기 / 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기", lunch:"• 책상 위 정리하기\n• 의자 넣고 손 씻기" };
 
+    // (점심기본값) 점심활동 표를 못 읽을 때 사용할 예비값
+    const DEFAULT_LUNCH_ACTIVITIES={ "월요일":"교실놀이", "화요일":"바깥놀이", "수요일":"위클래스", "목요일":"바깥놀이", "금요일":"바깥놀이" };
+
     // (탭매핑) 시트의 구분명을 코드용 타입으로 변환
     const TAB_NAME_TO_TYPE={ "아침시간":"morning", "아침활동":"morning", "수업시간":"class", "쉬는시간":"break", "점심시간":"lunch" };
 
@@ -77,7 +80,7 @@
     const SETTING_KEY_MAP={ "왼쪽문구 크기":"--header-left-size", "날짜 크기":"--header-right-size", "탭 글자 크기":"--tab-size", "메모장 크기":"--memo-size", "메모장 여백":"--memo-padding", "오른쪽 간격":"--right-gap", "현재시각 크기":"--status-size" };
 
     // (상태값) 시트에서 읽어온 전체 데이터 저장
-    let DASHBOARD={ headerLines:[], periods:[], notices:{ ...DEFAULT_NOTICE }, officeCode:"", schoolCode:"" };
+    let DASHBOARD={ headerLines:[], periods:[], notices:{ ...DEFAULT_NOTICE }, lunchActivities:{ ...DEFAULT_LUNCH_ACTIVITIES }, officeCode:"", schoolCode:"" };
 
     // (사용자상태) 현재 탭, 최초 실행 여부, 사용자 수정 메모, 메모 폰트 크기
     let currentTab="", isInitialLoad=true, userEdits=JSON.parse(localStorage.getItem("userEdits")||"{}"), fontSize=parseInt(localStorage.getItem("dashFontSize")||"48",10);
@@ -112,14 +115,28 @@
     // (안내사항) 시트의 안내문 추출
     function extractNotices(rows){ const notices={ ...DEFAULT_NOTICE }; for(const row of rows){ const key=(row[0]||"").trim(), value=(row[1]||"").trim(), type=TAB_NAME_TO_TYPE[key]; if(type&&value) notices[type]=value; } return notices; }
 
+    // (점심활동) 시트의 2줄 표에서 요일별 활동 추출
+    function extractLunchActivities(rows){
+      const result={ ...DEFAULT_LUNCH_ACTIVITIES };
+      for(let r=0;r<rows.length-1;r++){
+        const currentRow=rows[r].map(v=>(v||"").trim());
+        const nextRow=rows[r+1].map(v=>(v||"").trim());
+        const hasWeekdays=currentRow.includes("월요일")&&currentRow.includes("화요일")&&currentRow.includes("수요일")&&currentRow.includes("목요일")&&currentRow.includes("금요일");
+        if(!hasWeekdays) continue;
+        ["월요일","화요일","수요일","목요일","금요일"].forEach(day=>{ const idx=currentRow.indexOf(day); if(idx>-1&&nextRow[idx]) result[day]=nextRow[idx]; });
+        return result;
+      }
+      return result;
+    }
+
     // (설정) 시트의 숫자 설정을 CSS 변수에 반영
     function applySettings(rows){ const root=document.documentElement; for(let i=1;i<rows.length;i++){ const key=(rows[i][0]||"").trim(), value=(rows[i][1]||"").trim(), cssVar=SETTING_KEY_MAP[key]; if(cssVar&&value){ if(key==="카드 투명도"){ const opacity=Math.max(0,Math.min(1,parseFloat(value))); root.style.setProperty("--bg-card",`rgba(255,255,255,${opacity})`); } else { root.style.setProperty(cssVar,`${parseFloat(value)}px`); } } } }
 
-    // (점심안내) 첫 줄의 요일별 활동 문장에서 오늘 요일만 추출
-    function getLunchActivityLine(text){ if(!text) return ""; const firstLine=text.split("\n")[0].trim(); if(!firstLine.includes("월요일")) return ""; const day=new Date().getDay(), dayMap={1:"월요일",2:"화요일",3:"수요일",4:"목요일",5:"금요일"}, dayName=dayMap[day]; if(!dayName) return "★ 오늘은 점심시간 안내를 확인하세요"; const regex=new RegExp(`${dayName}\\s*[:：]\\s*([^,\\n]+)`), match=firstLine.match(regex); return match?`★ ${match[1].trim()}`:"★ 오늘은 점심시간 안내를 확인하세요"; }
+    // (점심활동) 오늘 요일의 점심활동 반환
+    function getTodayLunchActivity(){ const dayMap={1:"월요일",2:"화요일",3:"수요일",4:"목요일",5:"금요일"}, dayName=dayMap[new Date().getDay()]; return dayName?(DASHBOARD.lunchActivities[dayName]||"점심시간 활동"):"점심시간 활동"; }
 
     // (점심안내) 점심 메모를 오늘용으로 가공
-    function buildLunchNotice(rawText){ if(!rawText) return DEFAULT_NOTICE.lunch; const lines=rawText.split("\n").map(v=>v.trim()).filter(Boolean); if(!lines.length) return DEFAULT_NOTICE.lunch; let result=[]; if(lines[0].includes("월요일")){ result.push(getLunchActivityLine(rawText)); result.push(...lines.slice(1)); } else { result=lines; } return result.join("\n"); }
+    function buildLunchNotice(rawText){ const base=(rawText||DEFAULT_NOTICE.lunch).split("\n").map(v=>v.trim()).filter(Boolean); return [`★ ${getTodayLunchActivity()}`,...base].join("\n"); }
 
     // (메모) 타입별 안내문 반환
     function getNoticeTextByType(type){ const text=DASHBOARD.notices[type]||DEFAULT_NOTICE[type]||""; return type==="lunch"?buildLunchNotice(text):text; }
@@ -194,6 +211,7 @@
         DASHBOARD.officeCode=codes.officeCode;
         DASHBOARD.schoolCode=codes.schoolCode;
         DASHBOARD.notices=extractNotices(noticeRows);
+        DASHBOARD.lunchActivities=extractLunchActivities(noticeRows);
         applySettings(settingRows);
         renderHeader();
         const sheetMemoSize=getComputedStyle(document.documentElement).getPropertyValue("--memo-size").trim().replace("px","");
