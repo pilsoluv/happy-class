@@ -5,105 +5,107 @@
   <title>교실 대시보드</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
-    /* 기존 스타일 유지 */
-    :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --bg-card: rgba(255, 255, 255, 1); --accent-red: #ff6b6b; }
+    :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --accent-red: #ff6b6b; }
     * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
-    body { padding: 40px 60px; position: relative; }
+    body { padding: 30px 50px; position: relative; }
 
-    /* 페이지 전환용 레이아웃 */
-    .view-page { display: none; height: 100%; }
+    /* 페이지 레이아웃 */
+    .view-page { display: none; height: 100%; grid-template-rows: auto 1fr; gap: 20px; }
     .view-page.active { display: grid; }
     
-    /* 1페이지 레이아웃 (기존 유지) */
-    .dashboard-grid { grid-template-columns: 1.1fr 0.9fr; grid-template-rows: auto 1fr; gap: 40px; }
-    .header-left { grid-column: 1; font-size: 42px; font-weight: 800; line-height: 1.3; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .header-right { grid-column: 2; text-align: right; font-size: 56px; font-weight: 900; margin-bottom: -30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-    .glass-card { background: var(--bg-card); border-radius: 30px; color: var(--black); box-shadow: 0 15px 50px rgba(0,0,0,0.4); overflow: hidden; border: none; }
-    .notice-section { grid-row: 2; display: flex; flex-direction: column; position: relative; }
-    .tab-container { display: flex; background: #f8f9fa; padding: 12px; gap: 8px; border-bottom: 2px solid #eee; align-items: center; }
-    .tab-btn { flex: 1; padding: 16px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 15px; font-size: 24px; transition: 0.2s; }
-    .tab-btn.active { background: #0a2a63; color: var(--white); }
-    .font-control { display: flex; align-items: center; gap: 10px; background: #e9ecef; padding: 6px 18px; border-radius: 25px; margin-left: auto; }
-    .size-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ced4da; background: white; color: #495057; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; }
-    .notice-content { flex-grow: 1; padding: 50px; }
-    .notice-input { width: 100%; height: 100%; background: transparent; border: none; outline: none; color: var(--black); font-weight: 800; resize: none; line-height: 1.6; font-size: 48px; }
-    .main-right { grid-row: 2; display: flex; flex-direction: column; gap: 30px; }
-    .time-wrap { text-align: right; padding: 0; margin-top: -40px; }
-    .status-line { font-size: 115px; font-weight: 950; letter-spacing: -3px; white-space: nowrap; line-height: 1.0; text-shadow: 3px 3px 8px rgba(0,0,0,0.5); }
-    .status-line .accent { color: #ffca1b; margin-right: 20px; }
-    .countdown { font-size: 42px; font-weight: 800; margin-top: 5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
-    .meal-card { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-    .meal-title { font-size: 52px; font-weight: 900; margin-bottom: 30px; color: #0a2a63; border-bottom: 5px solid var(--yellow); padding-bottom: 5px; }
-    .meal-list { font-size: 34px; font-weight: 800; line-height: 1.8; text-align: center; color: #333; }
+    /* 헤더 영역 */
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .header-left { font-size: 38px; font-weight: 800; line-height: 1.3; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .header-right { text-align: right; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .date-text { font-size: 48px; font-weight: 900; }
+    .clock-text { font-size: 90px; font-weight: 950; margin-top: -10px; line-height: 1; }
+    .countdown { font-size: 36px; font-weight: 800; color: var(--yellow); }
 
-    /* 2페이지 스타일 (알림장 & 청소) */
-    .board-grid { grid-template-columns: 1fr; grid-template-rows: auto 1fr 1fr; gap: 20px; }
-    .board-title { font-size: 45px; font-weight: 900; color: #0a2a63; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
-    .memo-area { width: 100%; height: 100%; background: transparent; border: none; outline: none; font-size: 40px; font-weight: 800; color: var(--black); resize: none; padding: 20px; }
-    .student-list { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding: 15px; }
-    .student-item { padding: 15px 5px; background: white; border: 2px solid #ddd; border-radius: 12px; color: var(--black); font-size: 20px; font-weight: 800; text-align: center; cursor: pointer; transition: 0.2s; }
+    /* 카드 공통 스타일 */
+    .glass-card { background: white; border-radius: 25px; color: var(--black); box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; }
+
+    /* 1페이지: 메인 */
+    .dashboard-content { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; }
+    .tab-container { display: flex; background: #f1f3f5; padding: 8px; gap: 5px; }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 12px; font-size: 20px; }
+    .tab-btn.active { background: #0a2a63; color: var(--white); }
+    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 30px; font-weight: 800; resize: none; line-height: 1.5; }
+
+    /* 2페이지: 알림장 & 학생 */
+    .board-container { display: flex; flex-direction: column; gap: 15px; }
+    .board-header { display: flex; align-items: center; justify-content: center; padding: 15px; position: relative; }
+    .board-title { font-size: 40px; font-weight: 900; color: #0a2a63; }
+    .font-ctrl { position: absolute; right: 20px; display: flex; align-items: center; gap: 8px; background: #eee; padding: 5px 12px; border-radius: 20px; font-size: 16px; }
+    .size-btn { border: none; background: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: 900; }
+    .memo-area { flex-grow: 1; border: 2px solid #eee; margin: 0 20px 20px; border-radius: 15px; padding: 20px; font-weight: 800; resize: none; outline: none; }
+    .student-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .student-item { padding: 12px 5px; background: white; border: 1px solid #ddd; border-radius: 10px; color: var(--black); font-size: 18px; font-weight: 800; text-align: center; cursor: pointer; }
     .student-item.checked { background: var(--accent-red); color: white; border-color: var(--accent-red); }
 
-    /* 유틸리티 버튼 (전체화면 & 페이지 전환) */
-    .util-container { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
-    .util-btn { padding: 10px 18px; background: rgba(0,0,0,0.5); border: 1px solid white; color: white; border-radius: 50px; cursor: pointer; font-weight: 800; backdrop-filter: blur(5px); }
-    .util-btn:hover { background: rgba(255,255,255,0.2); }
+    /* 하단 아이콘 버튼 */
+    .util-container { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; }
+    .util-btn { width: 45px; height: 45px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.5); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
   </style>
 </head>
 <body>
 
-  <div id="page1" class="view-page dashboard-grid active">
+  <header class="header">
     <div class="header-left" id="sheetData">데이터 로딩 중...</div>
-    <div class="header-right" id="dateText1"></div>
-    <section class="glass-card notice-section">
-      <div class="tab-container">
-        <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-        <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-        <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-        <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
-        <div class="font-control">
-          <button class="size-btn" onclick="adjustFont(-4)">-</button>
-          <span id="currentSize" style="color:#495057; font-weight:800; margin:0 5px;">48</span>
-          <button class="size-btn" onclick="adjustFont(4)">+</button>
+    <div class="header-right">
+      <div class="date-text" id="dateText"></div>
+      <div class="clock-text" id="clockText"></div>
+      <div class="countdown" id="countdownText"></div>
+    </div>
+  </header>
+
+  <main id="page1" class="view-page active">
+    <div class="dashboard-content">
+      <section class="glass-card">
+        <div class="tab-container">
+          <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
+          <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
+          <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
+          <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
         </div>
-      </div>
-      <div class="notice-content"><textarea id="noticeInput" class="notice-input"></textarea></div>
-    </section>
-    <div class="main-right">
-      <div class="time-wrap">
-        <div class="status-line" id="statusLine"></div>
-        <div id="countdownText" class="countdown"></div>
-      </div>
-      <section class="glass-card meal-card">
-        <div class="meal-title">오늘의 급식 🍱</div>
-        <div id="mealList" class="meal-list">식단 정보를 가져오는 중...</div>
+        <textarea id="noticeInput" class="notice-input" placeholder="내용을 입력하세요..."></textarea>
+      </section>
+      <section class="glass-card" style="align-items: center; justify-content: center; padding: 40px;">
+        <div style="font-size: 45px; font-weight: 900; color: #0a2a63; margin-bottom: 20px; border-bottom: 4px solid var(--yellow);">오늘의 급식 🍱</div>
+        <div id="mealList" style="font-size: 30px; font-weight: 800; text-align: center; color: #333; line-height: 1.6;">식단 정보 로딩 중...</div>
       </section>
     </div>
-  </div>
+  </main>
 
-  <div id="page2" class="view-page board-grid">
-    <div class="header-right" id="dateText2" style="grid-column: 1; text-align: left;"></div>
-    <section class="glass-card" style="padding: 20px;">
-      <div class="board-title">📢 알림장</div>
-      <textarea class="memo-area" placeholder="알림장 내용을 입력하세요..." id="boardMemo"></textarea>
-    </section>
-    <section class="glass-card" style="padding: 20px;">
-      <div class="board-title">✅ 청소/과제 확인</div>
-      <div class="student-list" id="studentList"></div>
-    </section>
-  </div>
+  <main id="page2" class="view-page">
+    <div class="board-container">
+      <section class="glass-card" style="height: 60%;">
+        <div class="board-header">
+          <div class="board-title">알림장</div>
+          <div class="font-ctrl">
+            <button class="size-btn" onclick="adjFont(-2)">-</button>
+            <span id="curSize">40</span>
+            <button class="size-btn" onclick="adjFont(2)">+</button>
+          </div>
+        </div>
+        <textarea class="memo-area" id="boardMemo" placeholder="알림장 내용을 입력하세요..."></textarea>
+      </section>
+      <div class="student-grid" id="studentList"></div>
+    </div>
+  </main>
 
   <div class="util-container">
-    <button class="util-btn" onclick="toggleFullScreen()">전체화면</button>
-    <button class="util-btn" onclick="switchPage()">페이지 전환</button>
+    <button class="util-btn" onclick="toggleFS()" title="전체화면">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+    <button class="util-btn" onclick="switchPg()" title="페이지 전환">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m11 17-5-5 5-5m6 10 5-5-5-5"/></svg>
+    </button>
   </div>
 
   <script>
-    /* 학생 명단 (여기에 이름을 적으세요) */
+    /* 학생 명단 */
     const students = ["김민채", "김아준", "민예린", "송유하", "신서울", "신수호", "안동윤", "안동은", "안시윤", "오준서", "윤노아", "이도희", "이유나", "이은서", "전민서", "조우준", "최민국", "최승효", "황민영", "황슬아", "김세아"];
-
-    // 학생 리스트 생성
     const listWrap = document.getElementById('studentList');
     students.forEach(name => {
       const div = document.createElement('div');
@@ -113,91 +115,90 @@
       listWrap.appendChild(div);
     });
 
-    /* 1페이지 기존 로직 유지 */
-    const MEMO_DEFAULTS = { morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기", class: "• 가방 문 닫기\n• 연필 한 자루, 지우개 하나 꺼내기\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기", break: "• 책상 정리하기\n• 물 떠오기 / 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기", lunch: "" };
-    const LUNCH_DAY = { 1: "교실놀이", 2: "바깥놀이", 3: "위클래스", 4: "바깥놀이", 5: "바깥놀이" };
+    /* 로컬 스토리지 연동 (기억하기) */
+    const noticeInput = document.getElementById("noticeInput");
+    const boardMemo = document.getElementById("boardMemo");
+    let userEdits = JSON.parse(localStorage.getItem('userEdits') || '{}');
+    let boardData = localStorage.getItem('boardMemo') || "";
+    let fontSize = parseInt(localStorage.getItem('boardFS') || '40');
+
+    boardMemo.value = boardData;
+    boardMemo.style.fontSize = fontSize + "px";
+    document.getElementById("curSize").innerText = fontSize;
+
+    /* 텍스트 입력 시 실시간 저장 */
+    noticeInput.addEventListener("input", () => {
+      userEdits[currentTab] = noticeInput.value;
+      localStorage.setItem('userEdits', JSON.stringify(userEdits));
+    });
+    boardMemo.addEventListener("input", () => {
+      localStorage.setItem('boardMemo', boardMemo.value);
+    });
+
+    function adjFont(delta) {
+      fontSize += delta;
+      boardMemo.style.fontSize = fontSize + "px";
+      document.getElementById("curSize").innerText = fontSize;
+      localStorage.setItem('boardFS', fontSize);
+    }
+
+    /* 시정표 및 시간 로직 */
     const PERIODS = [
       { name: "아침활동", start: "08:30", end: "08:59", type: "morning" },
       { name: "1교시", start: "09:00", end: "09:39", type: "class" },
       { name: "쉬는시간", start: "09:40", end: "09:49", type: "break" },
       { name: "2교시", start: "09:50", end: "10:29", type: "class" },
-      { name: "쉬는시간", start: "10:30", end: "10:39", type: "break" },
       { name: "3교시", start: "10:40", end: "11:19", type: "class" },
-      { name: "점심시간", start: "11:20", end: "12:19", type: "lunch" },
-      { name: "4교시", start: "12:20", end: "12:59", type: "class" },
-      { name: "5교시", start: "13:10", end: "13:49", type: "class" }
+      { name: "점심시간", start: "11:20", end: "12:19", type: "lunch" }
     ];
 
-    let currentTab = ""; let isInitialLoad = true;
-    let fontSize = parseInt(localStorage.getItem('dashFontSize') || '48');
-    let userEdits = JSON.parse(localStorage.getItem('userEdits') || '{}');
-
+    let currentTab = "";
     function selectTab(type) {
-      currentTab = type; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-${type}`));
-      const input = document.getElementById("noticeInput");
-      if (userEdits[type] !== undefined) { input.value = userEdits[type]; }
-      else { if (type === 'lunch') { let day = new Date().getDay(); if (day === 0 || day === 6) day = 1; input.value = "★ " + (LUNCH_DAY[day] || "자유활동") + "\n• 책상 위 정리하기\n• 의자 넣고 손 씻기"; } else { input.value = MEMO_DEFAULTS[type] || ""; } }
+      currentTab = type;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-${type}`));
+      noticeInput.value = userEdits[type] || "";
     }
-
-    function adjustFont(delta) { fontSize += delta; document.getElementById("noticeInput").style.fontSize = fontSize + "px"; document.getElementById("currentSize").innerText = fontSize; localStorage.setItem('dashFontSize', fontSize); }
-    document.getElementById("noticeInput").addEventListener("input", (e) => { userEdits[currentTab] = e.target.value; localStorage.setItem('userEdits', JSON.stringify(userEdits)); });
 
     function updateTime() {
-      const now = new Date(); const h = now.getHours(); const m = now.getMinutes(); const total = h * 60 + m;
+      const now = new Date();
+      const h = now.getHours(); const m = now.getMinutes();
+      const total = h * 60 + m;
       const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-      const dateString = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
       
-      document.getElementById("dateText1").textContent = dateString;
-      document.getElementById("dateText2").textContent = dateString;
-      
-      const displayH = h % 12 || 12; const displayM = m < 10 ? '0' + m : m; const displayTime = `${displayH}시 ${displayM}분`;
-      const period = PERIODS.find(p => { const [sh, sm] = p.start.split(":").map(Number); const [eh, em] = p.end.split(":").map(Number); return total >= (sh * 60 + sm) && total <= (eh * 60 + em); });
-      
-      const statusLineEl = document.getElementById("statusLine"); const countdownEl = document.getElementById("countdownText");
-      
-      if (total >= 480 && total < 540) { // 예시: 아침 8시-9시 사이 로직
-        statusLineEl.innerHTML = displayTime; countdownEl.innerHTML = "";
-        if (isInitialLoad) { selectTab("morning"); isInitialLoad = false; }
-      }
-      else if (period) {
-        statusLineEl.innerHTML = `<span class="accent">${period.name}</span> ${displayTime}`;
-        const [eh, em] = period.end.split(":").map(Number); const remain = (eh * 60 + em) - total;
-        countdownEl.innerHTML = `${period.type === 'class' ? '쉬는시간' : '수업시작'}까지 <span style="color:#ffca1b">${remain}분</span> 남았습니다.`;
-        if (isInitialLoad) { selectTab(period.type); isInitialLoad = false; }
+      document.getElementById("dateText").innerText = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
+      document.getElementById("clockText").innerText = `${h % 12 || 12}시 ${m < 10 ? '0'+m : m}분`;
+
+      const period = PERIODS.find(p => {
+        const [sh, sm] = p.start.split(":").map(Number);
+        const [eh, em] = p.end.split(":").map(Number);
+        return total >= (sh * 60 + sm) && total <= (eh * 60 + em);
+      });
+
+      if (period) {
+        const [eh, em] = period.end.split(":").map(Number);
+        document.getElementById("countdownText").innerHTML = `<span style="color:white; font-size:24px;">${period.name}</span> 종료까지 ${ (eh*60+em) - total }분 남음`;
+        if(!currentTab) selectTab(period.type);
       } else {
-        statusLineEl.innerHTML = displayTime; countdownEl.innerHTML = "즐거운 일과 시간입니다.";
-        if (isInitialLoad) { selectTab("morning"); isInitialLoad = false; }
+        document.getElementById("countdownText").innerText = "즐거운 일과 시간";
+        if(!currentTab) selectTab("morning");
       }
     }
 
-    /* 구글 시트 데이터 가져오기 (기존 URL 유지) */
+    /* 구글 시트 (D-Day만 가져오기) */
     async function fetchSheet() {
       const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh0ND1N2lqnfgek8TE1vO0gztHKWsfcLif7tilCzh_Ibkau0i33CcKrfQGCu7n2rrRQDqYoCvsEIk/pub?gid=1958992156&single=true&output=csv";
-      try { const res = await fetch(url); const data = await res.text(); const rows = data.split('\n').map(r => r.split(',')); document.getElementById("sheetData").innerHTML = `${rows[0][0]}<br>${rows[1][0]}`; }
-      catch (e) { document.getElementById("sheetData").innerText = "데이터 로딩 오류"; }
+      try {
+        const res = await fetch(url);
+        const data = await res.text();
+        const rows = data.split('\n').map(r => r.split(','));
+        document.getElementById("sheetData").innerHTML = `${rows[0][0]}<br>${rows[1][0]}`;
+      } catch (e) { console.log("Sheet Error"); }
     }
 
-    /* 추가 유틸리티 함수 */
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } 
-      else { if (document.exitFullscreen) { document.exitFullscreen(); } }
-    }
+    function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    function switchPg() { document.getElementById('page1').classList.toggle('active'); document.getElementById('page2').classList.toggle('active'); }
 
-    function switchPage() {
-      const p1 = document.getElementById('page1');
-      const p2 = document.getElementById('page2');
-      p1.classList.toggle('active');
-      p2.classList.toggle('active');
-    }
-
-    // 초기 실행
-    adjustFont(0); updateTime(); fetchSheet();
-    setInterval(updateTime, 1000); setInterval(fetchSheet, 60000);
-
-    // 알림장 내용 로컬 저장
-    const boardMemo = document.getElementById('boardMemo');
-    boardMemo.value = localStorage.getItem('boardMemo') || "";
-    boardMemo.addEventListener('input', () => { localStorage.setItem('boardMemo', boardMemo.value); });
+    setInterval(updateTime, 1000); updateTime(); fetchSheet();
   </script>
 </body>
 </html>
