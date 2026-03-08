@@ -5,17 +5,17 @@
   <title>교실 대시보드</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
-    :root { --white:#ffffff; --black:#1a1a1a; --yellow:#ffca1b; --navy:#0a2a63; --bg-card:rgba(255,255,255,0.92); --header-left-size:42px; --header-right-size:56px; --tab-size:22px; --memo-size:48px; --memo-padding:34px; --right-gap:18px; --status-size:108px; }
+    :root { --white:#ffffff; --black:#1a1a1a; --yellow:#ffca1b; --navy:#0a2a63; --bg-card:rgba(255,255,255,0.92); --header-left-size:42px; --header-right-size:56px; --tab-size:22px; --memo-size:48px; --memo-padding:34px; --status-size:108px; }
     * { box-sizing:border-box; font-family:"Pretendard",sans-serif; }
     html,body { margin:0; width:100%; height:100%; overflow:hidden; color:var(--white); background:#0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
     body { padding:24px 40px 84px 40px; }
 
     /* (1페이지) 기본 대시보드 */
-    .page { display:grid; grid-template-columns:1.03fr 0.97fr; grid-template-rows:auto 1fr; column-gap:38px; row-gap:12px; height:100%; }
-    .header-left { grid-column:1; font-size:var(--header-left-size); font-weight:800; line-height:1.22; text-shadow:2px 2px 4px rgba(0,0,0,0.45); white-space:pre-line; align-self:end; }
-    .header-right { grid-column:2; text-align:center; font-size:var(--header-right-size); font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.45); line-height:1.08; align-self:end; }
+    .page { display:grid; grid-template-columns:1.03fr 0.97fr; grid-template-rows:auto 1fr; column-gap:38px; row-gap:10px; height:100%; }
+    .header-left { grid-column:1; font-size:var(--header-left-size); font-weight:800; line-height:1.26; text-shadow:2px 2px 4px rgba(0,0,0,0.45); white-space:pre-line; align-self:start; padding-top:6px; }
+    .header-right { grid-column:2; text-align:center; font-size:var(--header-right-size); font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.45); line-height:1.18; align-self:start; padding-top:2px; transform:translateY(-6px); }
     .glass-card { background:var(--bg-card); border-radius:28px; color:var(--black); box-shadow:0 14px 36px rgba(0,0,0,0.22); overflow:hidden; border:none; backdrop-filter:blur(2px); }
-    .notice-section { grid-row:2; display:flex; flex-direction:column; min-height:0; max-height:calc(100% - 26px); }
+    .notice-section { grid-row:2; display:flex; flex-direction:column; min-height:0; max-height:calc(100% - 24px); }
     .tab-container { display:flex; background:#f7f7f8; padding:10px; gap:8px; border-bottom:1px solid rgba(0,0,0,0.06); align-items:center; }
     .tab-btn { flex:1; min-width:0; padding:14px 10px; border:none; background:transparent; color:#b5bbc4; font-weight:800; cursor:pointer; border-radius:14px; font-size:var(--tab-size); transition:0.2s; }
     .tab-btn.active { background:var(--navy); color:var(--white); }
@@ -23,17 +23,18 @@
     .size-btn { width:34px; height:34px; border-radius:50%; border:2px solid #ced4da; background:white; color:#495057; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; }
     .notice-content { flex:1; min-height:0; padding:30px 34px 24px 34px; }
     .notice-input { width:100%; height:100%; background:transparent; border:none; outline:none; color:var(--black); font-weight:800; resize:none; line-height:1.5; font-size:var(--memo-size); }
-    .main-right { grid-row:2; display:grid; grid-template-rows:auto 1fr; gap:14px; min-height:0; transform:translateY(-22px); }
+    .main-right { grid-row:2; display:grid; grid-template-rows:auto 1fr; gap:16px; min-height:0; transform:translateY(-34px); }
     .time-wrap { text-align:center; padding-top:0; }
-    .status-line { font-size:var(--status-size); font-weight:950; letter-spacing:-3px; white-space:nowrap; line-height:0.96; text-shadow:3px 3px 8px rgba(0,0,0,0.45); }
+    .status-line { font-size:var(--status-size); font-weight:950; letter-spacing:-3px; white-space:nowrap; line-height:1.02; text-shadow:3px 3px 8px rgba(0,0,0,0.45); }
     .status-line .accent { color:var(--yellow); margin-right:18px; }
-    .countdown { font-size:42px; font-weight:800; margin-top:8px; line-height:1.1; text-shadow:2px 2px 5px rgba(0,0,0,0.45); }
+    .countdown { font-size:42px; font-weight:800; margin-top:14px; line-height:1.18; text-shadow:2px 2px 5px rgba(0,0,0,0.45); }
     .meal-card { min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 28px; }
-    .meal-title { font-size:50px; font-weight:900; margin-bottom:28px; color:var(--navy); border-bottom:5px solid var(--yellow); padding-bottom:10px; line-height:1; }
+    .meal-title { font-size:50px; font-weight:900; margin-bottom:28px; color:var(--navy); border-bottom:5px solid var(--yellow); padding-bottom:12px; line-height:1; }
     .meal-list { font-size:32px; font-weight:800; line-height:1.7; text-align:center; color:#333; white-space:pre-line; }
 
     /* (공통) 하단 버튼 */
     .floating-controls { position:fixed; right:18px; bottom:18px; display:flex; gap:10px; z-index:50; }
+    .floating-controls.page2-mode { flex-direction:column; }
     .floating-btn { width:52px; height:52px; border:none; border-radius:50%; background:rgba(255,255,255,0.92); color:#14284e; box-shadow:0 8px 24px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; cursor:pointer; }
     .floating-btn svg { width:26px; height:26px; }
 
@@ -42,125 +43,19 @@
     .screen-page.active { display:block; }
 
     /* (2페이지) 알림장 + 청소확인 */
-    .page2 { display:grid; grid-template-rows:minmax(0,1fr) auto; gap:16px; height:100%; }
+    .page2 { display:grid; grid-template-rows:minmax(0,1fr) auto; gap:26px; height:100%; }
     .page2-top { min-height:0; }
-
-    .notice-board {
-      width:100%;
-      height:100%;
-      background:rgba(255,255,255,0.93);
-      border-radius:30px;
-      color:#111;
-      box-shadow:0 14px 36px rgba(0,0,0,0.22);
-      padding:12px 18px 18px 18px;
-      display:flex;
-      flex-direction:column;
-    }
-
-    .notice-board-header {
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      align-items:center;
-      min-height:58px;
-      border-bottom:1px solid rgba(0,0,0,0.08);
-      padding:0 6px 8px 6px;
-    }
-
-    .notice-date-wrap {
-      justify-self:center;
-      display:flex;
-      align-items:center;
-      gap:20px;
-    }
-
-    .date-arrow {
-      border:none;
-      background:transparent;
-      color:#9a9a9a;
-      font-size:46px;
-      line-height:1;
-      cursor:pointer;
-      padding:0;
-      font-weight:700;
-    }
-
-    .notice-date-text {
-      font-size:34px;
-      font-weight:900;
-      color:#0a2a63;
-      text-align:center;
-      white-space:nowrap;
-    }
-
-    .notice-font-control {
-      justify-self:end;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      background:#eceff2;
-      padding:5px 14px;
-      border-radius:22px;
-    }
-
-    .notice-font-btn {
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      border:2px solid #ced4da;
-      background:white;
-      color:#495057;
-      cursor:pointer;
-      font-size:20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .notice-font-size-text {
-      color:#495057;
-      font-weight:800;
-      min-width:28px;
-      text-align:center;
-    }
-
-    .notice-board-textarea {
-      flex:1;
-      width:100%;
-      border:none;
-      outline:none;
-      resize:none;
-      background:transparent;
-      font-size:76px;
-      line-height:1.22;
-      font-weight:700;
-      color:#000000;
-      padding:18px 8px 4px 8px;
-    }
-
-    /* (2페이지) 학생 영역은 버튼과 겹치지 않게 오른쪽/아래 여백 확보 */
-    .page2-bottom {
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:10px 14px;
-      width:calc(100% - 82px);
-      padding-right:28px;
-      padding-bottom:8px;
-      align-content:end;
-    }
-
-    /* (2페이지) 학생 이름 더 크게 */
-    .student-btn {
-      border:none;
-      border-radius:14px;
-      min-height:64px;
-      background:rgba(255,255,255,0.95);
-      color:#000;
-      font-size:34px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 6px 18px rgba(0,0,0,0.15);
-    }
-
+    .notice-board { width:100%; height:100%; background:rgba(255,255,255,0.93); border-radius:30px; color:#111; box-shadow:0 14px 36px rgba(0,0,0,0.22); padding:12px 18px 18px 18px; display:flex; flex-direction:column; }
+    .notice-board-header { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; min-height:58px; border-bottom:1px solid rgba(0,0,0,0.08); padding:0 6px 8px 6px; }
+    .notice-date-wrap { justify-self:center; display:flex; align-items:center; gap:22px; }
+    .date-arrow { border:none; background:transparent; color:#9a9a9a; font-size:46px; line-height:1; cursor:pointer; padding:0; font-weight:700; }
+    .notice-date-text { font-size:34px; font-weight:900; color:#0a2a63; text-align:center; white-space:nowrap; }
+    .notice-font-control { justify-self:end; display:flex; align-items:center; gap:8px; background:#eceff2; padding:5px 14px; border-radius:22px; }
+    .notice-font-btn { width:34px; height:34px; border-radius:50%; border:2px solid #ced4da; background:white; color:#495057; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; }
+    .notice-font-size-text { color:#495057; font-weight:800; min-width:28px; text-align:center; }
+    .notice-board-textarea { flex:1; width:100%; border:none; outline:none; resize:none; background:transparent; font-size:76px; line-height:1.22; font-weight:700; color:#000000; padding:18px 8px 4px 8px; }
+    .page2-bottom { display:grid; grid-template-columns:repeat(7,1fr); gap:10px 14px; width:calc(100% - 82px); padding-right:28px; padding-top:10px; padding-bottom:8px; align-content:end; }
+    .student-btn { border:none; border-radius:14px; min-height:64px; background:rgba(255,255,255,0.95); color:#000; font-size:34px; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15); }
     .student-btn.checked { background:var(--yellow); }
 
     @media (max-width:1400px){
@@ -229,11 +124,11 @@
     </div>
   </div>
 
-  <div class="floating-controls">
+  <div id="floatingControls" class="floating-controls">
     <button class="floating-btn" title="페이지 전환" onclick="togglePage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="10 8 6 12 10 16"></polyline>
-        <polyline points="14 8 18 12 14 16"></polyline>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 8 4 12 9 16"></polyline>
+        <polyline points="15 8 20 12 15 16"></polyline>
       </svg>
     </button>
     <button class="floating-btn" title="전체화면" onclick="toggleFullscreen()">
@@ -256,7 +151,7 @@
     const DEFAULT_NOTICE={ morning:"• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기", class:"• 가방 문 닫기\n• 연필 한 자루, 지우개 하나\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기", break:"• 책상 정리하기\n• 물 떠오기 / 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기", lunch:"• 책상 위 정리하기\n• 의자 넣고 손 씻기" };
     const DEFAULT_LUNCH_ACTIVITIES={ "월요일":"교실놀이", "화요일":"바깥놀이", "수요일":"위클래스", "목요일":"바깥놀이", "금요일":"바깥놀이" };
     const TAB_NAME_TO_TYPE={ "아침시간":"morning", "아침활동":"morning", "수업시간":"class", "쉬는시간":"break", "점심시간":"lunch" };
-    const SETTING_KEY_MAP={ "왼쪽문구 크기":"--header-left-size", "날짜 크기":"--header-right-size", "탭 글자 크기":"--tab-size", "메모장 크기":"--memo-size", "메모장 여백":"--memo-padding", "오른쪽 간격":"--right-gap", "현재시각 크기":"--status-size" };
+    const SETTING_KEY_MAP={ "왼쪽문구 크기":"--header-left-size", "날짜 크기":"--header-right-size", "탭 글자 크기":"--tab-size", "메모장 크기":"--memo-size", "메모장 여백":"--memo-padding", "현재시각 크기":"--status-size" };
 
     // (상태값)
     let DASHBOARD={ headerLines:[], periods:[], notices:{ ...DEFAULT_NOTICE }, lunchActivities:{ ...DEFAULT_LUNCH_ACTIVITIES }, officeCode:"", schoolCode:"", students:[] };
@@ -283,21 +178,7 @@
     // (기본정보) 시간표 / 코드 / 학생명단
     function extractPeriods(rows){ const header=findCell(rows,"교시"); if(!header) return []; const periods=[]; let r=header.r+1; while(r<rows.length){ const label=(rows[r][header.c]||"").trim(), start=normalizeTime(rows[r][header.c+1]||""), end=normalizeTime(rows[r][header.c+2]||""); if(!label||!start||!end) break; periods.push({ label, start, end, type:getTypeFromLabel(label) }); r++; } return periods; }
     function extractSchoolCodes(rows){ const office=findCell(rows,"교육청코드"), school=findCell(rows,"학교코드"); return { officeCode:office?(rows[office.r][office.c+1]||"").trim():"", schoolCode:school?(rows[school.r][school.c+1]||"").trim():"" }; }
-
-    // (기본정보) 학생명단 추출
-    function extractStudents(rows){
-      const target=findCell(rows,"학생명단");
-      if(!target) return [];
-      const students=[];
-      let r=target.r+1;
-      while(r<rows.length){
-        const name=(rows[r][target.c]||"").trim();
-        if(!name) break;
-        students.push(name);
-        r++;
-      }
-      return students;
-    }
+    function extractStudents(rows){ const target=findCell(rows,"학생명단"); if(!target) return []; const students=[]; let r=target.r+1; while(r<rows.length){ const name=(rows[r][target.c]||"").trim(); if(!name) break; students.push(name); r++; } return students; }
 
     // (안내사항) 안내문 / 점심활동
     function extractNotices(rows){ const notices={ ...DEFAULT_NOTICE }; for(const row of rows){ const key=(row[0]||"").trim(), value=(row[1]||"").trim(), type=TAB_NAME_TO_TYPE[key]; if(type&&value) notices[type]=value; } return notices; }
@@ -308,7 +189,7 @@
 
     // (점심안내)
     function getTodayLunchActivity(){ const dayMap={1:"월요일",2:"화요일",3:"수요일",4:"목요일",5:"금요일"}, dayName=dayMap[new Date().getDay()]; return dayName?(DASHBOARD.lunchActivities[dayName]||"점심시간 활동"):"점심시간 활동"; }
-    function buildLunchNotice(rawText){ const base=(rawText||DEFAULT_NOTICE.lunch).split("\n").map(v=>v.trim()).filter(Boolean); return [`★${getTodayLunchActivity()}`,...base].join("\n"); }
+    function buildLunchNotice(rawText){ const base=(rawText||DEFAULT_NOTICE.lunch).split("\n").map(v=>v.trim()).filter(Boolean); return [`🔔${getTodayLunchActivity()}`,...base].join("\n"); }
     function getNoticeTextByType(type){ const text=DASHBOARD.notices[type]||DEFAULT_NOTICE[type]||""; return type==="lunch"?buildLunchNotice(text):text; }
 
     // (1페이지 메모)
@@ -317,7 +198,7 @@
     document.getElementById("noticeInput").addEventListener("input",e=>{ userEdits[currentTab]=e.target.value; localStorage.setItem("userEdits",JSON.stringify(userEdits)); });
 
     // (시간)
-    function formatDisplayTime(date){ const rawHour=date.getHours(), hour12=rawHour%12||12, minute=String(date.getMinutes()).padStart(2,"0"); return `${hour12}시 ${minute}분`; }
+    function formatDisplayTime(date){ const rawHour=date.getHours(), hour12=rawHour%12||12, minute=date.getMinutes(); return `${hour12}시 ${minute}분`; }
     function findCurrentAndNextPeriod(nowMinutes){ const periods=DASHBOARD.periods; for(let i=0;i<periods.length;i++){ const current=periods[i], start=toMinutes(current.start), end=toMinutes(current.end); if(nowMinutes>=start&&nowMinutes<end) return { current, next:periods[i+1]||null, remain:end-nowMinutes }; } return null; }
     function findUpcomingPeriod(nowMinutes){ const periods=DASHBOARD.periods; for(const p of periods){ const start=toMinutes(p.start); if(nowMinutes<start) return { next:p, remain:start-nowMinutes }; } return null; }
 
@@ -436,6 +317,7 @@
       currentScreen=currentScreen===1?2:1;
       document.getElementById("screen1").classList.toggle("active",currentScreen===1);
       document.getElementById("screen2").classList.toggle("active",currentScreen===2);
+      document.getElementById("floatingControls").classList.toggle("page2-mode", currentScreen===2);
       if(currentScreen===2){
         loadDailyNotice();
         renderStudentGrid();
