@@ -2,75 +2,71 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>우리반 대시보드 V4</title>
+  <title>우리반 대시보드 V5</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --accent-red: #ff6b6b; }
     * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
-    body { padding: 30px 50px; position: relative; display: flex; flex-direction: column; }
+    
+    /* 전체 레이아웃 간격 조정 */
+    body { padding: 50px 70px; display: flex; flex-direction: column; }
 
-    /* 헤더 영역 - 시안 스타일 */
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-    .header-left { font-size: 32px; font-weight: 800; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    /* 1페이지 헤더 (상단 문구 포함) */
+    .header-p1 { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+    .header-left { font-size: 36px; font-weight: 800; line-height: 1.4; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
     .header-right { text-align: right; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .date-row { font-size: 45px; font-weight: 900; display: flex; align-items: center; justify-content: flex-end; gap: 15px; }
-    .clock-row { font-size: 100px; font-weight: 950; margin-top: -10px; line-height: 1; letter-spacing: -2px; }
-    .clock-row .period-label { color: var(--yellow); font-size: 60px; margin-right: 15px; }
-    .countdown-msg { font-size: 32px; font-weight: 800; color: var(--yellow); margin-top: 5px; }
+    .date-text { font-size: 55px; font-weight: 900; }
+    .time-row { font-size: 110px; font-weight: 950; margin-top: -15px; line-height: 1; letter-spacing: -3px; }
+    .time-row span { color: var(--yellow); font-size: 65px; margin-right: 20px; }
+    .countdown-msg { font-size: 38px; font-weight: 800; color: var(--yellow); margin-top: 10px; }
 
-    /* 카드 공통 */
-    .glass-card { background: white; border-radius: 25px; color: var(--black); box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; }
+    /* 카드 스타일 */
+    .glass-card { background: white; border-radius: 30px; color: var(--black); box-shadow: 0 15px 50px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; }
 
-    /* 1페이지: 메인 */
-    .view-page { display: none; height: calc(100vh - 220px); }
+    /* 1페이지 메인 영역 (안내사항 & 급식) */
+    .view-page { display: none; height: 100%; }
     .view-page.active { display: grid; }
-    .dashboard-grid { grid-template-columns: 1.1fr 0.9fr; gap: 30px; }
-    .tab-container { display: flex; background: #f1f3f5; padding: 8px; gap: 5px; }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 12px; font-size: 20px; }
+    .p1-grid { grid-template-columns: 1.15fr 0.85fr; gap: 50px; height: calc(100vh - 350px); }
+    .tab-container { display: flex; background: #f1f3f5; padding: 10px; gap: 8px; }
+    .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 15px; font-size: 24px; }
     .tab-btn.active { background: #0a2a63; color: var(--white); }
-    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 30px; font-weight: 800; resize: none; line-height: 1.5; font-size: 40px; }
+    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 40px; font-weight: 800; resize: none; line-height: 1.6; font-size: 45px; }
 
-    /* 2페이지: 알림장 전용 */
-    .board-layout { display: flex; flex-direction: column; gap: 20px; height: 100%; }
-    .board-main { flex: 1; position: relative; }
-    .board-header { position: absolute; top: 15px; width: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
-    .board-header span { font-size: 40px; font-weight: 900; color: #0a2a63; pointer-events: auto; }
-    .font-ctrl { position: absolute; top: 15px; right: 20px; z-index: 10; display: flex; align-items: center; gap: 8px; background: #eee; padding: 5px 12px; border-radius: 20px; }
-    .date-nav { cursor: pointer; user-select: none; padding: 0 10px; }
-    .size-btn { border: none; background: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: 900; }
-    .memo-area { width: 100%; height: 100%; border: none; padding: 80px 40px 40px; font-weight: 800; resize: none; outline: none; }
+    /* 2페이지 (알림장 전용 - 상단 문구 제거 버전) */
+    .p2-layout { display: flex; flex-direction: column; gap: 30px; height: 100%; padding-top: 20px; }
+    .p2-header { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 10px; }
+    .p2-date-nav { font-size: 55px; font-weight: 900; color: white; display: flex; align-items: center; gap: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .p2-date-nav span { cursor: pointer; color: var(--yellow); }
+    .p2-font-ctrl { position: absolute; right: 0; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 30px; backdrop-filter: blur(5px); }
+    .size-btn { border: none; background: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: 900; font-size: 20px; }
+    
+    .p2-main-card { flex: 1; min-height: 450px; } /* 알림장 박스 크기 대폭 확대 */
+    .p2-memo-area { width: 100%; height: 100%; border: none; padding: 50px; font-weight: 800; resize: none; outline: none; line-height: 1.5; }
 
     /* 학생 명단 (2페이지 하단) */
-    .student-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-    .student-item { padding: 15px 5px; background: white; border-radius: 12px; color: var(--black); font-size: 20px; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .student-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+    .student-item { padding: 20px 5px; background: white; border-radius: 15px; color: var(--black); font-size: 24px; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     .student-item.checked { background: var(--accent-red); color: white; }
 
     /* 유틸 버튼 */
-    .util-container { position: fixed; bottom: 25px; right: 25px; display: flex; gap: 12px; }
-    .util-btn { width: 50px; height: 50px; background: rgba(0,0,0,0.4); border: 1.5px solid rgba(255,255,255,0.5); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+    .util-container { position: fixed; bottom: 35px; right: 35px; display: flex; gap: 15px; }
+    .util-btn { width: 60px; height: 60px; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.6); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
   </style>
 </head>
 <body>
 
-  <header class="header">
+  <header class="header-p1" id="p1Header">
     <div class="header-left" id="sheetData">로딩 중...</div>
     <div class="header-right">
-      <div class="date-row">
-        <span class="date-nav" onclick="changeDate(-1)">&lt;</span>
-        <span id="displayDate"></span>
-        <span class="date-nav" onclick="changeDate(1)">&gt;</span>
-      </div>
-      <div class="clock-row">
-        <span class="period-label" id="periodLabel"></span>
-        <span id="clockText"></span>
-      </div>
-      <div class="countdown-msg" id="countdownText"></div>
+      <div class="date-text" id="p1Date"></div>
+      <div class="time-row"><span id="p1Period"></span><span id="p1Time"></span></div>
+      <div class="countdown-msg" id="p1Countdown"></div>
     </div>
   </header>
 
   <main id="page1" class="view-page active">
-    <div class="dashboard-grid">
+    <div class="p1-grid">
       <section class="glass-card">
         <div class="tab-container">
           <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
@@ -78,33 +74,39 @@
           <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
           <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
         </div>
-        <textarea id="noticeInput" class="notice-input"></textarea>
+        <textarea id="noticeInput" class="notice-input" placeholder="안내사항을 입력하세요."></textarea>
       </section>
-      <section class="glass-card" style="align-items: center; justify-content: center; padding: 40px;">
-        <div style="font-size: 50px; font-weight: 900; color: #0a2a63; margin-bottom: 20px; border-bottom: 5px solid var(--yellow);">오늘의 급식 🍱</div>
-        <div id="mealList" style="font-size: 32px; font-weight: 800; text-align: center; color: #333; line-height: 1.8;">식단 로딩 중...</div>
+      <section class="glass-card" style="align-items: center; justify-content: center; padding: 50px;">
+        <div style="font-size: 60px; font-weight: 900; color: #0a2a63; margin-bottom: 30px; border-bottom: 6px solid var(--yellow);">오늘의 급식 🍱</div>
+        <div id="mealList" style="font-size: 40px; font-weight: 800; text-align: center; color: #333; line-height: 2;">식단 정보 로딩 중...</div>
       </section>
     </div>
   </main>
 
   <main id="page2" class="view-page">
-    <div class="board-layout">
-      <section class="glass-card board-main">
-        <div class="board-header"><span>알림장</span></div>
-        <div class="font-ctrl">
-          <button class="size-btn" onclick="adjFont(-2)">-</button>
-          <span id="curSize">40</span>
-          <button class="size-btn" onclick="adjFont(2)">+</button>
+    <div class="p2-layout">
+      <div class="p2-header">
+        <div class="p2-date-nav">
+          <span onclick="changeDate(-1)">&lt;</span>
+          <div id="p2DateDisplay"></div>
+          <span onclick="changeDate(1)">&gt;</span>
         </div>
-        <textarea class="memo-area" id="boardMemo" placeholder="내용을 입력하세요..."></textarea>
+        <div class="p2-font-ctrl">
+          <button class="size-btn" onclick="adjFont(-4)">-</button>
+          <span id="curSize" style="color:white; font-weight:800; width:30px; text-align:center;">45</span>
+          <button class="size-btn" onclick="adjFont(4)">+</button>
+        </div>
+      </div>
+      <section class="glass-card p2-main-card">
+        <textarea class="p2-memo-area" id="boardMemo" placeholder="아이들에게 보여줄 알림장을 적으세요."></textarea>
       </section>
       <div class="student-grid" id="studentList"></div>
     </div>
   </main>
 
   <div class="util-container">
-    <button class="util-btn" onclick="toggleFS()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-    <button class="util-btn" onclick="switchPg()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17-5-5 5-5m6 10 5-5-5-5"/></svg></button>
+    <button class="util-btn" onclick="toggleFS()"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+    <button class="util-btn" onclick="switchPg()"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m11 17-5-5 5-5m6 10 5-5-5-5"/></svg></button>
   </div>
 
   <script>
@@ -134,6 +136,7 @@
       updateTime();
       fetchSheet();
       setInterval(updateTime, 1000);
+      adjFont(0);
     }
 
     function updateTime() {
@@ -141,9 +144,11 @@
       const h = now.getHours(); const m = now.getMinutes();
       const total = h * 60 + m;
       const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+      const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
       
-      document.getElementById("displayDate").innerText = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-      document.getElementById("clockText").innerText = `${h % 12 || 12}시 ${m < 10 ? '0'+m : m}분`;
+      document.getElementById("p1Date").innerText = dateStr;
+      document.getElementById("p2DateDisplay").innerText = dateStr; // 2페이지 날짜
+      document.getElementById("p1Time").innerText = `${h % 12 || 12}시 ${m < 10 ? '0'+m : m}분`;
 
       const p = PERIODS.find(p => {
         const [sh, sm] = p.start.split(":").map(Number);
@@ -151,8 +156,8 @@
         return total >= (sh * 60 + sm) && total <= (eh * 60 + em);
       });
 
-      const labelEl = document.getElementById("periodLabel");
-      const countEl = document.getElementById("countdownText");
+      const labelEl = document.getElementById("p1Period");
+      const countEl = document.getElementById("p1Countdown");
 
       if (p) {
         labelEl.innerText = p.name;
@@ -161,13 +166,15 @@
         if(!currentTab) selectTab(p.type);
       } else {
         labelEl.innerText = "";
-        countEl.innerText = ""; // 시외 시간은 비움
+        countEl.innerText = "";
         if(!currentTab) selectTab("morning");
       }
     }
 
     function changeDate(delta) {
       viewingDate.setDate(viewingDate.getDate() + delta);
+      const days = ["일", "월", "화", "수", "목", "금", "토"];
+      document.getElementById("p2DateDisplay").innerText = `${viewingDate.getFullYear()}.${viewingDate.getMonth()+1}.${viewingDate.getDate()} (${days[viewingDate.getDay()]})`;
       loadBoardData();
     }
 
@@ -181,7 +188,7 @@
       localStorage.setItem('memo_' + key, e.target.value);
     });
 
-    let fontSize = parseInt(localStorage.getItem('boardFS') || '40');
+    let fontSize = parseInt(localStorage.getItem('boardFS') || '45');
     function adjFont(d) {
       fontSize += d;
       document.getElementById("boardMemo").style.fontSize = fontSize + "px";
@@ -212,10 +219,18 @@
     }
 
     function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-    function switchPg() { document.getElementById('page1').classList.toggle('active'); document.getElementById('page2').classList.toggle('active'); }
+    function switchPg() { 
+      const p1 = document.getElementById('page1');
+      const p2 = document.getElementById('page2');
+      const h1 = document.getElementById('p1Header');
+      if(p1.classList.contains('active')) {
+        p1.classList.remove('active'); h1.style.display = 'none'; p2.classList.add('active');
+      } else {
+        p2.classList.remove('active'); h1.style.display = 'flex'; p1.classList.add('active');
+      }
+    }
     
     init();
-    adjFont(0);
   </script>
 </body>
 </html>
