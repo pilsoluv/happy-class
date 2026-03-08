@@ -6,13 +6,11 @@
   <title>교실 대시보드</title>
   <style>
     :root {
-      --bg: #0a2a63;
-      --glass: rgba(255, 255, 255, 0.32);
-      --glass-border: rgba(255, 255, 255, 0.18);
       --white: #ffffff;
       --yellow: #ffca1b;
-      --shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
-      --radius: 28px;
+      --glass-bg: rgba(255, 255, 255, 0.2); 
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --blur: 15px;
     }
 
     * { box-sizing: border-box; }
@@ -22,284 +20,185 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
       color: var(--white);
-      background: var(--bg) url("wallpaper.jpg") center center / cover no-repeat fixed;
+      /* 배경 이미지는 wallpaper.jpg로 설정 */
+      background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed;
     }
 
-    body {
-      padding: 28px 36px;
-    }
+    body { padding: 40px 50px; }
 
     .page {
-      width: 100%;
-      height: 100%;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto 1fr;
-      gap: 18px 22px;
-      position: relative;
-    }
-
-    .top-left {
-      grid-column: 1;
-      grid-row: 1;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      text-align: left;
-      padding: 6px 6px 0 6px;
-    }
-
-    .dday-text {
-      font-size: 36px;
-      font-weight: 900;
-      line-height: 1.35;
-      letter-spacing: -0.04em;
-      white-space: pre-line;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-
-    .top-right {
-      grid-column: 2;
-      grid-row: 1;
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-start;
-      text-align: right;
-      padding: 6px 8px 0 8px;
-    }
-
-    .date-text {
-      font-size: 46px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-
-    .glass-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: var(--shadow);
-    }
-
-    .notice-card {
-      grid-column: 1;
-      grid-row: 2 / 4;
-      padding: 28px 34px;
-      display: flex;
-    }
-
-    .notice-input {
-      width: 100%;
+      grid-template-columns: 1fr 1.2fr;
+      grid-template-rows: auto 1fr;
+      gap: 30px;
       height: 100%;
-      border: 0;
-      outline: none;
-      resize: none;
-      background: transparent;
-      color: rgba(255,255,255,0.96);
-      font-family: inherit;
-      font-size: 34px;
-      font-weight: 800;
-      line-height: 1.45;
-      letter-spacing: -0.03em;
-      white-space: pre-wrap;
     }
 
-    .notice-input::placeholder {
-      color: rgba(255,255,255,0.84);
+    /* 상단 정보 영역 */
+    .header-left { grid-column: 1; font-size: 32px; font-weight: 800; line-height: 1.4; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .header-right { grid-column: 2; text-align: right; font-size: 42px; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+    /* 유리 카드 스타일 */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      padding: 35px;
     }
 
-    .status-wrap {
-      grid-column: 2;
-      grid-row: 2;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      gap: 8px;
-      padding: 10px 0 0;
+    /* 안내사항 (왼쪽 큰 박스) */
+    .notice-section { grid-row: 2; display: flex; flex-direction: column; }
+    .notice-input {
+      width: 100%; height: 100%;
+      background: transparent; border: none; outline: none;
+      color: white; font-size: 28px; font-weight: 700;
+      resize: none; line-height: 1.6;
     }
+    .notice-input::placeholder { color: rgba(255,255,255,0.6); }
 
-    .status-line {
-      font-size: 72px;
-      font-weight: 900;
-      letter-spacing: -0.06em;
-      line-height: 1.08;
-      color: var(--white);
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-
-    .status-line .accent {
-      color: var(--yellow);
-    }
-
-    .countdown {
-      font-size: 38px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--white);
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
-
-    .countdown .accent {
-      color: var(--yellow);
-    }
+    /* 시간 및 급식 (오른쪽 영역) */
+    .main-right { grid-row: 2; display: flex; flex-direction: column; gap: 25px; }
+    
+    .time-wrap { text-align: center; margin-bottom: 5px; }
+    .status-line { font-size: 80px; font-weight: 900; letter-spacing: -2px; }
+    .status-line .accent { color: var(--yellow); }
+    .countdown { font-size: 34px; font-weight: 800; margin-top: 10px; }
+    .countdown .accent { color: var(--yellow); }
 
     .meal-card {
-      grid-column: 2;
-      grid-row: 3;
+      flex-grow: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 28px 34px;
       text-align: center;
     }
-
-    .meal-text {
-      width: 100%;
-      white-space: pre-line;
-      font-size: 34px;
-      font-weight: 900;
-      line-height: 1.5;
-      letter-spacing: -0.04em;
-      color: rgba(255,255,255,0.98);
-      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
+    .meal-title { font-size: 38px; font-weight: 900; margin-bottom: 20px; color: var(--white); }
+    .meal-list { font-size: 26px; font-weight: 700; line-height: 1.8; color: rgba(255,255,255,0.95); }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="top-left">
-      <div class="dday-text" id="ddayText">우리가 만난지 6일째 ♥
-여름방학까지 95일 더 학교에 오기</div>
+    <div class="header-left" id="sheetData">
+      불러오는 중...
     </div>
+    <div class="header-right" id="dateText"></div>
 
-    <div class="top-right">
-      <div class="date-text" id="dateText">2026년 3월 8일 일요일</div>
+    <section class="glass-card notice-section">
+      <textarea id="noticeInput" class="notice-input" placeholder="안내사항을 입력하세요..."></textarea>
+    </section>
+
+    <div class="main-right">
+      <div class="time-wrap">
+        <div class="status-line" id="statusLine"></div>
+        <div class="countdown" id="countdownText"></div>
+      </div>
+      <section class="glass-card meal-card">
+        <div class="meal-title">급식</div>
+        <div id="mealList" class="meal-list">식단 정보를 가져오는 중...</div>
+      </section>
     </div>
-
-    <section class="glass-card notice-card">
-      <textarea id="noticeInput" class="notice-input" placeholder="안내사항"></textarea>
-    </section>
-
-    <section class="status-wrap">
-      <div class="status-line" id="statusLine">1<span class="accent">교시</span> 9시 40분</div>
-      <div class="countdown" id="countdownText"><span class="accent">쉬는시간</span>까지 <span class="accent">10분</span> 남았습니다.</div>
-    </section>
-
-    <section class="glass-card meal-card">
-      <div class="meal-text" id="mealText">급식</div>
-    </section>
   </div>
 
   <script>
+    // 1. 구글 스프레드시트 설정 (CSV 출력 URL)
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh0ND1N2lqnfgek8TE1vO0gztHKWsfcLif7tilCzh_Ibkau0i33CcKrfQGCu7n2rrRQDqYoCvsEIk/pub?gid=1958992156&single=true&output=csv";
-    const STORAGE_KEY = "happy_class_notice_v1";
 
-    const PERIODS = [
-      { name: "아침활동", start: "08:30", end: "08:59", nextLabel: "1교시" },
-      { name: "1교시", start: "09:00", end: "09:39", nextLabel: "쉬는시간" },
-      { name: "쉬는시간", start: "09:40", end: "09:49", nextLabel: "2교시" },
-      { name: "2교시", start: "09:50", end: "10:29", nextLabel: "쉬는시간" },
-      { name: "쉬는시간", start: "10:30", end: "10:39", nextLabel: "3교시" },
-      { name: "3교시", start: "10:40", end: "11:19", nextLabel: "점심시간" },
-      { name: "점심시간", start: "11:20", end: "12:19", nextLabel: "4교시" },
-      { name: "4교시", start: "12:20", end: "12:59", nextLabel: "쉬는시간" },
-      { name: "쉬는시간", start: "13:00", end: "13:09", nextLabel: "5교시" },
-      { name: "5교시", start: "13:10", end: "13:49", nextLabel: "하교" }
-    ];
+    // 2. 나이스 급식 API 설정
+    const ATPT_OFCDC_SC_CODE = "B10"; // 시도교육청코드
+    const SD_SCHUL_CODE = "7010537";   // 학교코드
 
-    function toMinutes(hhmm) {
-      const [h, m] = hhmm.split(":").map(Number);
-      return h * 60 + m;
-    }
-
-    function formatDisplayHour(hour) {
-      return hour;
-    }
-
-    function getCurrentPeriod(now) {
-      const current = now.getHours() * 60 + now.getMinutes();
-      return PERIODS.find(p => current >= toMinutes(p.start) && current <= toMinutes(p.end)) || null;
-    }
-
-    function getRemainingMinutes(now, period) {
-      if (!period) return 0;
-      return Math.max(0, toMinutes(period.end) - (now.getHours() * 60 + now.getMinutes()) + 1);
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const period = getCurrentPeriod(now);
-      const hour = formatDisplayHour(now.getHours());
-      const minute = String(now.getMinutes()).padStart(2, "0");
-      const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-
-      document.getElementById("dateText").textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-
-      if (period) {
-        const labelColor = period.name.includes("교시") ? `<span class="accent">${period.name}</span>` : `${period.name}`;
-        document.getElementById("statusLine").innerHTML = `${labelColor} ${hour}시 ${minute}분`;
-
-        const remain = getRemainingMinutes(now, period);
-        document.getElementById("countdownText").innerHTML = `<span class="accent">${period.nextLabel}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
-      } else {
-        document.getElementById("statusLine").textContent = `${hour}시 ${minute}분`;
-        document.getElementById("countdownText").textContent = "";
-      }
-    }
-
-    async function fetchSheetData() {
+    // 스프레드시트 데이터 업데이트
+    async function updateSheetData() {
       try {
         const response = await fetch(SHEET_CSV_URL);
         const text = await response.text();
-        return text.trim().split("\n").map(row => row.split(",").map(cell => cell.replace(/^"|"$/g, "").trim()));
-      } catch (error) {
-        console.error(error);
-        return [];
+        const rows = text.split('\n').map(row => row.split(','));
+        // 시트의 A1(0,0), A2(1,0) 데이터를 가져옴
+        const line1 = rows[0][0].replace(/"/g, "");
+        const line2 = rows[1][0].replace(/"/g, "");
+        document.getElementById("sheetData").innerHTML = `${line1}<br>${line2}`;
+      } catch (e) {
+        console.error("시트 데이터를 가져오지 못했습니다.", e);
       }
     }
 
-    async function updateSheetData() {
-      const rows = await fetchSheetData();
-      if (rows.length < 2) return;
+    // 나이스 급식 업데이트
+    async function updateMeal() {
+      const today = new Date();
+      const yyyymmdd = today.toISOString().slice(0, 10).replace(/-/g, "");
+      const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${ATPT_OFCDC_SC_CODE}&SD_SCHUL_CODE=${SD_SCHUL_CODE}&MLSV_YMD=${yyyymmdd}`;
 
-      const header = rows[0];
-      const values = rows[1];
-      const data = {};
-      header.forEach((key, i) => data[key] = values[i] || "");
-
-      const meet = data["우리가 만난지"] || "우리가 만난지 6일째 ♥";
-      const school = data["여름방학까지"] || "여름방학까지 95일 더 학교에 오기";
-      document.getElementById("ddayText").textContent = `${meet}\n${school}`;
-
-      const meal = data["급식"] || "급식";
-      document.getElementById("mealText").textContent = meal;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.mealServiceDietInfo) {
+          let meal = data.mealServiceDietInfo[1].row[0].DDISH_NM;
+          meal = meal.replace(/\([0-9.]+\)/g, "").replace(/<br\/>/g, "\n");
+          document.getElementById("mealList").innerText = meal;
+        } else {
+          document.getElementById("mealList").innerText = "오늘은 급식이 없습니다. 🍱";
+        }
+      } catch (e) {
+        document.getElementById("mealList").innerText = "급식 정보를 가져올 수 없습니다.";
+      }
     }
 
-    function loadNotice() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) document.getElementById("noticeInput").value = saved;
-    }
+    // 시간 및 교시 업데이트 로직
+    const PERIODS = [
+      { name: "아침활동", start: "08:30", end: "08:59", next: "1교시" },
+      { name: "1교시", start: "09:00", end: "09:40", next: "쉬는시간" },
+      { name: "쉬는시간", start: "09:41", end: "09:50", next: "2교시" },
+      { name: "2교시", start: "09:51", end: "10:30", next: "쉬는시간" },
+      { name: "쉬는시간", start: "10:31", end: "10:40", next: "3교시" },
+      { name: "3교시", start: "10:41", end: "11:20", next: "점심시간" },
+      { name: "점심시간", start: "11:21", end: "12:20", next: "4교시" },
+      { name: "4교시", start: "12:21", end: "13:00", next: "하교" }
+    ];
 
-    function bindNotice() {
-      const input = document.getElementById("noticeInput");
-      input.addEventListener("input", () => {
-        localStorage.setItem(STORAGE_KEY, input.value);
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const currentTime = h * 60 + m;
+
+      const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+      document.getElementById("dateText").textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
+
+      const period = PERIODS.find(p => {
+        const [sh, sm] = p.start.split(":").map(Number);
+        const [eh, em] = p.end.split(":").map(Number);
+        return currentTime >= (sh * 60 + sm) && currentTime <= (eh * 60 + em);
       });
+
+      if (period) {
+        const [eh, em] = period.end.split(":").map(Number);
+        const remain = (eh * 60 + em) - currentTime;
+        const nameDisplay = period.name.includes("교시") ? `${period.name[0]}<span class="accent">교시</span>` : period.name;
+        document.getElementById("statusLine").innerHTML = `${nameDisplay} ${h}시 ${m}분`;
+        document.getElementById("countdownText").innerHTML = `${period.next}까지 <span class="accent">${remain}분</span> 남았습니다.`;
+      } else {
+        document.getElementById("statusLine").innerHTML = `${h}시 ${m}분`;
+        document.getElementById("countdownText").innerHTML = "즐거운 일과 시간입니다.";
+      }
     }
 
-    loadNotice();
-    bindNotice();
+    // 안내사항 로컬 저장
+    const input = document.getElementById("noticeInput");
+    input.value = localStorage.getItem("class_notice_v2") || "";
+    input.addEventListener("input", () => localStorage.setItem("class_notice_v2", input.value));
+
+    // 초기 실행 및 인터벌 설정
     updateClock();
+    updateMeal();
     updateSheetData();
-    setInterval(updateClock, 1000);
-    setInterval(updateSheetData, 60000);
+    setInterval(updateClock, 1000 * 60); // 1분마다 시간 갱신
+    setInterval(updateSheetData, 1000 * 60 * 10); // 10분마다 시트 데이터 갱신
   </script>
 </body>
 </html>
