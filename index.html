@@ -12,34 +12,28 @@
     * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
     body { padding: 40px 50px; }
-    
     .page { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 30px; height: 100%; }
     .header-left { grid-column: 1; font-size: 32px; font-weight: 800; line-height: 1.4; }
     .header-right { grid-column: 2; text-align: right; font-size: 42px; font-weight: 800; }
-    
     .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 30px; }
     
-    /* 안내사항 영역 */
     .notice-section { grid-row: 2; display: flex; flex-direction: column; overflow: hidden; position: relative; }
     .tab-container { display: flex; background: rgba(0,0,0,0.2); padding: 10px; gap: 5px; border-bottom: 1px solid var(--glass-border); }
     .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: rgba(255,255,255,0.5); font-weight: 700; cursor: pointer; border-radius: 12px; font-size: 20px; transition: 0.3s; }
     .tab-btn.active { background: var(--white); color: #0a2a63; }
     
-    /* 글자 크기 조절 버튼 */
     .font-control { position: absolute; top: 75px; right: 25px; display: flex; align-items: center; gap: 10px; z-index: 10; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 20px; }
     .size-btn { width: 35px; height: 35px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 
     .notice-content { flex-grow: 1; padding: 50px 40px 40px; }
     .notice-input { width: 100%; height: 100%; background: transparent; border: none; outline: none; color: white; font-weight: 700; resize: none; line-height: 1.6; font-size: 48px; }
 
-    /* 시간 표시 영역 */
     .main-right { grid-row: 2; display: flex; flex-direction: column; gap: 25px; }
     .time-wrap { text-align: right; padding: 20px 0; }
     .status-line { font-size: 95px; font-weight: 900; letter-spacing: -2px; white-space: nowrap; line-height: 1.1; }
     .status-line .accent { color: var(--yellow); margin-right: 20px; }
     .countdown { font-size: 34px; font-weight: 700; margin-top: 15px; opacity: 0.9; }
 
-    /* 급식 영역 */
     .meal-card { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
     .meal-title { font-size: 40px; font-weight: 900; margin-bottom: 20px; }
     .meal-list { font-size: 28px; font-weight: 700; line-height: 1.8; text-align: center; }
@@ -59,7 +53,6 @@
       </div>
       
       <div class="font-control">
-        <span style="font-size:14px; opacity:0.8;">글자 크기</span>
         <button class="size-btn" onclick="adjustFont(-4)">-</button>
         <span id="currentSize">48</span>
         <button class="size-btn" onclick="adjustFont(4)">+</button>
@@ -104,6 +97,7 @@
     ];
 
     let currentTab = "";
+    let isInitialLoad = true;
     let fontSize = parseInt(localStorage.getItem('dashFontSize') || '48');
     let userEdits = JSON.parse(localStorage.getItem('userEdits') || '{}');
 
@@ -112,11 +106,12 @@
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-${type}`));
       
       const input = document.getElementById("noticeInput");
-      if (userEdits[type]) {
+      if (userEdits[type] !== undefined) {
         input.value = userEdits[type];
       } else {
         if (type === 'lunch') {
-          const day = new Date().getDay();
+          let day = new Date().getDay();
+          if (day === 0 || day === 6) day = 1; // 주말이면 월요일(1) 기준
           input.value = "★ " + (LUNCH_DAY[day] || "자유활동") + "\n• 책상 위 정리하기\n• 의자 넣고 손 씻기";
         } else {
           input.value = MEMO_DEFAULTS[type] || "";
@@ -145,25 +140,33 @@
       const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
       document.getElementById("dateText").textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
 
+      const displayH = h % 12 || 12;
+      const displayM = m < 10 ? '0' + m : m;
+      const displayTime = `${displayH}시 ${displayM}분`;
+
       const period = PERIODS.find(p => {
         const [sh, sm] = p.start.split(":").map(Number);
         const [eh, em] = p.end.split(":").map(Number);
         return total >= (sh * 60 + sm) && total <= (eh * 60 + em);
       });
 
-      const displayH = h % 12 || 12;
-      const displayM = m < 10 ? '0' + m : m;
+      const statusLineEl = document.getElementById("statusLine");
+      const countdownEl = document.getElementById("countdownText");
 
-      if (period) {
+      if (total >= 830) { // 1시 50분 이후: 시간만 표시
+        statusLineEl.innerHTML = displayTime;
+        countdownEl.innerHTML = "";
+        if (isInitialLoad) { selectTab("morning"); isInitialLoad = false; }
+      } else if (period) { // 일과 중: 교시와 시간 합쳐서 표시
+        statusLineEl.innerHTML = `<span class="accent">${period.name}</span> ${displayTime}`;
         const [eh, em] = period.end.split(":").map(Number);
         const remain = (eh * 60 + em) - total;
-        document.getElementById("statusLine").innerHTML = `<span class="accent">${period.name}</span>${displayH}시 ${displayM}분`;
-        document.getElementById("countdownText").innerHTML = `종료까지 <span style="color:var(--yellow)">${remain}분</span> 남았습니다.`;
-        if (total < 830 && currentTab !== period.type) selectTab(period.type);
-      } else {
-        document.getElementById("statusLine").innerHTML = `${displayH}시 ${displayM}분`;
-        document.getElementById("countdownText").innerHTML = "즐거운 일과 시간입니다.";
-        if (total >= 830 && currentTab !== "morning") selectTab("morning");
+        countdownEl.innerHTML = `종료까지 <span style="color:var(--yellow)">${remain}분</span> 남았습니다.`;
+        if (isInitialLoad) { selectTab(period.type); isInitialLoad = false; }
+      } else { // 그 외
+        statusLineEl.innerHTML = displayTime;
+        countdownEl.innerHTML = "즐거운 일과 시간입니다.";
+        if (isInitialLoad) { selectTab("morning"); isInitialLoad = false; }
       }
     }
 
@@ -178,19 +181,13 @@
     }
 
     async function fetchMeal() {
-        const mealEl = document.getElementById("mealList");
         if ([0, 6].includes(new Date().getDay())) {
-            mealEl.innerText = "오늘은 급식이 없습니다. 🍱";
+            document.getElementById("mealList").innerText = "오늘은 급식이 없습니다. 🍱";
             return;
         }
-        // 나이스 API 연동 로직...
     }
 
-    // 초기화
-    adjustFont(0);
-    updateTime();
-    fetchSheet();
-    fetchMeal();
+    adjustFont(0); updateTime(); fetchSheet(); fetchMeal();
     setInterval(updateTime, 1000);
     setInterval(fetchSheet, 60000);
   </script>
