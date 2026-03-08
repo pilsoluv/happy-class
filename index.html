@@ -43,23 +43,23 @@
     <div class="header-right" id="dateText"></div>
 
     <section class="glass-card notice-section">
-      <div class="tab-container">
-        <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-        <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-        <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-        <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
-      </div>
-      
-      <div class="font-control">
-        <button class="size-btn" onclick="adjustFont(-4)">-</button>
-        <span id="currentSize">48</span>
-        <button class="size-btn" onclick="adjustFont(4)">+</button>
-      </div>
+  <div class="tab-container">
+    <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
+    <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
+    <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
+    <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
+    
+    <div class="font-control">
+      <button class="size-btn" onclick="adjustFont(-4)">-</button>
+      <span id="currentSize">48</span>
+      <button class="size-btn" onclick="adjustFont(4)">+</button>
+    </div>
+  </div>
 
-      <div class="notice-content">
-        <textarea id="noticeInput" class="notice-input" placeholder="내용을 입력하세요..."></textarea>
-      </div>
-    </section>
+  <div class="notice-content">
+    <textarea id="noticeInput" class="notice-input" placeholder="내용을 입력하세요..."></textarea>
+  </div>
+</section>
 
     <div class="main-right">
       <div class="time-wrap">
