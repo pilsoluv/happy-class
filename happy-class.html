@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교실 대시보드</title>
+  <style>
+    :root {
+      --bg: #dfe5ff;
+      --panel: rgba(255, 255, 255, 0.38);
+      --panel-strong: rgba(255, 255, 255, 0.52);
+      --panel-border: rgba(255, 255, 255, 0.34);
+      --text: #1f2a44;
+      --muted: #6a748c;
+      --accent: #6670f6;
+      --accent-shadow: rgba(102, 112, 246, 0.28);
+      --danger: #ff3b30;
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --shadow: 0 10px 30px rgba(55, 72, 126, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(223, 229, 255, 0.78), rgba(223, 229, 255, 0.78)),
+        url("4_(1).jpg") center center / cover no-repeat fixed;
+    }
+
+    body {
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      min-width: 150px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      color: var(--accent);
+      text-shadow: 0 8px 18px rgba(102, 112, 246, 0.16);
+    }
+
+    .brand-sub {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: rgba(31, 42, 68, 0.68);
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 8px;
+      padding: 6px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      justify-self: start;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      height: 40px;
+      min-width: 76px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 8px 18px var(--accent-shadow);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .glass-pill,
+    .icon-btn {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .glass-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px;
+      border-radius: 22px;
+    }
+
+    .icon-btn, .ctrl-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      border: 0;
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ctrl-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .ctrl-btn.active {
+      color: var(--accent);
+    }
+
+    .panel {
+      min-height: 0;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: var(--shadow);
+      border-radius: 32px;
+      padding: 18px;
+    }
+
+    .screen {
+      display: none;
+      height: 100%;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .rules-wrap {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .rule-list {
+      display: grid;
+      gap: 18px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .rule-card {
+      display: grid;
+      grid-template-columns: 86px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 22px 24px;
+      background: rgba(255,255,255,0.32);
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,0.26);
+    }
+
+    .rule-no {
+      font-size: 54px;
+      font-weight: 900;
+      color: rgba(31,42,68,0.14);
+      letter-spacing: -0.05em;
+      text-align: center;
+    }
+
+    .rule-main {
+      min-width: 0;
+    }
+
+    .editable-title,
+    .editable-desc,
+    .editable-text,
+    .date-title,
+    .notice-input {
+      outline: none;
+    }
+
+    .editable-title {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .editable-desc {
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .delete-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 0;
+      background: rgba(255,255,255,0.28);
+      color: rgba(255, 116, 116, 0.8);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .add-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 70px;
+      border-radius: 24px;
+      border: 2px dashed rgba(255,255,255,0.34);
+      background: rgba(255,255,255,0.12);
+      color: #95a0ba;
+      font-size: 28px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .notice-wrap {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .notice-head {
+      display: grid;
+      grid-template-columns: 60px 1fr 60px;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px;
+    }
+
+    .nav-btn {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--text);
+      font-size: 36px;
+      cursor: pointer;
+    }
+
+    .date-title {
+      text-align: center;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .notice-box {
+      background: rgba(255,255,255,0.2);
+      border-radius: 26px;
+      padding: 26px 30px;
+      min-height: 0;
+      display: flex;
+    }
+
+    .notice-input {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      resize: none;
+      font-family: inherit;
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: rgba(31,42,68,0.42);
+    }
+
+    .notice-input::placeholder {
+      color: rgba(31,42,68,0.34);
+    }
+
+    .board-wrap {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: 116px 116px 1fr;
+      gap: 18px;
+      height: 100%;
+    }
+
+    .board-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: rgba(255,255,255,0.26);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.26);
+      padding: 18px 24px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .dday-card {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.15;
+      white-space: pre-line;
+    }
+
+    .simple-card {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+
+    .notice-board {
+      grid-row: 2 / 4;
+      display: flex;
+      padding: 26px 30px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .notice-board-text {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      resize: none;
+      font-family: inherit;
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: white;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .notice-board-text::placeholder {
+      color: rgba(255,255,255,0.82);
+    }
+
+    .status-board {
+      font-size: 54px;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      letter-spacing: -0.04em;
+      white-space: pre-line;
+    }
+
+    .countdown {
+      position: absolute;
+      right: 80px;
+      top: 256px;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--danger);
+      text-shadow: 0 2px 8px rgba(255,255,255,0.2);
+    }
+
+    .meal-board {
+      font-size: 64px;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      white-space: pre-line;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title" id="brandTitle">우리 반 약속</div>
+        <div class="brand-sub" id="brandSub">CLASS RULES</div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="rules">약속</button>
+        <button class="tab-btn" data-tab="notebook">알림장</button>
+        <button class="tab-btn" data-tab="notice">공지</button>
+        <button class="tab-btn" data-tab="meal">급식</button>
+        <button class="tab-btn" data-tab="album">앨범</button>
+      </nav>
+
+      <div class="actions">
+        <div class="glass-pill">
+          <button class="ctrl-btn" id="prevAuto">|◁</button>
+          <button class="ctrl-btn active" id="playAuto">▷</button>
+          <button class="ctrl-btn" id="nextAuto">▷|</button>
+          <button class="ctrl-btn" id="toggleShuffle">⇄</button>
+        </div>
+        <button class="icon-btn" id="fullscreenBtn">⚙</button>
+      </div>
+    </header>
+
+    <main class="panel">
+      <section class="screen active" id="screen-rules">
+        <div class="rules-wrap">
+          <div class="rule-list" id="rulesList"></div>
+          <button class="add-card" id="addRuleBtn">+ 추가하기</button>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-notebook">
+        <div class="notice-wrap">
+          <div class="notice-head">
+            <button class="nav-btn" id="prevNotebook">‹</button>
+            <div class="date-title" id="notebookDate"></div>
+            <button class="nav-btn" id="nextNotebook">›</button>
+          </div>
+          <div class="notice-box">
+            <textarea class="notice-input" id="notebookInput" placeholder="알림장 내용을 입력하세요"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-notice">
+        <div class="notice-wrap">
+          <div class="notice-head">
+            <button class="nav-btn" id="prevNotice">‹</button>
+            <div class="date-title" id="noticeDate"></div>
+            <button class="nav-btn" id="nextNotice">›</button>
+          </div>
+          <div class="notice-box">
+            <textarea class="notice-input" id="noticeInput" placeholder="공지사항을 입력하세요"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-meal">
+        <div class="notice-wrap">
+          <div class="notice-head">
+            <div></div>
+            <div class="date-title" id="mealDate"></div>
+            <div></div>
+          </div>
+          <div class="notice-box">
+            <textarea class="notice-input" id="mealInput" placeholder="급식 내용을 입력하세요"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-album">
+        <div class="notice-wrap">
+          <div class="notice-head">
+            <div></div>
+            <div class="date-title">앨범 메모</div>
+            <div></div>
+          </div>
+          <div class="notice-box">
+            <textarea class="notice-input" id="albumInput" placeholder="앨범용 메모를 입력하세요"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-board">
+        <div class="countdown" id="countdownText">다음 시간까지 0분 남았습니다.</div>
+        <div class="board-wrap">
+          <div class="board-card dday-card" id="ddayCard"></div>
+          <div class="board-card simple-card" id="dateCard"></div>
+          <div class="board-card notice-board">
+            <textarea class="notice-board-text" id="boardNoticeInput" placeholder="안내사항"></textarea>
+          </div>
+          <div class="board-card status-board" id="statusBoard"></div>
+          <div class="board-card meal-board" id="mealBoard"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const DEFAULTS = {
+      rules: [
+        { title: "서로 존중하기", desc: "친구의 말에 귀 기울이고, 다름을 인정해요" },
+        { title: "수업에 집중하기", desc: "경청하고 적극적으로 참여해요" }
+      ],
+      notebookByDate: {},
+      noticeByDate: {},
+      mealByDate: {},
+      albumMemo: "",
+      boardNotice: "안내사항\n(기본 사항이 자동으로 오게\n그러나 내가 수정 가능해야함.)\n\na안: 자동으로 뜨기\nb안: 쉬는시간, 수업시간, 점심시간,\n아침시간 탭이 있고 자동으로 뜨긴\n뜨는데 내가 누를수도 있음",
+      ddayTitle: "우리가 만난지   일째\n여름방학 d-",
+      periods: [
+        { name: "아침활동", start: "08:30", end: "08:59", type: "morning" },
+        { name: "1교시", start: "09:00", end: "09:39", type: "class" },
+        { name: "쉬는시간", start: "09:40", end: "09:49", type: "break" },
+        { name: "2교시", start: "09:50", end: "10:29", type: "class" },
+        { name: "쉬는시간", start: "10:30", end: "10:39", type: "break" },
+        { name: "3교시", start: "10:40", end: "11:19", type: "class" },
+        { name: "점심시간", start: "11:20", end: "12:19", type: "lunch" },
+        { name: "4교시", start: "12:20", end: "12:59", type: "class" },
+        { name: "쉬는시간", start: "13:00", end: "13:09", type: "break" },
+        { name: "5교시", start: "13:10", end: "13:49", type: "class" }
+      ],
+      autoTabs: ["board", "rules", "notebook", "notice", "meal"],
+      autoSeconds: 10
+    };
+
+    const TITLES = {
+      rules: ["우리 반 약속", "CLASS RULES"],
+      notebook: ["알림장", "NOTICE BOARD"],
+      notice: ["공지", "NOTICE"],
+      meal: ["급식", "MEAL"],
+      album: ["앨범", "ALBUM"],
+      board: ["우리 반 보드", "CLASS BOARD"]
+    };
+
+    const STORAGE_KEY = "class_dashboard_v1";
+    const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+
+    function clone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function getTodayKey(offset = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatKoreanDate(key) {
+      const [y, m, d] = key.split("-").map(Number);
+      const date = new Date(y, m - 1, d);
+      return `${y}.${String(m).padStart(2, "0")}.${String(d).padStart(2, "0")} (${DAYS[date.getDay()]})`;
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return clone(DEFAULTS);
+      try {
+        return { ...clone(DEFAULTS), ...JSON.parse(raw) };
+      } catch {
+        return clone(DEFAULTS);
+      }
+    }
+
+    let state = loadState();
+    let currentTab = "rules";
+    let notebookOffset = 0;
+    let noticeOffset = 0;
+    let autoPlay = true;
+    let autoIndex = 0;
+    let shuffleMode = false;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function setBrand(tab) {
+      const [title, sub] = TITLES[tab] || TITLES.rules;
+      document.getElementById("brandTitle").textContent = title;
+      document.getElementById("brandSub").textContent = sub;
+    }
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tab);
+      });
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+      const target = document.getElementById(`screen-${tab}`) || document.getElementById("screen-board");
+      target.classList.add("active");
+      setBrand(tab);
+    }
+
+    function renderRules() {
+      const list = document.getElementById("rulesList");
+      list.innerHTML = "";
+      state.rules.forEach((rule, index) => {
+        const card = document.createElement("div");
+        card.className = "rule-card";
+        card.innerHTML = `
+          <div class="rule-no">${String(index + 1).padStart(2, "0")}</div>
+          <div class="rule-main">
+            <div class="editable-title" contenteditable="true" data-type="rule-title" data-index="${index}">${rule.title}</div>
+            <div class="editable-desc" contenteditable="true" data-type="rule-desc" data-index="${index}">${rule.desc}</div>
+          </div>
+          <button class="delete-btn" data-delete-rule="${index}">🗑</button>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function renderNotebook() {
+      const key = getTodayKey(notebookOffset);
+      document.getElementById("notebookDate").textContent = formatKoreanDate(key);
+      document.getElementById("notebookInput").value = state.notebookByDate[key] || "";
+    }
+
+    function renderNotice() {
+      const key = getTodayKey(noticeOffset);
+      document.getElementById("noticeDate").textContent = formatKoreanDate(key);
+      document.getElementById("noticeInput").value = state.noticeByDate[key] || "";
+    }
+
+    function renderMeal() {
+      const key = getTodayKey(0);
+      document.getElementById("mealDate").textContent = formatKoreanDate(key);
+      document.getElementById("mealInput").value = state.mealByDate[key] || "";
+    }
+
+    function findCurrentPeriod(now) {
+      const minutes = now.getHours() * 60 + now.getMinutes();
+      for (const p of state.periods) {
+        const [sh, sm] = p.start.split(":").map(Number);
+        const [eh, em] = p.end.split(":").map(Number);
+        const start = sh * 60 + sm;
+        const end = eh * 60 + em;
+        if (minutes >= start && minutes <= end) return p;
+      }
+      return null;
+    }
+
+    function getMinutesToNext(now) {
+      const minutes = now.getHours() * 60 + now.getMinutes();
+      for (const p of state.periods) {
+        const [sh, sm] = p.start.split(":").map(Number);
+        const start = sh * 60 + sm;
+        if (start > minutes) return start - minutes;
+      }
+      return 0;
+    }
+
+    function getDefaultBoardNotice(period, day) {
+      const morning = [
+        "핸드폰 전원 꺼서 가방에 넣기",
+        "우체통과 알림장 확인하기",
+        "자리 주변 정리하기",
+        "아침독서하기"
+      ];
+      const classMemo = [
+        "가방 문 닫기",
+        "연필 한 자루, 지우개 하나만 꺼내기",
+        "바른 자세로 앉기",
+        "경청하기"
+      ];
+      const breakMemo = [
+        "책상 정리하기",
+        "물 떠오기",
+        "화장실 가기",
+        "연필 깎기",
+        "다음 시간 교과서 꺼내기"
+      ];
+      const lunchMain = {
+        1: "교실놀이",
+        2: "바깥놀이",
+        3: "위클래스",
+        4: "바깥놀이",
+        5: "바깥놀이"
+      };
+
+      if (!period) return "";
+      if (period.type === "morning") return morning.map((v, i) => `${i + 1}. ${v}`).join("\n");
+      if (period.type === "break") return breakMemo.map((v, i) => `${i + 1}. ${v}`).join("\n");
+      if (period.type === "lunch") {
+        return [
+          `1. ${lunchMain[day] || "점심시간"}`,
+          "2. 책상 위 정리하기",
+          "3. 의자 넣기",
+          "4. 손 씻고 줄서기"
+        ].join("\n");
+      }
+      return classMemo.map((v, i) => `${i + 1}. ${v}`).join("\n");
+    }
+
+    function renderBoard() {
+      const now = new Date();
+      const todayKey = getTodayKey(0);
+      const period = findCurrentPeriod(now);
+      const displayHour = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
+      const minute = String(now.getMinutes()).padStart(2, "0");
+      const day = now.getDay();
+
+      document.getElementById("ddayCard").textContent = state.ddayTitle;
+      document.getElementById("dateCard").textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${DAYS[day]}요일`;
+      document.getElementById("statusBoard").textContent = period ? `${period.name}    ${displayHour}시 ${minute}분` : `${displayHour}시 ${minute}분`;
+      document.getElementById("statusBoard").style.color = (period && (period.type === "break" || (period.type === "lunch" && now.getHours() === 12 && now.getMinutes() <= 20))) ? "#ff3b30" : "white";
+      document.getElementById("countdownText").textContent = `다음 시간까지 ${getMinutesToNext(now)}분 남았습니다.`;
+      document.getElementById("mealBoard").textContent = state.mealByDate[todayKey] || "급식";
+
+      const boardInput = document.getElementById("boardNoticeInput");
+      if (document.activeElement !== boardInput) {
+        const saved = state.noticeByDate[`board-${todayKey}`];
+        boardInput.value = saved || getDefaultBoardNotice(period, day);
+      }
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab));
+      });
+
+      document.getElementById("addRuleBtn").addEventListener("click", () => {
+        state.rules.push({ title: "제목", desc: "내용" });
+        saveState();
+        renderRules();
+      });
+
+      document.addEventListener("input", (e) => {
+        const target = e.target;
+        if (target.dataset.type === "rule-title") {
+          state.rules[Number(target.dataset.index)].title = target.textContent.trim();
+          saveState();
+        }
+        if (target.dataset.type === "rule-desc") {
+          state.rules[Number(target.dataset.index)].desc = target.textContent.trim();
+          saveState();
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-delete-rule]");
+        if (!btn) return;
+        const index = Number(btn.dataset.deleteRule);
+        state.rules.splice(index, 1);
+        saveState();
+        renderRules();
+      });
+
+      document.getElementById("notebookInput").addEventListener("input", (e) => {
+        state.notebookByDate[getTodayKey(notebookOffset)] = e.target.value;
+        saveState();
+      });
+
+      document.getElementById("noticeInput").addEventListener("input", (e) => {
+        state.noticeByDate[getTodayKey(noticeOffset)] = e.target.value;
+        saveState();
+      });
+
+      document.getElementById("mealInput").addEventListener("input", (e) => {
+        state.mealByDate[getTodayKey(0)] = e.target.value;
+        saveState();
+        renderBoard();
+      });
+
+      document.getElementById("albumInput").addEventListener("input", (e) => {
+        state.albumMemo = e.target.value;
+        saveState();
+      });
+
+      document.getElementById("boardNoticeInput").addEventListener("input", (e) => {
+        state.noticeByDate[`board-${getTodayKey(0)}`] = e.target.value;
+        saveState();
+      });
+
+      document.getElementById("prevNotebook").addEventListener("click", () => {
+        notebookOffset -= 1;
+        renderNotebook();
+      });
+      document.getElementById("nextNotebook").addEventListener("click", () => {
+        notebookOffset += 1;
+        renderNotebook();
+      });
+      document.getElementById("prevNotice").addEventListener("click", () => {
+        noticeOffset -= 1;
+        renderNotice();
+      });
+      document.getElementById("nextNotice").addEventListener("click", () => {
+        noticeOffset += 1;
+        renderNotice();
+      });
+
+      document.getElementById("fullscreenBtn").addEventListener("click", () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      });
+
+      document.getElementById("playAuto").addEventListener("click", () => {
+        autoPlay = !autoPlay;
+        document.getElementById("playAuto").classList.toggle("active", autoPlay);
+      });
+
+      document.getElementById("toggleShuffle").addEventListener("click", () => {
+        shuffleMode = !shuffleMode;
+        document.getElementById("toggleShuffle").classList.toggle("active", shuffleMode);
+      });
+
+      document.getElementById("nextAuto").addEventListener("click", () => {
+        rotateAuto(1);
+      });
+      document.getElementById("prevAuto").addEventListener("click", () => {
+        rotateAuto(-1);
+      });
+    }
+
+    function rotateAuto(dir = 1) {
+      const arr = state.autoTabs;
+      if (shuffleMode) {
+        autoIndex = Math.floor(Math.random() * arr.length);
+      } else {
+        autoIndex = (autoIndex + dir + arr.length) % arr.length;
+      }
+      const nextTab = arr[autoIndex];
+      showTab(nextTab === "board" ? "board" : nextTab);
+    }
+
+    function startAuto() {
+      setInterval(() => {
+        renderBoard();
+        if (!autoPlay) return;
+        rotateAuto(1);
+      }, state.autoSeconds * 1000);
+    }
+
+    function renderAll() {
+      renderRules();
+      renderNotebook();
+      renderNotice();
+      renderMeal();
+      document.getElementById("albumInput").value = state.albumMemo || "";
+      renderBoard();
+    }
+
+    bindEvents();
+    renderAll();
+    showTab("rules");
+    setInterval(renderBoard, 1000);
+    startAuto();
+  </script>
+</body>
+</html>
