@@ -1,268 +1,151 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
+    <meta charset="UTF-8">
+    <title>우리반 대시보드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+    <style>
+        :root { --yellow: #ffca1b; --white: #ffffff; }
+        * { box-sizing: border-box; font-family: "Pretendard", sans-serif; margin: 0; padding: 0; }
+        body { 
+            background: #0a2a63 url('wallpaper.jpg') no-repeat center center/cover; 
+            height: 100vh; padding: 40px 60px; color: var(--white); overflow: hidden;
+            display: flex; flex-direction: column;
+        }
 
-  <meta charset="UTF-8" />
+        /* 헤더: 시트정보 & 날짜/시간 */
+        header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        .sheet-info { font-size: 32px; font-weight: 700; line-height: 1.4; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .date-time-zone { text-align: right; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .today-date { font-size: 40px; font-weight: 800; margin-bottom: 5px; }
+        .status-line { font-size: 100px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+        .status-line .period { color: var(--yellow); margin-right: 20px; }
+        .countdown-msg { font-size: 40px; font-weight: 800; margin-top: 10px; }
+        .countdown-msg span { color: var(--yellow); }
 
-  <title>교실 대시보드</title>
+        /* 메인 레이아웃 */
+        main { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; flex: 1; min-height: 0; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); border-radius: 30px; color: #1a1a1a; overflow: hidden; display: flex; flex-direction: column; }
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+        /* 탭 스타일 */
+        .tab-menu { display: flex; background: #f1f3f5; padding: 10px; gap: 10px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-size: 22px; font-weight: 800; color: #adb5bd; cursor: pointer; border-radius: 15px; }
+        .tab-btn.active { background: #0a2a63; color: white; }
+        .tab-content { flex: 1; padding: 40px; font-size: 42px; font-weight: 800; line-height: 1.6; }
+        .tab-content textarea { width: 100%; height: 100%; border: none; outline: none; resize: none; font-size: inherit; font-weight: inherit; }
 
-  <style>
-
-    :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --bg-card: rgba(255, 255, 255, 1); }
-
-    * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
-
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
-
-    body { padding: 40px 60px; }
-
-    .page { display: grid; grid-template-columns: 1.1fr 0.9fr; grid-template-rows: auto 1fr; gap: 40px; height: 100%; }
-
-    .header-left { grid-column: 1; font-size: 42px; font-weight: 800; line-height: 1.3; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-
-    .header-right { grid-column: 2; text-align: right; font-size: 56px; font-weight: 900; margin-bottom: -30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-
-    .glass-card { background: var(--bg-card); border-radius: 30px; color: var(--black); box-shadow: 0 15px 50px rgba(0,0,0,0.4); overflow: hidden; border: none; }
-
-    .notice-section { grid-row: 2; display: flex; flex-direction: column; position: relative; }
-
-    .tab-container { display: flex; background: #f8f9fa; padding: 12px; gap: 8px; border-bottom: 2px solid #eee; align-items: center; }
-
-    .tab-btn { flex: 1; padding: 16px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 15px; font-size: 24px; transition: 0.2s; }
-
-    .tab-btn.active { background: #0a2a63; color: var(--white); }
-
-    .font-control { display: flex; align-items: center; gap: 10px; background: #e9ecef; padding: 6px 18px; border-radius: 25px; margin-left: auto; }
-
-    .size-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ced4da; background: white; color: #495057; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; }
-
-    .notice-content { flex-grow: 1; padding: 50px; }
-
-    .notice-input { width: 100%; height: 100%; background: transparent; border: none; outline: none; color: var(--black); font-weight: 800; resize: none; line-height: 1.6; font-size: 48px; }
-
-    .main-right { grid-row: 2; display: flex; flex-direction: column; gap: 30px; }
-
-    .time-wrap { text-align: right; padding: 0; margin-top: -40px; }
-
-    .status-line { font-size: 115px; font-weight: 950; letter-spacing: -3px; white-space: nowrap; line-height: 1.0; text-shadow: 3px 3px 8px rgba(0,0,0,0.5); }
-
-.status-line .accent { color: #ffca1b; margin-right: 20px; }
-
-.countdown { font-size: 42px; font-weight: 800; margin-top: 5px; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
-
-    .meal-card { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-
-    .meal-title { font-size: 52px; font-weight: 900; margin-bottom: 30px; color: #0a2a63; border-bottom: 5px solid var(--yellow); padding-bottom: 5px; }
-
-    .meal-list { font-size: 34px; font-weight: 800; line-height: 1.8; text-align: center; color: #333; }
-
-  </style>
-
+        /* 급식 박스 */
+        .meal-box { padding: 40px; text-align: center; justify-content: center; }
+        .meal-title { font-size: 50px; font-weight: 900; color: #0a2a63; margin-bottom: 20px; border-bottom: 6px solid var(--yellow); display: inline-block; }
+        .meal-list { font-size: 38px; font-weight: 800; color: #333; line-height: 1.8; }
+    </style>
 </head>
-
 <body>
 
-  <div class="page">
-
-    <div class="header-left" id="sheetData">데이터 로딩 중...</div>
-
-    <div class="header-right" id="dateText"></div>
-
-    <section class="glass-card notice-section">
-
-      <div class="tab-container">
-
-        <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-
-        <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-
-        <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-
-        <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
-
-        <div class="font-control">
-
-          <button class="size-btn" onclick="adjustFont(-4)">-</button>
-
-          <span id="currentSize" style="color:#495057; font-weight:800; margin:0 5px;">48</span>
-
-          <button class="size-btn" onclick="adjustFont(4)">+</button>
-
+    <header>
+        <div class="sheet-info" id="sheetInfo">
+            <p>데이터 로딩 중...</p>
         </div>
+        <div class="date-time-zone">
+            <div class="today-date" id="todayDate"></div>
+            <div class="status-line" id="statusLine">
+                <span class="period" id="period">교시</span><span id="currentTime">0시 00분</span>
+            </div>
+            <div class="countdown-msg" id="countdownText"></div>
+        </div>
+    </header>
 
-      </div>
+    <main>
+        <section class="glass-card">
+            <div class="tab-menu">
+                <button class="tab-btn" id="tab-morning" onclick="selectTab('morning')">아침활동</button>
+                <button class="tab-btn" id="tab-class" onclick="selectTab('class')">수업시간</button>
+                <button class="tab-btn" id="tab-break" onclick="selectTab('break')">쉬는시간</button>
+                <button class="tab-btn" id="tab-lunch" onclick="selectTab('lunch')">점심시간</button>
+            </div>
+            <div class="tab-content">
+                <textarea id="noticeInput" placeholder="공지사항을 입력하세요."></textarea>
+            </div>
+        </section>
 
-      <div class="notice-content"><textarea id="noticeInput" class="notice-input"></textarea></div>
+        <section class="glass-card meal-box">
+            <div class="meal-title">오늘의 급식 🍱</div>
+            <div id="mealList" class="meal-list">식단 정보를 가져오는 중...</div>
+        </section>
+    </main>
 
-    </section>
-
-    <div class="main-right">
-
-      <div class="time-wrap">
-
-        <div class="status-line" id="statusLine"></div>
-
-        <div id="countdownText" class="countdown"></div>
-
-      </div>
-
-      <section class="glass-card meal-card">
-
-        <div class="meal-title">오늘의 급식 🍱</div>
-
-        <div id="mealList" class="meal-list">식단 정보를 가져오는 중...</div>
-
-      </section>
-
-    </div>
-
-  </div>
-
-  <script>
-
-    /* 이전 스크립트 로직 유지 */
-
-    const MEMO_DEFAULTS = { morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기", class: "• 가방 문 닫기\n• 연필 한 자루, 지우개 하나\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기", break: "• 책상 정리하기\n• 물 떠오기 / 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기", lunch: "" };
-
-    const LUNCH_DAY = { 1: "교실놀이", 2: "바깥놀이", 3: "위클래스", 4: "바깥놀이", 5: "바깥놀이" };
-
-    const PERIODS = [
-
-      { name: "아침활동", start: "08:30", end: "08:59", type: "morning" },
-
-      { name: "1교시", start: "09:00", end: "09:39", type: "class" },
-
-      { name: "쉬는시간", start: "09:40", end: "09:49", type: "break" },
-
-      { name: "2교시", start: "09:50", end: "10:29", type: "class" },
-
-      { name: "쉬는시간", start: "10:30", end: "10:39", type: "break" },
-
-      { name: "3교시", start: "10:40", end: "11:19", type: "class" },
-
-      { name: "점심시간", start: "11:20", end: "12:19", type: "lunch" },
-
-      { name: "4교시", start: "12:20", end: "12:59", type: "class" },
-
-      { name: "5교시", start: "13:10", end: "13:49", type: "class" }
-
-    ];
-
-    let currentTab = ""; let isInitialLoad = true;
-
-    let fontSize = parseInt(localStorage.getItem('dashFontSize') || '48');
-
-    let userEdits = JSON.parse(localStorage.getItem('userEdits') || '{}');
-
-    function selectTab(type) {
-
-      currentTab = type; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.id === `btn-${type}`));
-
-      const input = document.getElementById("noticeInput");
-
-      if (userEdits[type] !== undefined) { input.value = userEdits[type]; }
-
-      else { if (type === 'lunch') { let day = new Date().getDay(); if (day === 0 || day === 6) day = 1; input.value = "★ " + (LUNCH_DAY[day] || "자유활동") + "\n• 책상 위 정리하기\n• 의자 넣고 손 씻기"; } else { input.value = MEMO_DEFAULTS[type] || ""; } }
-
-    }
-
-    function adjustFont(delta) { fontSize += delta; document.getElementById("noticeInput").style.fontSize = fontSize + "px"; document.getElementById("currentSize").innerText = fontSize; localStorage.setItem('dashFontSize', fontSize); }
-
-    document.getElementById("noticeInput").addEventListener("input", (e) => { userEdits[currentTab] = e.target.value; localStorage.setItem('userEdits', JSON.stringify(userEdits)); });
-
-    function updateTime() {
-
-      const now = new Date(); const h = now.getHours(); const m = now.getMinutes(); const total = h * 60 + m;
-
-      const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-
-      document.getElementById("dateText").textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-
-      const displayH = h % 12 || 12; const displayM = m < 10 ? '0' + m : m; const displayTime = `${displayH}시 ${displayM}분`;
-
-function updateTime() {
-    const now = new Date();
-    const h = now.getHours();
-    const m = now.getMinutes();
-    const total = h * 60 + m; // 현재 시각을 분으로 환산
-
-    // 1. 상단 현재 시간 표시 (교시 이름 + 시간)
-    const displayH = h % 12 || 12;
-    const displayM = m < 10 ? '0' + m : m;
-    
-    // 교시 판별용
-    let periodName = "";
-    if (total < 520) periodName = "등교시간";
-    else if (total < 540) periodName = "아침활동";
-    else if (total < 580) periodName = "1교시";
-    else if (total < 590) periodName = "쉬는시간";
-    else if (total < 630) periodName = "2교시";
-    else if (total < 640) periodName = "쉬는시간";
-    else if (total < 680) periodName = "3교시";
-    else if (total < 740) periodName = "점심시간";
-    else if (total < 780) periodName = "4교시";
-    else if (total < 790) periodName = "쉬는시간";
-    else if (total < 830) periodName = "5교시";
-    else periodName = "일과종료";
-
-    // 상단 라인: [교시(노랑)] [시간(흰색)]
-    document.getElementById("statusLine").innerHTML = `<span style="color:#ffca1b; margin-right:20px;">${periodName}</span> ${displayH}시 ${displayM}분`;
-
-    // 2. 하단 남은 시간 표시
-    let countdownText = "";
-
-    if (total < 830) {
-        // [목표시간(분), 표시될 이름] - "시작" 글자 뺐습니다!
-        const schedule = [
-            [520, "아침활동"],    // 08:40
-            [540, "1교시"],      // 09:00
-            [580, "쉬는시간"],    // 09:40
-            [590, "2교시"],      // 09:50
-            [630, "쉬는시간"],    // 10:30
-            [640, "3교시"],      // 10:40
-            [680, "점심시간"],    // 11:20
-            [740, "4교시"],      // 12:20
-            [780, "쉬는시간"],    // 13:00
-            [790, "5교시"],      // 13:10
-            [830, "하교"]        // 13:50
-        ];
-
-        const target = schedule.find(item => total < item[0]);
-
-        if (target) {
-            const remain = target[0] - total;
-            // 목표 이름과 남은 분수 모두 노란색(#ffca1b) 적용
-            countdownText = `<span style="color:#ffca1b">${target[1]}</span>까지 <span style="color:#ffca1b">${remain}분</span> 남았습니다.`;
+    <script>
+        // 1. 구글 시트 데이터 가져오기 (주신 CSV 주소 사용)
+        async function fetchSheet() {
+            const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh0ND1N2lqnfgek8TE1vO0gztHKWsfcLif7tilCzh_Ibkau0i33CcKrfQGCu7n2rrRQDqYoCvsEIk/pub?gid=1958992156&single=true&output=csv";
+            try {
+                const res = await fetch(url);
+                const data = await res.text();
+                const rows = data.split('\n').map(row => row.split(','));
+                document.getElementById('sheetInfo').innerHTML = `<p>${rows[0][0]}</p><p>${rows[1][0]}</p>`;
+            } catch (e) { console.error("시트 로드 실패"); }
         }
-    } else {
-        countdownText = ""; // 1시 50분 이후엔 빈칸
-    }
 
-    document.getElementById("countdownText").innerHTML = countdownText;
-}
+        // 4, 5. 시간 로직 및 카운트다운
+        function updateTime() {
+            const now = new Date();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const total = h * 60 + m;
 
-    }
+            // 날짜 표시
+            const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+            document.getElementById("todayDate").innerText = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
 
-    async function fetchSheet() {
+            // 12시간제 표시
+            const displayH = h % 12 || 12;
+            const displayM = m < 10 ? '0'+m : m;
+            document.getElementById("currentTime").innerText = `${displayH}시 ${displayM}분`;
 
-      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSh0ND1N2lqnfgek8TE1vO0gztHKWsfcLif7tilCzh_Ibkau0i33CcKrfQGCu7n2rrRQDqYoCvsEIk/pub?gid=1958992156&single=true&output=csv";
+            let period = ""; let goalName = ""; let targetTime = 0;
 
-      try { const res = await fetch(url); const data = await res.text(); const rows = data.split('\n').map(r => r.split(',')); document.getElementById("sheetData").innerHTML = `${rows[0][0]}<br>${rows[1][0]}`; }
+            // 시정표 로직 (선생님 요청 반영)
+            if (total < 520) { period="등교"; goalName="아침활동"; targetTime=520; }
+            else if (total < 540) { period="아침활동"; goalName="1교시"; targetTime=540; }
+            else if (total < 580) { period="1교시"; goalName="쉬는시간"; targetTime=580; }
+            else if (total < 590) { period="쉬는시간"; goalName="2교시"; targetTime=590; }
+            else if (total < 630) { period="2교시"; goalName="쉬는시간"; targetTime=630; }
+            else if (total < 640) { period="쉬는시간"; goalName="3교시"; targetTime=640; }
+            else if (total < 680) { period="3교시"; goalName="점심시간"; targetTime=680; }
+            else if (total < 740) { period="점심시간"; goalName="4교시"; targetTime=740; }
+            else if (total < 780) { period="4교시"; goalName="쉬는시간"; targetTime=780; }
+            else if (total < 790) { period="쉬는시간"; goalName="5교시"; targetTime=790; }
+            else if (total < 830) { period="5교시"; goalName="하교"; targetTime=830; }
 
-      catch (e) { document.getElementById("sheetData").innerText = "데이터 로딩 오류"; }
+            document.getElementById("period").innerText = period;
+            
+            const countdownEl = document.getElementById("countdownText");
+            if (total < 830) {
+                const remain = targetTime - total;
+                countdownEl.innerHTML = `<span>${goalName}</span>까지 <span>${remain}분</span> 남았습니다.`;
+            } else {
+                countdownEl.innerText = ""; // 1시 50분 이후 빈칸
+            }
+        }
 
-    }
+        // 2. 탭 선택 기능
+        function selectTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${type}`).classList.add('active');
+            // 로컬 스토리지 저장/불러오기
+            const saved = JSON.parse(localStorage.getItem('tabData') || '{}');
+            document.getElementById('noticeInput').value = saved[type] || "";
+            document.getElementById('noticeInput').oninput = (e) => {
+                saved[type] = e.target.value;
+                localStorage.setItem('tabData', JSON.stringify(saved));
+            };
+        }
 
-    adjustFont(0); updateTime(); fetchSheet();
-
-    setInterval(updateTime, 1000); setInterval(fetchSheet, 60000);
-
-  </script>
-
+        // 초기 실행
+        fetchSheet();
+        updateTime();
+        setInterval(updateTime, 1000);
+        selectTab('morning'); // 기본탭
+    </script>
 </body>
-
 </html>
