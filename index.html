@@ -2,56 +2,55 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>우리반 대시보드 V5</title>
+  <title>우리반 대시보드 FINAL</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root { --white: #ffffff; --black: #1a1a1a; --yellow: #ffca1b; --accent-red: #ff6b6b; }
     * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
     
-    /* 전체 레이아웃 간격 조정 */
-    body { padding: 50px 70px; display: flex; flex-direction: column; }
+    body { padding: 40px 60px; display: flex; flex-direction: column; }
 
-    /* 1페이지 헤더 (상단 문구 포함) */
-    .header-p1 { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
-    .header-left { font-size: 36px; font-weight: 800; line-height: 1.4; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .header-right { text-align: right; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .date-text { font-size: 55px; font-weight: 900; }
-    .time-row { font-size: 110px; font-weight: 950; margin-top: -15px; line-height: 1; letter-spacing: -3px; }
-    .time-row span { color: var(--yellow); font-size: 65px; margin-right: 20px; }
-    .countdown-msg { font-size: 38px; font-weight: 800; color: var(--yellow); margin-top: 10px; }
+    /* 1페이지 전용 헤더 (선생님이 좋다고 하신 간격 버전) */
+    .header-p1 { display: grid; grid-template-columns: 1fr 1fr; align-items: flex-start; margin-bottom: 20px; }
+    .header-left { font-size: 48px; font-weight: 800; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: -1px; }
+    .header-right { text-align: right; font-size: 56px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); position: relative; z-index: 10; }
+    .time-wrap { text-align: right; margin-top: -20px; }
+    .clock-text { font-size: 110px; font-weight: 950; letter-spacing: -3px; line-height: 1; }
+    .clock-text span { color: var(--yellow); font-size: 70px; margin-right: 15px; }
+    .countdown-msg { font-size: 36px; font-weight: 800; color: var(--yellow); margin-top: 5px; }
 
     /* 카드 스타일 */
-    .glass-card { background: white; border-radius: 30px; color: var(--black); box-shadow: 0 15px 50px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; }
+    .glass-card { background: white; border-radius: 35px; color: var(--black); box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; }
 
-    /* 1페이지 메인 영역 (안내사항 & 급식) */
+    /* 1페이지 메인 구성 */
     .view-page { display: none; height: 100%; }
     .view-page.active { display: grid; }
-    .p1-grid { grid-template-columns: 1.15fr 0.85fr; gap: 50px; height: calc(100vh - 350px); }
-    .tab-container { display: flex; background: #f1f3f5; padding: 10px; gap: 8px; }
-    .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 15px; font-size: 24px; }
+    .p1-grid { grid-template-columns: 1.2fr 0.8fr; gap: 40px; height: calc(100vh - 380px); }
+    .tab-container { display: flex; background: #f1f3f5; padding: 12px; gap: 10px; }
+    .tab-btn { flex: 1; padding: 18px; border: none; background: transparent; color: #adb5bd; font-weight: 800; cursor: pointer; border-radius: 18px; font-size: 24px; }
     .tab-btn.active { background: #0a2a63; color: var(--white); }
-    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 40px; font-weight: 800; resize: none; line-height: 1.6; font-size: 45px; }
+    .notice-input { width: 100%; height: 100%; border: none; outline: none; padding: 45px; font-weight: 800; resize: none; line-height: 1.6; font-size: 48px; }
 
-    /* 2페이지 (알림장 전용 - 상단 문구 제거 버전) */
-    .p2-layout { display: flex; flex-direction: column; gap: 30px; height: 100%; padding-top: 20px; }
-    .p2-header { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 10px; }
-    .p2-date-nav { font-size: 55px; font-weight: 900; color: white; display: flex; align-items: center; gap: 30px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-    .p2-date-nav span { cursor: pointer; color: var(--yellow); }
-    .p2-font-ctrl { position: absolute; right: 0; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 30px; backdrop-filter: blur(5px); }
-    .size-btn { border: none; background: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: 900; font-size: 20px; }
+    /* 2페이지 메인 구성 (상단 비우기) */
+    .p2-layout { display: flex; flex-direction: column; height: 100%; gap: 25px; }
+    .p2-header { display: flex; justify-content: center; align-items: center; position: relative; padding: 20px 0; }
+    .p2-date-nav { font-size: 65px; font-weight: 950; color: white; display: flex; align-items: center; gap: 40px; text-shadow: 3px 3px 6px rgba(0,0,0,0.6); }
+    .p2-date-nav span { cursor: pointer; color: var(--yellow); padding: 0 15px; }
+    .p2-font-ctrl { position: absolute; right: 0; display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.3); }
+    .size-btn { border: none; background: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: 900; font-size: 24px; color: #0a2a63; }
     
-    .p2-main-card { flex: 1; min-height: 450px; } /* 알림장 박스 크기 대폭 확대 */
-    .p2-memo-area { width: 100%; height: 100%; border: none; padding: 50px; font-weight: 800; resize: none; outline: none; line-height: 1.5; }
+    .p2-card { flex: 1; min-height: 500px; }
+    .p2-textarea { width: 100%; height: 100%; border: none; outline: none; padding: 60px; font-weight: 800; resize: none; line-height: 1.4; }
 
-    /* 학생 명단 (2페이지 하단) */
+    /* 학생 그리드 */
     .student-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
-    .student-item { padding: 20px 5px; background: white; border-radius: 15px; color: var(--black); font-size: 24px; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    .student-item { padding: 22px 5px; background: white; border-radius: 15px; color: var(--black); font-size: 24px; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
     .student-item.checked { background: var(--accent-red); color: white; }
 
-    /* 유틸 버튼 */
-    .util-container { position: fixed; bottom: 35px; right: 35px; display: flex; gap: 15px; }
-    .util-btn { width: 60px; height: 60px; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.6); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+    /* 하단 버튼 */
+    .util-container { position: fixed; bottom: 40px; right: 40px; display: flex; gap: 15px; }
+    .util-btn { width: 65px; height: 65px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.5); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
   </style>
 </head>
 <body>
@@ -59,9 +58,11 @@
   <header class="header-p1" id="p1Header">
     <div class="header-left" id="sheetData">로딩 중...</div>
     <div class="header-right">
-      <div class="date-text" id="p1Date"></div>
-      <div class="time-row"><span id="p1Period"></span><span id="p1Time"></span></div>
-      <div class="countdown-msg" id="p1Countdown"></div>
+      <div id="p1Date"></div>
+      <div class="time-wrap">
+        <div class="clock-text"><span id="p1Period"></span><span id="p1Time"></span></div>
+        <div class="countdown-msg" id="p1Countdown"></div>
+      </div>
     </div>
   </header>
 
@@ -74,11 +75,11 @@
           <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
           <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
         </div>
-        <textarea id="noticeInput" class="notice-input" placeholder="안내사항을 입력하세요."></textarea>
+        <textarea id="noticeInput" class="notice-input"></textarea>
       </section>
       <section class="glass-card" style="align-items: center; justify-content: center; padding: 50px;">
-        <div style="font-size: 60px; font-weight: 900; color: #0a2a63; margin-bottom: 30px; border-bottom: 6px solid var(--yellow);">오늘의 급식 🍱</div>
-        <div id="mealList" style="font-size: 40px; font-weight: 800; text-align: center; color: #333; line-height: 2;">식단 정보 로딩 중...</div>
+        <div style="font-size: 65px; font-weight: 900; color: #0a2a63; margin-bottom: 40px; border-bottom: 8px solid var(--yellow); padding-bottom: 10px;">오늘의 급식 🍱</div>
+        <div id="mealList" style="font-size: 42px; font-weight: 800; text-align: center; color: #333; line-height: 1.8;">정보를 가져오는 중...</div>
       </section>
     </div>
   </main>
@@ -92,21 +93,21 @@
           <span onclick="changeDate(1)">&gt;</span>
         </div>
         <div class="p2-font-ctrl">
-          <button class="size-btn" onclick="adjFont(-4)">-</button>
-          <span id="curSize" style="color:white; font-weight:800; width:30px; text-align:center;">45</span>
-          <button class="size-btn" onclick="adjFont(4)">+</button>
+          <button class="size-btn" onclick="adjFont(-5)">-</button>
+          <span id="curSize" style="color:white; font-weight:800; width:40px; text-align:center; font-size:22px;">48</span>
+          <button class="size-btn" onclick="adjFont(5)">+</button>
         </div>
       </div>
-      <section class="glass-card p2-main-card">
-        <textarea class="p2-memo-area" id="boardMemo" placeholder="아이들에게 보여줄 알림장을 적으세요."></textarea>
+      <section class="glass-card p2-card">
+        <textarea class="p2-textarea" id="boardMemo" placeholder="여기에 알림장을 입력하세요."></textarea>
       </section>
       <div class="student-grid" id="studentList"></div>
     </div>
   </main>
 
   <div class="util-container">
-    <button class="util-btn" onclick="toggleFS()"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-    <button class="util-btn" onclick="switchPg()"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m11 17-5-5 5-5m6 10 5-5-5-5"/></svg></button>
+    <button class="util-btn" onclick="toggleFS()"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+    <button class="util-btn" onclick="switchPg()"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m11 17-5-5 5-5m6 10 5-5-5-5"/></svg></button>
   </div>
 
   <script>
@@ -147,7 +148,12 @@
       const dateStr = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
       
       document.getElementById("p1Date").innerText = dateStr;
-      document.getElementById("p2DateDisplay").innerText = dateStr; // 2페이지 날짜
+      
+      // 2페이지 날짜는 changeDate에서 따로 관리하므로 실시간 업데이트는 1페이지 위주로
+      if(document.getElementById('page1').classList.contains('active')) {
+          document.getElementById("p2DateDisplay").innerText = dateStr;
+      }
+
       document.getElementById("p1Time").innerText = `${h % 12 || 12}시 ${m < 10 ? '0'+m : m}분`;
 
       const p = PERIODS.find(p => {
@@ -188,7 +194,7 @@
       localStorage.setItem('memo_' + key, e.target.value);
     });
 
-    let fontSize = parseInt(localStorage.getItem('boardFS') || '45');
+    let fontSize = parseInt(localStorage.getItem('boardFS') || '48');
     function adjFont(d) {
       fontSize += d;
       document.getElementById("boardMemo").style.fontSize = fontSize + "px";
@@ -219,14 +225,18 @@
     }
 
     function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    
     function switchPg() { 
       const p1 = document.getElementById('page1');
       const p2 = document.getElementById('page2');
       const h1 = document.getElementById('p1Header');
       if(p1.classList.contains('active')) {
         p1.classList.remove('active'); h1.style.display = 'none'; p2.classList.add('active');
+        // 2페이지로 갈 때 현재 날짜로 초기화
+        viewingDate = new Date();
+        changeDate(0);
       } else {
-        p2.classList.remove('active'); h1.style.display = 'flex'; p1.classList.add('active');
+        p2.classList.remove('active'); h1.style.display = 'grid'; p1.classList.add('active');
       }
     }
     
