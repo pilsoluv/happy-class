@@ -14,7 +14,7 @@
     .page {display:grid; grid-template-columns:1.16fr 0.84fr; grid-template-rows:auto 1fr; column-gap:28px; row-gap:10px; height:100%;}
     .header-left,.header-right { align-self:start; padding-top:0; }
     .header-left { grid-column:1; grid-row:1; font-size:52px; font-weight:850; line-height:1.24; text-shadow:2px 2px 4px rgba(0,0,0,0.45); white-space:pre-line; }
-    .header-right { grid-column:2; grid-row:1; text-align:center; font-size:54px; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.45); line-height:1.12; padding-top:10px; }
+    .header-right { grid-column:2; grid-row:1; text-align:center; font-size:54px; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.45); line-height:0.98; padding-top:10px; }
     .glass-card { background:var(--bg-card); border-radius:28px; color:var(--black); box-shadow:0 14px 36px rgba(0,0,0,0.22); overflow:hidden; border:none; backdrop-filter:blur(2px); }
     .notice-section {grid-column:1; grid-row:2; display:flex; flex-direction:column; min-height:0; height:100%; margin-top:10px;}
     
@@ -26,7 +26,7 @@
     .notice-content { flex:1; min-height:0; padding:28px 34px 24px 34px; }
     .notice-input { width:100%; height:100%; background:transparent; border:none; outline:none; color:var(--black); font-weight:800; resize:none; line-height:1.5; font-size:var(--memo-size); }
 
-    .main-right {grid-column:2; grid-row:2; display:grid; grid-template-rows:210px 1fr; gap:12px; min-height:0; margin-top:10px;}
+    .main-right {grid-column:2; grid-row:2; display:grid; grid-template-rows:220px 1fr; height:100%; gap:12px; min-height:0; margin-top:10px;}
     .time-wrap { text-align:center; padding-top:2px; }
     .status-line { font-size:108px; font-weight:950; letter-spacing:-3px; white-space:nowrap; line-height:1.02; text-shadow:3px 3px 8px rgba(0,0,0,0.45); }
     .status-line .accent { color:var(--yellow); margin-right:18px; }
@@ -45,18 +45,18 @@
     .screen-page.active { display:block; }
 
     /* (2페이지) */
-    .page2 { display:grid; grid-template-rows:minmax(0,1fr) 250px; gap:18px; height:100%; padding-top:18px; }
+    .page2 { display:grid; grid-template-rows:minmax(0,1fr) 300px; gap:18px; height:100%; padding-top:18px; }
     .page2-top { min-height:0; }
     .notice-board { width:100%; height:100%; background:rgba(255,255,255,0.93); border-radius:30px; color:#111; box-shadow:0 14px 36px rgba(0,0,0,0.22); padding:12px 18px 18px 18px; display:flex; flex-direction:column; }
-    .notice-board-header { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; min-height:66px; border-bottom:1px solid rgba(0,0,0,0.08); padding:8px 6px 10px 6px; }
+    .notice-board-header { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; min-height:58px; border-bottom:1px solid rgba(0,0,0,0.08); padding:6px 6px 10px 6px; }
     .notice-date-wrap { justify-self:center; display:flex; align-items:center; gap:22px; }
     .date-arrow { border:none; background:transparent; color:#9a9a9a; font-size:50px; line-height:1; cursor:pointer; padding:0; font-weight:700; }
-    .notice-date-text { font-size:38px; font-weight:900; color:#0a2a63; text-align:center; white-space:nowrap; }
+    .notice-date-text { font-size:38px; font-weight:900; color:#0a2a63; text-align:center; white-space:nowrap; transform: translateY(-2px) }
     .notice-font-control { justify-self:end; display:flex; align-items:center; gap:8px; background:#eceff2; padding:5px 14px; border-radius:22px; }
     .notice-font-btn { width:34px; height:34px; border-radius:50%; border:2px solid #ced4da; background:white; color:#495057; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; }
     .notice-font-size-text { color:#495057; font-weight:800; min-width:28px; text-align:center; }
     .notice-board-textarea { flex:1; width:100%; border:none; outline:none; resize:none; background:transparent; font-size:76px; line-height:1.22; font-weight:700; color:#000000; padding:18px 8px 4px 8px; }
-    .page2-bottom { display:grid; grid-template-columns:repeat(7,1fr); gap:14px 16px; width:calc(100% - 12px); padding-right:22px; padding-top:10px; padding-bottom:8px; align-content:start; }
+    .page2-bottom { display:grid; grid-template-columns:repeat(7,1fr); gap:14px 16px; width:calc(100% - 72px); padding-right:22px; padding-top:18px; padding-bottom:8px; align-content:start; }
     .student-btn { border:none; border-radius:14px; min-height:56px; background:rgba(255,255,255,0.95); color:#000; font-size:26px; font-weight:900; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15); }
     .student-btn.checked { background:var(--yellow); }
 
