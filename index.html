@@ -5,26 +5,24 @@
   <title>교실 대시보드</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
-    :root {
-      --white: #ffffff; --yellow: #ffca1b;
-      --glass-bg: rgba(255, 255, 255, 0.15); --glass-border: rgba(255, 255, 255, 0.25);
-    }
+    :root { --white: #ffffff; --yellow: #ffca1b; --glass-bg: rgba(255, 255, 255, 0.3); --glass-border: rgba(255, 255, 255, 0.4); }
     * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; color: var(--white); background: #0a2a63 url("wallpaper.jpg") center center / cover no-repeat fixed; }
     body { padding: 40px 50px; }
     .page { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 30px; height: 100%; }
     .header-left { grid-column: 1; font-size: 32px; font-weight: 800; line-height: 1.4; }
     header-right { grid-column: 2; text-align: right; font-size: 42px; font-weight: 800; margin-bottom: -10px; }
-    .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 30px; }
+    .glass-card { background: var(--glass-bg); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 30px; box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.1); }
     
     .notice-section { grid-row: 2; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-    .tab-container { display: flex; background: rgba(0,0,0,0.2); padding: 10px; gap: 5px; border-bottom: 1px solid var(--glass-border); }
+    .tab-container { display: flex; background: rgba(255, 255, 255, 0.2); padding: 10px; gap: 5px; border-bottom: 1px solid var(--glass-border); align-items: center; }
     .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: rgba(255,255,255,0.5); font-weight: 700; cursor: pointer; border-radius: 12px; font-size: 20px; transition: 0.3s; }
     .tab-btn.active { background: var(--white); color: #0a2a63; }
     
-    .font-control { position: absolute; top: 75px; right: 25px; display: flex; align-items: center; gap: 10px; z-index: 10; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 20px; }
-    .size-btn { width: 35px; height: 35px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
-
+    .font-control { position: static; display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.3); padding: 5px 12px; border-radius: 15px; margin-left: auto; margin-right: 10px; }
+    .size-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid white; background: rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .size-btn:hover { background: white; color: #333; }
+    #currentSize { font-size: 16px; font-weight: 800; min-width: 20px; text-align: center; }
     .notice-content { flex-grow: 1; padding: 50px 40px 40px; }
     .notice-input { width: 100%; height: 100%; background: transparent; border: none; outline: none; color: white; font-weight: 700; resize: none; line-height: 1.6; font-size: 48px; }
 
