@@ -532,31 +532,51 @@
     }
 
     function extractNotices(rows){
-      const notices = { ...DEFAULT_NOTICE };
+  const notices = { ...DEFAULT_NOTICE };
 
-      for(const row of rows){
-        const label = (row[0] || "").trim();
-        const value = row.slice(1).join("\n").trim();
-        const type = TAB_NAME_TO_TYPE[label];
-        if(type && value) notices[type] = value;
-      }
+  for(const row of rows){
+    const cells = row.map(v => (v || "").trim());
 
-      return notices;
+    const labelIndex = cells.findIndex(v =>
+      v === "아침시간" || v === "아침활동" || v === "수업시간" || v === "쉬는시간" || v === "점심시간"
+    );
+
+    if(labelIndex === -1) continue;
+
+    const label = cells[labelIndex];
+    const value = cells[labelIndex + 1] || "";
+    const type = TAB_NAME_TO_TYPE[label];
+
+    if(type && value){
+      notices[type] = value;
     }
+  }
+
+  return notices;
+}
 
     function extractLunchActivities(rows){
-      const result = { ...DEFAULT_LUNCH_ACTIVITIES };
+  const result = { ...DEFAULT_LUNCH_ACTIVITIES };
 
-      rows.forEach(row => {
-        const day = (row[0] || "").trim();
-        const activity = (row[1] || "").trim();
-        if(["월요일","화요일","수요일","목요일","금요일"].includes(day) && activity){
-          result[day] = activity;
-        }
-      });
+  for(const row of rows){
+    const cells = row.map(v => (v || "").trim());
 
-      return result;
+    const dayIndex = cells.findIndex(v =>
+      v === "월요일" || v === "화요일" || v === "수요일" || v === "목요일" || v === "금요일"
+    );
+
+    if(dayIndex === -1) continue;
+
+    const day = cells[dayIndex];
+    const activity = cells[dayIndex + 1] || "";
+
+    if(activity){
+      result[day] = activity;
     }
+  }
+
+  return result;
+}
 
     function extractLastPeriodByDay(rows){
       const result = { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" };
