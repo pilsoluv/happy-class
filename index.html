@@ -177,28 +177,28 @@
     }
 
     .size-input{
-  width:58px;
-  height:34px;
-  text-align:center;
-  font-size:18px;
-  font-weight:900;
-  border:2px solid #ced4da;
-  border-radius:10px;
-  padding:2px 6px;
-  color:#495057;
-  background:#fff;
-  outline:none;
-  appearance:auto;
-  -webkit-appearance:auto;
-  -moz-appearance:auto;
-}
+      width:58px;
+      height:34px;
+      text-align:center;
+      font-size:18px;
+      font-weight:900;
+      border:2px solid #ced4da;
+      border-radius:10px;
+      padding:2px 6px;
+      color:#495057;
+      background:#fff;
+      outline:none;
+      appearance:auto;
+      -webkit-appearance:auto;
+      -moz-appearance:auto;
+    }
 
-.size-input.always-spin::-webkit-outer-spin-button,
-.size-input.always-spin::-webkit-inner-spin-button{
-  opacity:1;
-  display:block;
-  margin-left:2px;
-}
+    .size-input.always-spin::-webkit-outer-spin-button,
+    .size-input.always-spin::-webkit-inner-spin-button{
+      opacity:1;
+      display:block;
+      margin-left:2px;
+    }
 
     .notice-content{
       flex:1;
@@ -230,50 +230,50 @@
       text-align:center;
     }
 
-   .meal-top{
-  position:relative;
-  width:100%;
-  min-height:64px;
-  margin-bottom:14px;
-}
+    .meal-top{
+      position:relative;
+      width:100%;
+      min-height:64px;
+      margin-bottom:14px;
+    }
 
-.meal-title-wrap{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+    .meal-title-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
 
-.meal-title{
-  display:inline-block;
-  text-align:center;
-  font-size:52px;
-  font-weight:950;
-  color:var(--navy);
-  line-height:1;
-  padding-bottom:8px;
-  border-bottom:5px solid var(--yellow);
-  min-width:260px;
-}
+    .meal-title{
+      display:inline-block;
+      text-align:center;
+      font-size:52px;
+      font-weight:950;
+      color:var(--navy);
+      line-height:1;
+      padding-bottom:8px;
+      border-bottom:5px solid var(--yellow);
+      min-width:260px;
+    }
 
-.meal-font-control-wrap{
-  position:absolute;
-  top:0;
-  right:0;
-  padding-top:2px;
-  padding-right:4px;
-}
+    .meal-font-control-wrap{
+      position:absolute;
+      top:0;
+      right:0;
+      padding-top:2px;
+      padding-right:4px;
+    }
 
     .meal-font-control{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:5px 12px;
-  background:#eceff2;
-  border-radius:22px;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
-}
-    
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 12px;
+      background:#eceff2;
+      border-radius:22px;
+      box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
+    }
+
     .meal-list{
       width:100%;
       text-align:center;
@@ -327,18 +327,14 @@
 
         <section class="card notice-card">
           <div class="tab-bar">
-  <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-  <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-  <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-  <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
+            <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
+            <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
+            <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
+            <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
 
-  <div class="font-control">
-    <button class="size-btn" onclick="adjustNoticeFont(-4)">-</button>
-    <input id="noticeFontSizeInput" class="size-input always-spin" type="number" min="28" max="120" />
-    <button class="size-btn" onclick="adjustNoticeFont(4)">+</button>
-  </div>
-</div>
-        
+            <div class="font-control">
+              <button class="size-btn" onclick="adjustNoticeFont(-4)">-</button>
+              <input id="noticeFontSizeInput" class="size-input always-spin" type="number" min="28" max="120" />
               <button class="size-btn" onclick="adjustNoticeFont(4)">+</button>
             </div>
           </div>
@@ -357,21 +353,21 @@
         </section>
 
         <section class="card meal-card">
-         <div class="meal-top">
-  <div class="meal-title-wrap">
-    <div class="meal-title">오늘의 급식 🍱</div>
-  </div>
+          <div class="meal-top">
+            <div class="meal-title-wrap">
+              <div class="meal-title">오늘의 급식 🍱</div>
+            </div>
 
-  <div class="meal-font-control-wrap">
-    <div class="font-control meal-font-control">
-      <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
-      <input id="mealFontSizeInput" class="size-input always-spin" type="number" min="16" max="120" />
-      <button class="size-btn" onclick="adjustMealFont(2)">+</button>
-    </div>
-  </div>
-</div>
+            <div class="meal-font-control-wrap">
+              <div class="font-control meal-font-control">
+                <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
+                <input id="mealFontSizeInput" class="size-input always-spin" type="number" min="16" max="120" />
+                <button class="size-btn" onclick="adjustMealFont(2)">+</button>
+              </div>
+            </div>
+          </div>
 
-<div class="meal-list" id="mealList"></div>
+          <div class="meal-list" id="mealList"></div>
         </section>
       </div>
     </div>
