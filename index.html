@@ -28,7 +28,7 @@
       --header-font:58px;
       --date-font:64px;
       --time-font:130px;
-      --count-font:58px;
+      --count-font:62px;
       --tab-font:22px;
     }
 
@@ -273,7 +273,7 @@
       text-align:center;
       font-size:34px;
       font-weight:900;
-      line-height:1.3;
+      line-height:1.25                                ;
       white-space:pre-line;
       color:#333;
     }
@@ -303,7 +303,7 @@
         --header-font:46px;
         --date-font:64px;
         --time-font:130px;
-        --count-font:58px;
+        --count-font:62px;
         --tab-font:20px;
       }
 
@@ -413,6 +413,7 @@
       lastPeriodByDay: { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" }
     };
 
+    const CLOCK_DELAY_MINUTES = 1;
     let currentTab = "";
     let noticeFontSize = parseInt(localStorage.getItem("noticeFontSize") || "64", 10);
     let mealFontSize = parseInt(localStorage.getItem("mealFontSize") || "34", 10);
@@ -708,7 +709,8 @@
     }
 
     function updateTime(){
-      const now = new Date();
+      const realNow = new Date();
+      const now = new Date(realNow.getTime() - CLOCK_DELAY_MINUTES * 60000);
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 
