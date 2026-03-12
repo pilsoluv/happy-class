@@ -178,6 +178,7 @@
 
     .size-input{
       width:58px;
+      height:34px;
       text-align:center;
       font-size:18px;
       font-weight:900;
@@ -187,6 +188,9 @@
       color:#495057;
       background:#fff;
       outline:none;
+      appearance:auto;
+      -webkit-appearance:auto;
+      -moz-appearance:auto;
     }
 
     .notice-content{
@@ -202,7 +206,7 @@
       outline:none;
       resize:none;
       background:transparent;
-      color:var(--text);
+      color:#333;
       font-size:64px;
       font-weight:900;
       line-height:1.42;
@@ -220,33 +224,40 @@
     }
 
     .meal-top{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      width:100%;
-      margin-bottom:14px;
-    }
+  position:relative;
+  width:100%;
+  margin-bottom:14px;
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    .meal-title-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      flex:1;
-    }
+.meal-title-wrap{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
 
-    .meal-title{
-      display:inline-block;
-      text-align:center;
-      font-size:52px;
-      font-weight:950;
-      color:var(--navy);
-      line-height:1;
-      padding-bottom:8px;
-      border-bottom:5px solid var(--yellow);
-      min-width:260px;
-    }
+.meal-title{
+  display:inline-block;
+  text-align:center;
+  font-size:52px;
+  font-weight:950;
+  color:var(--navy);
+  line-height:1;
+  padding-bottom:8px;
+  border-bottom:5px solid var(--yellow);
+  min-width:260px;
+}
+
+.meal-font-control-wrap{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+}
 
     .meal-list{
       width:100%;
@@ -328,15 +339,17 @@
 
         <section class="card meal-card">
           <div class="meal-top">
-            <div class="meal-title-wrap">
-              <div class="meal-title">오늘의 급식 🍱</div>
-            </div>
-            <div class="font-control">
-              <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
-              <input id="mealFontSizeInput" class="size-input" type="number" min="16" max="120" />
-              <button class="size-btn" onclick="adjustMealFont(2)">+</button>
-            </div>
-          </div>
+  <div class="meal-title-wrap">
+    <div class="meal-title">오늘의 급식 🍱</div>
+  </div>
+  <div class="meal-font-control-wrap">
+    <div class="font-control">
+      <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
+      <input id="mealFontSizeInput" class="size-input" type="number" min="16" max="120" />
+      <button class="size-btn" onclick="adjustMealFont(2)">+</button>
+    </div>
+  </div>
+</div>
 
           <div class="meal-list" id="mealList"></div>
         </section>
