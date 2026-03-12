@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>교실 대시보드</title>
+  <title>행복한 우리반</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
     :root{
@@ -32,39 +32,24 @@
       --tab-font:22px;
       --notice-font:64px;
       --meal-title-font:52px;
-      --meal-font:62px;
+      --meal-font:34px;
     }
 
-    *{ box-sizing:border-box; font-family:"Pretendard",sans-serif; }
-    html,body{ margin:0; width:100%; height:100%; }
+    *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
+    html,body{margin:0;width:100%;height:100%;}
     body{
       background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
       color:var(--white);
       overflow:hidden;
     }
 
-    .app{
-      width:100%;
-      height:100%;
-      padding:var(--page-padding);
-    }
+    .accent{color:var(--yellow);font-weight:900;}
 
-    .page{
-      width:100%;
-      height:100%;
-      display:grid;
-      grid-template-columns:var(--left-col) var(--right-col);
-      gap:var(--col-gap);
-    }
-
-    .col{
-      min-height:0;
-      display:grid;
-      gap:var(--row-gap);
-    }
-
-    .left-col{ grid-template-rows:var(--left-top-h) 1fr; }
-    .right-col{ grid-template-rows:var(--right-top-h) 1fr; }
+    .app{width:100%;height:100%;padding:var(--page-padding);}
+    .page{width:100%;height:100%;display:grid;grid-template-columns:var(--left-col) var(--right-col);gap:var(--col-gap);}
+    .col{min-height:0;display:grid;gap:var(--row-gap);}
+    .left-col{grid-template-rows:var(--left-top-h) 1fr;}
+    .right-col{grid-template-rows:var(--right-top-h) 1fr;}
 
     .card{
       min-height:0;
@@ -121,10 +106,7 @@
       white-space:nowrap;
     }
 
-    .time-line .accent{
-      color:var(--yellow);
-      margin-right:14px;
-    }
+    .time-line .accent{margin-right:14px;}
 
     .count-line{
       font-size:var(--count-font);
@@ -134,13 +116,7 @@
       text-shadow:2px 2px 5px rgba(0,0,0,0.35);
     }
 
-    .count-line .accent{ color:var(--yellow); }
-
-    .notice-card{
-      display:flex;
-      flex-direction:column;
-    }
-
+    .notice-card{display:flex;flex-direction:column;}
     .tab-bar{
       display:flex;
       align-items:center;
@@ -205,7 +181,7 @@
     .notice-content{
       flex:1;
       min-height:0;
-      padding:28px 34px 30px 34px;
+      padding:34px 34px 30px 34px;
     }
 
     .notice-input{
@@ -222,19 +198,20 @@
     }
 
     .meal-card{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  width:calc(100% - 40px);
-  margin:0 auto;
-  padding:18px 28px;
-  text-align:center;
-}
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      width:calc(100% - 40px);
+      margin:0 auto;
+      padding:18px 28px;
+      text-align:center;
+    }
 
     .meal-title{
-      font-size:var(--meal-title-font);
+      width:100%;
       text-align:center;
+      font-size:var(--meal-title-font);
       font-weight:950;
       color:var(--navy);
       line-height:1;
@@ -244,10 +221,11 @@
     }
 
     .meal-list{
-      font-size:var(--meal-font);
+      width:100%;
       text-align:center;
+      font-size:var(--meal-font);
       font-weight:900;
-      line-height:1.3;
+      line-height:1.55;
       white-space:pre-line;
       color:#333;
     }
@@ -270,10 +248,7 @@
       z-index:30;
     }
 
-    .fullscreen-btn svg{
-      width:26px;
-      height:26px;
-    }
+    .fullscreen-btn svg{width:26px;height:26px;}
 
     @media (max-width:1500px){
       :root{
@@ -293,7 +268,7 @@
   <div class="app">
     <div class="page">
       <div class="col left-col">
-        <div class="header-card" id="sheetData">데이터를 불러오는 중...</div>
+        <div class="header-card" id="sheetData"></div>
 
         <section class="card notice-card">
           <div class="tab-bar">
@@ -339,481 +314,464 @@
     </svg>
   </button>
 
- <script>
-  const BASIC_INFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=0&single=true&output=csv";
-  const NOTICE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=1154495982&single=true&output=csv";
+  <script>
+    const BASIC_INFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=0&single=true&output=csv";
+    const NOTICE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=1154495982&single=true&output=csv";
 
-  const DEFAULT_NOTICE = {
-    morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기",
-    class: "• 가방 문 닫기\n• 연필 한 자루, 지우개 하나 꺼내기\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기",
-    break: "• 책상 정리하기\n• 물 떠오기 / 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기",
-    lunch: "• 책상 위 정리하기\n• 의자 넣고 손 씻기"
-  };
+    const DEFAULT_NOTICE = {
+      morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기",
+      class: "• 가방 문 닫기\n• 연필 한 자루, 지우개 하나 꺼내기\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기",
+      break: "• 책상 정리하기\n• 물 떠오기\n• 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기",
+      lunch: "• 책상 위 정리하기\n• 의자 넣고 손 씻기\n• 예비종 치면 청소하기"
+    };
 
-  const DEFAULT_LUNCH_ACTIVITIES = {
-    "월요일": "교실놀이",
-    "화요일": "바깥놀이",
-    "수요일": "위클래스",
-    "목요일": "바깥놀이",
-    "금요일": "바깥놀이"
-  };
+    const DEFAULT_LUNCH_ACTIVITIES = {
+      "월요일":"교실놀이",
+      "화요일":"교실놀이",
+      "수요일":"위클래스",
+      "목요일":"교실놀이",
+      "금요일":"위클래스"
+    };
 
-  const TAB_NAME_TO_TYPE = {
-    "아침시간": "morning",
-    "아침활동": "morning",
-    "수업시간": "class",
-    "쉬는시간": "break",
-    "점심시간": "lunch"
-  };
+    const TAB_NAME_TO_TYPE = {
+      "아침시간":"morning",
+      "아침활동":"morning",
+      "수업시간":"class",
+      "쉬는시간":"break",
+      "점심시간":"lunch"
+    };
 
-  let DASHBOARD = {
-    headerLines: [],
-    periods: [],
-    notices: { ...DEFAULT_NOTICE },
-    lunchActivities: { ...DEFAULT_LUNCH_ACTIVITIES },
-    officeCode: "",
-    schoolCode: "",
-    lastPeriodByDay: { 1: "4교시", 2: "5교시", 3: "5교시", 4: "5교시", 5: "4교시" }
-  };
+    let DASHBOARD = {
+      headerLines: [],
+      periods: [],
+      notices: { ...DEFAULT_NOTICE },
+      lunchActivities: { ...DEFAULT_LUNCH_ACTIVITIES },
+      officeCode: "",
+      schoolCode: "",
+      lastPeriodByDay: { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" }
+    };
 
-  let currentTab = "";
-  let fontSize = parseInt(localStorage.getItem("dashFontSize") || "64", 10);
-  let manualTabOverride = false;
-  let lastAutoTabType = "";
-  let isInitialLoad = true;
+    let currentTab = "";
+    let fontSize = parseInt(localStorage.getItem("dashFontSize") || "64", 10);
+    let lastAutoTabType = "";
+    let isInitialLoad = true;
 
-  function parseCsv(text){
-    const rows = [];
-    let row = [];
-    let cell = "";
-    let inQuotes = false;
+    function parseCsv(text){
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
 
-    for(let i = 0; i < text.length; i++){
-      const ch = text[i];
-      const next = text[i + 1];
+      for(let i = 0; i < text.length; i++){
+        const ch = text[i];
+        const next = text[i + 1];
 
-      if(ch === '"'){
-        if(inQuotes && next === '"'){
-          cell += '"';
-          i++;
+        if(ch === '"'){
+          if(inQuotes && next === '"'){
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if(ch === "," && !inQuotes){
+          row.push(cell);
+          cell = "";
+        } else if((ch === "\n" || ch === "\r") && !inQuotes){
+          if(ch === "\r" && next === "\n") i++;
+          row.push(cell);
+          rows.push(row);
+          row = [];
+          cell = "";
         } else {
-          inQuotes = !inQuotes;
+          cell += ch;
         }
-      } else if(ch === "," && !inQuotes){
-        row.push(cell);
-        cell = "";
-      } else if((ch === "\n" || ch === "\r") && !inQuotes){
-        if(ch === "\r" && next === "\n") i++;
+      }
+
+      if(cell.length > 0 || row.length > 0){
         row.push(cell);
         rows.push(row);
-        row = [];
-        cell = "";
-      } else {
-        cell += ch;
       }
+
+      return rows.map(r => r.map(c => (c || "").trim()));
     }
 
-    if(cell.length > 0 || row.length > 0){
-      row.push(cell);
-      rows.push(row);
+    async function fetchCsv(url){
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("CSV 불러오기 실패");
+      return parseCsv(await res.text());
     }
 
-    return rows.map(r => r.map(c => (c || "").trim()));
-  }
-
-  async function fetchCsv(url){
-    const res = await fetch(url);
-    if(!res.ok) throw new Error("CSV 불러오기 실패");
-    return parseCsv(await res.text());
-  }
-
-  function findCell(rows, keyword){
-    for(let r = 0; r < rows.length; r++){
-      for(let c = 0; c < rows[r].length; c++){
-        if((rows[r][c] || "").trim() === keyword){
-          return { r, c };
+    function findCell(rows, keyword){
+      for(let r = 0; r < rows.length; r++){
+        for(let c = 0; c < rows[r].length; c++){
+          if((rows[r][c] || "").trim() === keyword){
+            return { r, c };
+          }
         }
       }
-    }
-    return null;
-  }
-
-  function normalizeTime(value){
-    if(!value) return "";
-    const str = String(value).trim();
-    const match = str.match(/^(\d{1,2}):(\d{1,2})$/);
-    if(!match) return str;
-    return `${match[1].padStart(2, "0")}:${match[2].padStart(2, "0")}`;
-  }
-
-  function toMinutes(timeStr){
-    const [h, m] = timeStr.split(":").map(Number);
-    return h * 60 + m;
-  }
-
-  function getTypeFromLabel(label){
-    if(label.includes("아침")) return "morning";
-    if(label.includes("점심")) return "lunch";
-    if(label.includes("쉬는")) return "break";
-    if(label.includes("예비")) return "break";
-    return "class";
-  }
-
-  function extractPeriods(rows){
-    const header = findCell(rows, "교시");
-    if(!header) return [];
-
-    const periods = [];
-    let r = header.r + 1;
-
-    while(r < rows.length){
-      const label = (rows[r][header.c] || "").trim();
-      const start = normalizeTime(rows[r][header.c + 1] || "");
-      const end = normalizeTime(rows[r][header.c + 2] || "");
-
-      if(!label || !start || !end) break;
-
-      periods.push({
-        label,
-        start,
-        end,
-        type: getTypeFromLabel(label)
-      });
-      r++;
+      return null;
     }
 
-    return periods;
-  }
-
-  function extractSchoolCodes(rows){
-    const office = findCell(rows, "교육청코드");
-    const school = findCell(rows, "학교코드");
-
-    return {
-      officeCode: office ? (rows[office.r][office.c + 1] || "").trim() : "",
-      schoolCode: school ? (rows[school.r][school.c + 1] || "").trim() : ""
-    };
-  }
-
-  function extractHeaderLines(rows){
-    const line1Cell = findCell(rows, "왼쪽 헤더문구 1");
-    const line2Cell = findCell(rows, "왼쪽 헤더문구 2");
-
-    const line1 = line1Cell ? (rows[line1Cell.r][line1Cell.c + 1] || "").trim() : "";
-    const line2 = line2Cell ? (rows[line2Cell.r][line2Cell.c + 1] || "").trim() : "";
-
-    return [line1, line2].filter(Boolean);
-  }
-
-  function extractNotices(rows){
-    const notices = { ...DEFAULT_NOTICE };
-
-    for(const row of rows){
-      const key = (row[0] || "").trim();
-      const value = (row[1] || "").trim();
-      const type = TAB_NAME_TO_TYPE[key];
-      if(type && value) notices[type] = value;
+    function normalizeTime(value){
+      if(!value) return "";
+      const str = String(value).trim();
+      const match = str.match(/^(\d{1,2}):(\d{1,2})$/);
+      if(!match) return str;
+      return `${match[1].padStart(2, "0")}:${match[2].padStart(2, "0")}`;
     }
 
-    return notices;
-  }
+    function toMinutes(timeStr){
+      const [h, m] = timeStr.split(":").map(Number);
+      return h * 60 + m;
+    }
 
-  function extractLunchActivities(rows){
-    const result = { ...DEFAULT_LUNCH_ACTIVITIES };
+    function getTypeFromLabel(label){
+      if(label.includes("아침")) return "morning";
+      if(label.includes("점심")) return "lunch";
+      if(label.includes("쉬는")) return "break";
+      if(label.includes("예비")) return "break";
+      return "class";
+    }
 
-    for(let r = 0; r < rows.length - 1; r++){
-      const currentRow = rows[r].map(v => (v || "").trim());
-      const nextRow = rows[r + 1].map(v => (v || "").trim());
+    function extractPeriods(rows){
+      const header = findCell(rows, "교시");
+      if(!header) return [];
 
-      const hasWeekdays =
-        currentRow.includes("월요일") &&
-        currentRow.includes("화요일") &&
-        currentRow.includes("수요일") &&
-        currentRow.includes("목요일") &&
-        currentRow.includes("금요일");
+      const periods = [];
+      let r = header.r + 1;
 
-      if(!hasWeekdays) continue;
+      while(r < rows.length){
+        const label = (rows[r][header.c] || "").trim();
+        const start = normalizeTime(rows[r][header.c + 1] || "");
+        const end = normalizeTime(rows[r][header.c + 2] || "");
 
-      ["월요일", "화요일", "수요일", "목요일", "금요일"].forEach(day => {
-        const idx = currentRow.indexOf(day);
-        if(idx > -1 && nextRow[idx]) result[day] = nextRow[idx];
+        if(!label || !start || !end) break;
+
+        periods.push({
+          label,
+          start,
+          end,
+          type: getTypeFromLabel(label)
+        });
+        r++;
+      }
+
+      return periods;
+    }
+
+    function extractSchoolCodes(rows){
+      const office = findCell(rows, "교육청코드");
+      const school = findCell(rows, "학교코드");
+
+      return {
+        officeCode: office ? (rows[office.r][office.c + 1] || "").trim() : "",
+        schoolCode: school ? (rows[school.r][school.c + 1] || "").trim() : ""
+      };
+    }
+
+    function extractHeaderLines(rows){
+      const line1Cell = findCell(rows, "왼쪽 헤더문구 1");
+      const line2Cell = findCell(rows, "왼쪽 헤더문구 2");
+
+      const line1 = line1Cell ? (rows[line1Cell.r][line1Cell.c + 1] || "").trim() : "";
+      const line2 = line2Cell ? (rows[line2Cell.r][line2Cell.c + 1] || "").trim() : "";
+
+      return [line1, line2].filter(Boolean);
+    }
+
+    function extractNotices(rows){
+      const notices = { ...DEFAULT_NOTICE };
+
+      for(const row of rows){
+        const label = (row[0] || "").trim();
+        const value = (row[1] || "").trim();
+        const type = TAB_NAME_TO_TYPE[label];
+        if(type && value) notices[type] = value;
+      }
+
+      return notices;
+    }
+
+    function extractLunchActivities(rows){
+      const result = { ...DEFAULT_LUNCH_ACTIVITIES };
+
+      rows.forEach(row => {
+        const day = (row[0] || "").trim();
+        const activity = (row[1] || "").trim();
+        if(["월요일","화요일","수요일","목요일","금요일"].includes(day) && activity){
+          result[day] = activity;
+        }
       });
 
       return result;
     }
 
-    return result;
-  }
+    function extractLastPeriodByDay(rows){
+      const result = { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" };
 
-  function extractLastPeriodByDay(rows){
-    const result = { 1: "4교시", 2: "5교시", 3: "5교시", 4: "5교시", 5: "4교시" };
-    const weekHeader = findCell(rows, "월");
-    if(!weekHeader) return result;
+      rows.forEach(row => {
+        const day = (row[0] || "").trim();
+        const value = (row[1] || "").trim();
 
-    const dayMap = { "월": 1, "화": 2, "수": 3, "목": 4, "금": 5 };
+        if(day === "월요일" && value) result[1] = value;
+        if(day === "화요일" && value) result[2] = value;
+        if(day === "수요일" && value) result[3] = value;
+        if(day === "목요일" && value) result[4] = value;
+        if(day === "금요일" && value) result[5] = value;
+      });
 
-    for(let i = 0; i < 5; i++){
-      const col = weekHeader.c + i;
-      const dayName = (rows[weekHeader.r][col] || "").trim();
-      const value = (rows[weekHeader.r + 1]?.[col] || "").trim();
-      if(dayMap[dayName] && value){
-        result[dayMap[dayName]] = value;
+      return result;
+    }
+
+    function renderHeader(){
+      const lines = DASHBOARD.headerLines;
+      const formatted = lines.map(t =>
+        t.replace(/(\d+일)/g, '<span class="accent">$1</span>')
+      );
+      document.getElementById("sheetData").innerHTML = formatted.join("<br>");
+    }
+
+    function getTodayLunchActivity(){
+      const dayMap = { 1:"월요일", 2:"화요일", 3:"수요일", 4:"목요일", 5:"금요일" };
+      const dayName = dayMap[new Date().getDay()];
+      return dayName ? (DASHBOARD.lunchActivities[dayName] || "점심시간 활동") : "점심시간 활동";
+    }
+
+    function buildLunchNotice(rawText){
+      const base = (rawText || DEFAULT_NOTICE.lunch)
+        .split("\n")
+        .map(v => v.trim())
+        .filter(Boolean);
+
+      return [`🔔${getTodayLunchActivity()}`, ...base].join("\n");
+    }
+
+    function getNoticeTextByType(type){
+      const text = DASHBOARD.notices[type] || DEFAULT_NOTICE[type] || "";
+      return type === "lunch" ? buildLunchNotice(text) : text;
+    }
+
+    function selectTab(type, isManual = true){
+      currentTab = type;
+
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.id === `btn-${type}`);
+      });
+
+      document.getElementById("noticeInput").value = getNoticeTextByType(type);
+    }
+
+    function adjustFont(delta){
+      fontSize += delta;
+      if(fontSize < 28) fontSize = 28;
+      if(fontSize > 100) fontSize = 100;
+
+      document.getElementById("noticeInput").style.fontSize = fontSize + "px";
+      document.getElementById("currentSize").innerText = fontSize;
+      localStorage.setItem("dashFontSize", String(fontSize));
+    }
+
+    function formatDisplayTime(date){
+      const hour = date.getHours() % 12 || 12;
+      const minute = date.getMinutes();
+      return `${hour}시 ${minute}분`;
+    }
+
+    function getTodayLastPeriodLabel(){
+      const day = new Date().getDay();
+      return DASHBOARD.lastPeriodByDay[day] || "5교시";
+    }
+
+    function getTodayPeriods(){
+      const lastLabel = getTodayLastPeriodLabel();
+      const periods = [];
+
+      for(const p of DASHBOARD.periods){
+        periods.push(p);
+        if(p.label === lastLabel) break;
+      }
+
+      return periods;
+    }
+
+    function findNextPeriodInfo(nowMinutes){
+      const todayPeriods = getTodayPeriods();
+
+      for(let i = 0; i < todayPeriods.length; i++){
+        const p = todayPeriods[i];
+        const start = toMinutes(p.start);
+        const end = toMinutes(p.end);
+
+        if(nowMinutes >= start && nowMinutes < end){
+          return {
+            current: p,
+            next: todayPeriods[i + 1] || null,
+            remain: end - nowMinutes
+          };
+        }
+
+        if(nowMinutes < start){
+          return {
+            current: null,
+            next: p,
+            remain: start - nowMinutes
+          };
+        }
+      }
+
+      return { current: null, next: null, remain: 0 };
+    }
+
+    function refreshCurrentTabText(){
+      if(currentTab){
+        document.getElementById("noticeInput").value = getNoticeTextByType(currentTab);
       }
     }
 
-    return result;
-  }
+    function updateTime(){
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 
-  function renderHeader(){
-    const lines = DASHBOARD.headerLines;
-    const formatted = lines.map(t =>
-      t.replace(/(\d+일)/g, '<span class="accent">$1</span>')
-    );
-    document.getElementById("sheetData").innerHTML = formatted.join("<br>");
-  }
+      document.getElementById("dateText").textContent =
+        `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
 
-  function getTodayLunchActivity(){
-    const dayMap = { 1: "월요일", 2: "화요일", 3: "수요일", 4: "목요일", 5: "금요일" };
-    const dayName = dayMap[new Date().getDay()];
-    return dayName ? (DASHBOARD.lunchActivities[dayName] || "점심시간 활동") : "점심시간 활동";
-  }
+      const { current, next, remain } = findNextPeriodInfo(nowMinutes);
+      const statusLineEl = document.getElementById("statusLine");
+      const countdownEl = document.getElementById("countdownText");
 
-  function buildLunchNotice(rawText){
-    const base = (rawText || DEFAULT_NOTICE.lunch)
-      .split("\n")
-      .map(v => v.trim())
-      .filter(Boolean);
-    return [`🔔${getTodayLunchActivity()}`, ...base].join("\n");
-  }
+      if(current){
+        const isClassPeriod = /교시/.test(current.label);
+        statusLineEl.innerHTML = isClassPeriod
+          ? `<span class="accent">${current.label}</span> ${formatDisplayTime(now)}`
+          : `${current.label} ${formatDisplayTime(now)}`;
 
-  function getNoticeTextByType(type){
-    const text = DASHBOARD.notices[type] || DEFAULT_NOTICE[type] || "";
-    return type === "lunch" ? buildLunchNotice(text) : text;
-  }
+        const todayLastPeriod = getTodayLastPeriodLabel();
+        const isLastPeriod = current.label === todayLastPeriod;
 
-  function selectTab(type, isManual = true){
-    if(isManual) manualTabOverride = true;
-    currentTab = type;
+        if(isLastPeriod){
+          countdownEl.innerHTML = `마칠 때까지 <span class="accent">${remain}분</span> 남았습니다.`;
+        } else {
+          countdownEl.innerHTML = `<span class="accent">${next ? next.label : "다음 일과"}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
+        }
 
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.id === `btn-${type}`);
-    });
+        if(lastAutoTabType !== current.type){
+          lastAutoTabType = current.type;
+          selectTab(current.type, false);
+        }
 
-    document.getElementById("noticeInput").value = getNoticeTextByType(type);
-  }
-
-  function adjustFont(delta){
-    fontSize += delta;
-    if(fontSize < 28) fontSize = 28;
-    if(fontSize > 100) fontSize = 100;
-
-    document.getElementById("noticeInput").style.fontSize = fontSize + "px";
-    document.getElementById("currentSize").innerText = fontSize;
-    localStorage.setItem("dashFontSize", String(fontSize));
-  }
-
-  function formatDisplayTime(date){
-    const hour = date.getHours() % 12 || 12;
-    const minute = date.getMinutes();
-    return `${hour}시 ${minute}분`;
-  }
-
-  function getTodayLastPeriodLabel(){
-    const day = new Date().getDay();
-    return DASHBOARD.lastPeriodByDay[day] || "5교시";
-  }
-
-  function getTodayPeriods(){
-    const lastLabel = getTodayLastPeriodLabel();
-    const periods = [];
-
-    for(const p of DASHBOARD.periods){
-      periods.push(p);
-      if(p.label === lastLabel) break;
-    }
-
-    return periods;
-  }
-
-  function findNextPeriodInfo(nowMinutes){
-    const todayPeriods = getTodayPeriods();
-
-    for(let i = 0; i < todayPeriods.length; i++){
-      const p = todayPeriods[i];
-      const start = toMinutes(p.start);
-      const end = toMinutes(p.end);
-
-      if(nowMinutes >= start && nowMinutes < end){
-        return {
-          current: p,
-          next: todayPeriods[i + 1] || null,
-          remain: end - nowMinutes
-        };
+        isInitialLoad = false;
+        return;
       }
 
-      if(nowMinutes < start){
-        return {
-          current: null,
-          next: p,
-          remain: start - nowMinutes
-        };
-      }
-    }
+      if(next){
+        statusLineEl.textContent = formatDisplayTime(now);
+        countdownEl.innerHTML = `<span class="accent">${next.label}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
 
-    return { current: null, next: null, remain: 0 };
-  }
-
-  function refreshCurrentTabText(){
-    if(currentTab){
-      document.getElementById("noticeInput").value = getNoticeTextByType(currentTab);
-    }
-  }
-
-  function updateTime(){
-    const now = new Date();
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-
-    document.getElementById("dateText").textContent =
-      `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-
-    const { current, next, remain } = findNextPeriodInfo(nowMinutes);
-    const statusLineEl = document.getElementById("statusLine");
-    const countdownEl = document.getElementById("countdownText");
-
-    if(current){
-      const isClassPeriod = /교시/.test(current.label);
-      statusLineEl.innerHTML = isClassPeriod
-        ? `<span class="accent">${current.label}</span> ${formatDisplayTime(now)}`
-        : `${current.label} ${formatDisplayTime(now)}`;
-
-      const todayLastPeriod = getTodayLastPeriodLabel();
-      const isLastPeriod = current.label === todayLastPeriod;
-
-      if(isLastPeriod){
-        countdownEl.innerHTML = `마칠 때까지 <span class="accent">${remain}분</span> 남았습니다.`;
-      } else {
-        countdownEl.innerHTML = `<span class="accent">${next ? next.label : "다음 일과"}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
+        if(isInitialLoad){
+          lastAutoTabType = "morning";
+          selectTab("morning", false);
+          isInitialLoad = false;
+        }
+        return;
       }
 
-      if(lastAutoTabType !== current.type){
-        manualTabOverride = false;
-        lastAutoTabType = current.type;
-        selectTab(current.type, false);
-      }
-
-      isInitialLoad = false;
-      return;
-    }
-
-    if(next){
       statusLineEl.textContent = formatDisplayTime(now);
-      countdownEl.innerHTML = `<span class="accent">${next.label}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
+      countdownEl.textContent = "오늘 일과가 끝났습니다.";
 
       if(isInitialLoad){
         lastAutoTabType = "morning";
         selectTab("morning", false);
         isInitialLoad = false;
       }
-      return;
     }
 
-    statusLineEl.textContent = formatDisplayTime(now);
-    countdownEl.textContent = "오늘 일과가 끝났습니다.";
+    async function fetchMeal(){
+      const mealEl = document.getElementById("mealList");
 
-    if(isInitialLoad){
-      lastAutoTabType = "morning";
-      selectTab("morning", false);
-      isInitialLoad = false;
-    }
-  }
-
-  async function fetchMeal(){
-    const mealEl = document.getElementById("mealList");
-
-    if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
-      mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-      return;
-    }
-
-    try{
-      const now = new Date();
-      const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-      const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
-      const res = await fetch(apiUrl);
-      const data = await res.json();
-      const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
-
-      if(!row?.DDISH_NM){
+      if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
         mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
         return;
       }
 
-      const clean = row.DDISH_NM
-        .replace(/<br\/?>/gi, "\n")
-        .split("\n")
-        .map(v => v.trim())
-        .filter(Boolean)
-        .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
-        .filter(v => !v.includes("우유(급식)"))
-        .join("\n");
+      try{
+        const now = new Date();
+        const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+        const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
 
-      mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
-    } catch(e){
-      mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-    }
-  }
+        if(!row?.DDISH_NM){
+          mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+          return;
+        }
 
-  async function loadDashboardData(){
-    try{
-      const [basicRows, noticeRows] = await Promise.all([
-        fetchCsv(BASIC_INFO_URL),
-        fetchCsv(NOTICE_URL)
-      ]);
+        const clean = row.DDISH_NM
+          .replace(/<br\/?>/gi, "\n")
+          .split("\n")
+          .map(v => v.trim())
+          .filter(Boolean)
+          .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
+          .filter(v => !v.includes("우유(급식)"))
+          .join("\n");
 
-      DASHBOARD.periods = extractPeriods(basicRows);
-      DASHBOARD.headerLines = extractHeaderLines(basicRows);
-      DASHBOARD.notices = extractNotices(noticeRows);
-      DASHBOARD.lunchActivities = extractLunchActivities(noticeRows);
-      DASHBOARD.lastPeriodByDay = extractLastPeriodByDay(basicRows);
-
-      const codes = extractSchoolCodes(basicRows);
-      DASHBOARD.officeCode = codes.officeCode;
-      DASHBOARD.schoolCode = codes.schoolCode;
-
-      renderHeader();
-      refreshCurrentTabText();
-
-      if(isInitialLoad){
-        selectTab("morning", false);
+        mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
+      } catch(e){
+        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
       }
-    } catch(e){
-      document.getElementById("sheetData").innerHTML = "데이터를 불러올 수 없습니다.";
     }
-  }
 
-  async function refreshAllData(){
-    await loadDashboardData();
-    updateTime();
-    await fetchMeal();
-  }
+    async function loadDashboardData(){
+      try{
+        const [basicRows, noticeRows] = await Promise.all([
+          fetchCsv(BASIC_INFO_URL),
+          fetchCsv(NOTICE_URL)
+        ]);
 
-  async function toggleFullscreen(){
-    try{
-      if(!document.fullscreenElement){
-        await document.documentElement.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
+        DASHBOARD.periods = extractPeriods(basicRows);
+        DASHBOARD.headerLines = extractHeaderLines(basicRows);
+        DASHBOARD.notices = extractNotices(noticeRows);
+        DASHBOARD.lunchActivities = extractLunchActivities(noticeRows);
+        DASHBOARD.lastPeriodByDay = extractLastPeriodByDay(basicRows);
+
+        const codes = extractSchoolCodes(basicRows);
+        DASHBOARD.officeCode = codes.officeCode;
+        DASHBOARD.schoolCode = codes.schoolCode;
+
+        renderHeader();
+        refreshCurrentTabText();
+
+        if(isInitialLoad){
+          selectTab("morning", false);
+        }
+      } catch(e){
+        document.getElementById("sheetData").innerHTML = "데이터를 불러올 수 없습니다.";
       }
-    } catch(e){}
-  }
+    }
 
-  adjustFont(0);
-  refreshAllData();
+    async function refreshAllData(){
+      await loadDashboardData();
+      updateTime();
+      await fetchMeal();
+    }
 
-  setInterval(updateTime, 1000);
-  setInterval(fetchMeal, 10 * 60 * 1000);
-  setInterval(loadDashboardData, 30 * 1000);
-</script>
+    async function toggleFullscreen(){
+      try{
+        if(!document.fullscreenElement){
+          await document.documentElement.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch(e){}
+    }
+
+    adjustFont(0);
+    refreshAllData();
+
+    setInterval(updateTime, 1000);
+    setInterval(fetchMeal, 10 * 60 * 1000);
+    setInterval(loadDashboardData, 30 * 1000);
+  </script>
 </body>
 </html>
