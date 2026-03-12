@@ -327,25 +327,18 @@
 
         <section class="card notice-card">
           <div class="tab-bar">
-            <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-            <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-            <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-            <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
+  <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
+  <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
+  <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
+  <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
 
-            <div class="font-control">
-              <button class="size-btn" onclick="adjustNoticeFont(-4)">-</button>
-              <div class="meal-top">
-  <div class="meal-title-wrap">
-    <div class="meal-title">오늘의 급식 🍱</div>
-  </div>
-  <div class="meal-font-control-wrap">
-    <div class="font-control meal-font-control">
-  <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
-  <input id="mealFontSizeInput" class="size-input always-spin" type="number" min="16" max="120" />
-  <button class="size-btn" onclick="adjustMealFont(2)">+</button>
-</div>
+  <div class="font-control">
+    <button class="size-btn" onclick="adjustNoticeFont(-4)">-</button>
+    <input id="noticeFontSizeInput" class="size-input always-spin" type="number" min="28" max="120" />
+    <button class="size-btn" onclick="adjustNoticeFont(4)">+</button>
   </div>
 </div>
+        
               <button class="size-btn" onclick="adjustNoticeFont(4)">+</button>
             </div>
           </div>
@@ -368,6 +361,7 @@
   <div class="meal-title-wrap">
     <div class="meal-title">오늘의 급식 🍱</div>
   </div>
+
   <div class="meal-font-control-wrap">
     <div class="font-control meal-font-control">
       <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
@@ -377,7 +371,7 @@
   </div>
 </div>
 
-          <div class="meal-list" id="mealList"></div>
+<div class="meal-list" id="mealList"></div>
         </section>
       </div>
     </div>
