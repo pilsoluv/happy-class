@@ -9,12 +9,14 @@
     --yellow:#ffca1b;
 
     /* 모든 여백 기준 */
-    --gutter:32px;      /* 왼쪽 바깥 = 가운데 = 오른쪽 바깥 */
-    --row-gap:16px;     /* 위아래 간격 공통 */
+    --gutter:42px;      /* 왼쪽 바깥 = 가운데 = 오른쪽 바깥 */
+    --row-gap:25px;     /* 위아래 간격 공통 */
 
     /* 열 비율 */
     --left-col:54fr;
     --right-col:46fr;
+
+    --header-offset:2px;  /*헤더만 추가로 안쪽으로 넣는 값*/
 
     /* 각 열 안 위/아래 높이 */
     --left-top-h:150px;
@@ -81,7 +83,7 @@
 
   .header-card{
     padding:18px 0 0 0;
-    margin-left:0;
+    margin-left:var(--header-offset);
     display:flex;
     flex-direction:column;
     align-items:flex-start;
