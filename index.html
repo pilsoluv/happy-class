@@ -1,893 +1,342 @@
+<style>
+  :root{
+    --bg:#0a2a63;
+    --card-bg:rgba(255,255,255,0.92);
+    --card-border:rgba(0,0,0,0.10);
+    --text:#111;
+    --white:#fff;
+    --navy:#133a87;
+    --yellow:#ffca1b;
 
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>행복한 우리반</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <style>
+    /* 모든 여백 기준 */
+    --gutter:32px;      /* 왼쪽 바깥 = 가운데 = 오른쪽 바깥 */
+    --row-gap:16px;     /* 위아래 간격 공통 */
+
+    /* 열 비율 */
+    --left-col:54fr;
+    --right-col:46fr;
+
+    /* 각 열 안 위/아래 높이 */
+    --left-top-h:150px;
+    --right-top-h:310px;
+
+    --header-font:58px;
+    --date-font:64px;
+    --time-font:130px;
+    --count-font:62px;
+    --tab-font:22px;
+  }
+
+  *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
+  html,body{margin:0;width:100%;height:100%;}
+  body{
+    background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
+    color:var(--white);
+    overflow:hidden;
+  }
+
+  .accent{color:var(--yellow);font-weight:900;white-space:nowrap;}
+
+  /* 바깥 패딩 제거: 여백은 .page 하나가 전부 담당 */
+  .app{
+    width:100%;
+    height:100%;
+    padding:0;
+  }
+
+  /* 핵심 구조 */
+  .page{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-columns:var(--left-col) var(--right-col);
+    column-gap:var(--gutter);
+    padding:var(--gutter);
+  }
+
+  .col{
+    min-height:0;
+    display:grid;
+    row-gap:var(--row-gap);
+  }
+
+  .left-col{
+    grid-template-rows:var(--left-top-h) 1fr;
+  }
+
+  .right-col{
+    grid-template-rows:var(--right-top-h) 1fr;
+  }
+
+  .card{
+    min-height:0;
+    width:100%;
+    background:var(--card-bg);
+    color:var(--text);
+    border-radius:28px;
+    border:2px solid var(--card-border);
+    box-shadow:0 10px 28px rgba(0,0,0,0.12);
+    overflow:hidden;
+  }
+
+  .header-card{
+    padding:18px 0 0 0;
+    margin-left:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    gap:4px;
+    font-size:var(--header-font);
+    font-weight:900;
+    line-height:1.15;
+    color:var(--white);
+    background:transparent;
+    border:none;
+    box-shadow:none;
+  }
+
+  .header-line{
+    display:block;
+    width:100%;
+    word-break:keep-all;
+    overflow-wrap:normal;
+  }
+
+  .right-top{
+    padding:6px 8px 0 8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    text-align:center;
+    background:transparent;
+    border:none;
+    box-shadow:none;
+  }
+
+  .date-line{
+    font-size:var(--date-font);
+    font-weight:900;
+    line-height:1.08;
+    margin-bottom:10px;
+  }
+
+  .time-line{
+    font-size:var(--time-font);
+    font-weight:950;
+    line-height:1.02;
+    letter-spacing:-2px;
+    white-space:nowrap;
+  }
+
+  .time-line .accent{margin-right:14px;}
+
+  .count-line{
+    font-size:var(--count-font);
+    font-weight:900;
+    line-height:1.15;
+    margin-top:10px;
+  }
+
+  .notice-card{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    margin:0;
+  }
+
+  .tab-bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px;
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    background:#f8f8f9;
+    flex-shrink:0;
+  }
+
+  .tab-btn{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    color:#b9bfc8;
+    font-size:var(--tab-font);
+    font-weight:900;
+    padding:14px 10px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.15s ease;
+  }
+
+  .tab-btn.active{
+    background:var(--navy);
+    color:var(--white);
+  }
+
+  .font-control{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 12px;
+    background:#eceff2;
+    border-radius:22px;
+    flex-shrink:0;
+  }
+
+  .size-btn{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:2px solid #ced4da;
+    background:#fff;
+    color:#495057;
+    font-size:20px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  .size-input{
+    width:58px;
+    height:34px;
+    text-align:center;
+    font-size:18px;
+    font-weight:900;
+    border:2px solid #ced4da;
+    border-radius:10px;
+    padding:2px 6px;
+    color:#495057;
+    background:#fff;
+    outline:none;
+    appearance:auto;
+    -webkit-appearance:auto;
+    -moz-appearance:auto;
+  }
+
+  .size-input.always-spin::-webkit-outer-spin-button,
+  .size-input.always-spin::-webkit-inner-spin-button{
+    opacity:1;
+    display:block;
+    margin-left:2px;
+  }
+
+  .notice-content{
+    flex:1;
+    min-height:0;
+    padding:34px 34px 30px 42px;
+  }
+
+  .notice-input{
+    width:100%;
+    height:100%;
+    border:none;
+    outline:none;
+    resize:none;
+    background:transparent;
+    color:#333;
+    font-size:64px;
+    font-weight:900;
+    line-height:1.30;
+  }
+
+  .meal-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    margin:0;
+    padding:18px 28px;
+    text-align:center;
+  }
+
+  .meal-top{
+    width:100%;
+    min-height:64px;
+    margin-bottom:14px;
+  }
+
+  .meal-title-wrap{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .meal-title{
+    display:inline-block;
+    text-align:center;
+    font-size:52px;
+    font-weight:950;
+    color:var(--navy);
+    line-height:1;
+    padding-bottom:8px;
+    border-bottom:5px solid var(--yellow);
+    min-width:260px;
+  }
+
+  .meal-font-control-wrap{
+    position:absolute;
+    top:18px;
+    right:14px;
+  }
+
+  .meal-font-control{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 12px;
+    background:#e1e5ea;
+    border-radius:22px;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  .meal-list{
+    width:100%;
+    text-align:center;
+    font-size:34px;
+    font-weight:900;
+    line-height:1.25;
+    white-space:pre-line;
+    color:#333;
+  }
+
+  .fullscreen-btn{
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    width:52px;
+    height:52px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,255,255,0.92);
+    box-shadow:0 8px 24px rgba(0,0,0,0.2);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#1f3563;
+    z-index:30;
+  }
+
+  .fullscreen-btn svg{width:26px;height:26px;}
+
+  @media (max-width:1500px){
     :root{
-      --bg:#0a2a63;
-      --card-bg:rgba(255,255,255,0.92);
-      --card-border:rgba(0,0,0,0.10);
-      --text:#111;
-      --white:#fff;
-      --navy:#133a87;
-      --yellow:#ffca1b;
-
-      --page-padding:20px;
-      --col-gap:32px;
-      --side-gap:1  2px;
-      --row-gap:16px;
-
-      --left-col:54%;
-      --right-col:46%;
-
-      --left-top-h:150px;
-      --right-top-h:310px;
-
-      --header-font:58px;
+      --header-font:46px;
       --date-font:64px;
       --time-font:130px;
       --count-font:62px;
-      --tab-font:22px;
+      --tab-font:20px;
     }
 
-    *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
-    html,body{margin:0;width:100%;height:100%;}
-    body{
-      background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
-      color:var(--white);
-      overflow:hidden;
-    }
-
-    .accent{color:var(--yellow);font-weight:900;white-space:nowrap;}
-
-    .app{width:100%;height:100%;padding:var(--page-padding);}
-    .page{width:100%;height:100%;display:grid;grid-template-columns:var(--left-col) var(--right-col);gap:var(--col-gap); padding:0 var(--side-gap)}
-    .col{min-height:0;display:grid;gap:var(--row-gap);}
-    .left-col{grid-template-rows:var(--left-top-h) 1fr;}
-    .right-col{grid-template-rows:var(--right-top-h) 1fr;}
-
-    .card{
-      min-height:0;
-      background:var(--card-bg);
-      color:var(--text);
-      border-radius:28px;
-      border:2px solid var(--card-border);
-      box-shadow:0 10px 28px rgba(0,0,0,0.12);
-      overflow:hidden;
-    }
-
-    .header-card{
-      padding:18px 0 0 0
-      margin-left:0;
-      display:flex;
-      flex-direction:column;
-      align-items:flex-start;
-      justify-content:flex-start;
-      gap:4px;
-      font-size:var(--header-font);
-      font-weight:900;
-      line-height:1.15;
-      color:var(--white);
-      background:transparent;
-      border:none;
-      box-shadow:none;
-    }
-
-    .header-line{
-      display:block;
-      width:100%;
-      word-break:keep-all;
-      overflow-wrap:normal;
-    }
-
-    .right-top{
-      padding:6px 8px 0 8px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      text-align:center;
-      background:transparent;
-      border:none;
-      box-shadow:none;
-    }
-
-    .date-line{
-      font-size:var(--date-font);
-      font-weight:900;
-      line-height:1.08;
-      margin-bottom:10px;
-    }
-
-    .time-line{
-      font-size:var(--time-font);
-      font-weight:950;
-      line-height:1.02;
-      letter-spacing:-2px;
-      white-space:nowrap;
-    }
-
-    .time-line .accent{margin-right:14px;}
-
-    .count-line{
-      font-size:var(--count-font);
-      font-weight:900;
-      line-height:1.15;
-      margin-top:10px;
-    }
-
-    .notice-card{display:flex;flex-direction:column;}
-    .tab-bar{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:12px;
-      border-bottom:1px solid rgba(0,0,0,0.06);
-      background:#f8f8f9;
-      flex-shrink:0;
-    }
-
-    .tab-btn{
-      flex:1;
-      min-width:0;
-      border:none;
-      background:transparent;
-      color:#b9bfc8;
-      font-size:var(--tab-font);
-      font-weight:900;
-      padding:14px 10px;
-      border-radius:14px;
-      cursor:pointer;
-      transition:0.15s ease;
-    }
-
-    .tab-btn.active{
-      background:var(--navy);
-      color:var(--white);
-    }
-
-    .font-control{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:5px 12px;
-      background:#eceff2;
-      border-radius:22px;
-      flex-shrink:0;
-    }
-
-    .size-btn{
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      border:2px solid #ced4da;
-      background:#fff;
-      color:#495057;
-      font-size:20px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-shrink:0;
-    }
-
-    .size-input{
-      width:58px;
-      height:34px;
-      text-align:center;
-      font-size:18px;
-      font-weight:900;
-      border:2px solid #ced4da;
-      border-radius:10px;
-      padding:2px 6px;
-      color:#495057;
-      background:#fff;
-      outline:none;
-      appearance:auto;
-      -webkit-appearance:auto;
-      -moz-appearance:auto;
-    }
-
-    .size-input.always-spin::-webkit-outer-spin-button,
-    .size-input.always-spin::-webkit-inner-spin-button{
-      opacity:1;
-      display:block;
-      margin-left:2px;
-    }
-
-    .notice-content{
-      flex:1;
-      min-height:0;
-      padding:34px 34px 30px 42px;
-    }
-
-    .notice-input{
-      width:100%;
-      height:100%;
-      border:none;
-      outline:none;
-      resize:none;
-      background:transparent;
-      color:#333;
-      font-size:64px;
-      font-weight:900;
-      line-height:1.30;
-    }
-
-    .meal-card{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      margin:0;
-      padding:18px 28px;
-      text-align:center;
-    }
-
-    .meal-top{
-      width:100%;
-      min-height:64px;
-      margin-bottom:14px;
-    }
-
-    .meal-title-wrap{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .meal-title{
-      display:inline-block;
-      text-align:center;
-      font-size:52px;
-      font-weight:950;
-      color:var(--navy);
-      line-height:1;
-      padding-bottom:8px;
-      border-bottom:5px solid var(--yellow);
-      min-width:260px;
-    }
-
-    .meal-font-control-wrap{
-      position:absolute;
-      top:18px;
-      right:14px;   
-    }
-
-    .meal-font-control{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:5px 12px;
-      background:#e1e5ea;
-      border-radius:22px;
-      box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
-    }
-
-    .meal-list{
-      width:100%;
-      text-align:center;
-      font-size:34px;
-      font-weight:900;
-      line-height:1.25                                ;
-      white-space:pre-line;
-      color:#333;
-    }
-
-    .fullscreen-btn{
-      position:fixed;
-      right:16px;
-      bottom:16px;
-      width:52px;
-      height:52px;
-      border:none;
-      border-radius:50%;
-      background:rgba(255,255,255,0.92);
-      box-shadow:0 8px 24px rgba(0,0,0,0.2);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#1f3563;
-      z-index:30;
-    }
-
-    .fullscreen-btn svg{width:26px;height:26px;}
-
-    @media (max-width:1500px){
-      :root{
-        --header-font:46px;
-        --date-font:64px;
-        --time-font:130px;
-        --count-font:62px;
-        --tab-font:20px;
-      }
-
-      .notice-input{font-size:50px;}
-      .meal-title{font-size:42px;min-width:220px;}
-      .meal-list{font-size:28px;}
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <div class="page">
-      <div class="col left-col">
-        <div class="header-card" id="sheetData"></div>
-
-        <section class="card notice-card">
-          <div class="tab-bar">
-            <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
-            <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
-            <button class="tab-btn" id="btn-break" onclick="selectTab('break')">쉬는시간</button>
-            <button class="tab-btn" id="btn-lunch" onclick="selectTab('lunch')">점심시간</button>
-
-            <div class="font-control">
-              <button class="size-btn" onclick="adjustNoticeFont(-4)">-</button>
-              <input id="noticeFontSizeInput" class="size-input always-spin" type="number" min="28" max="120" />
-              <button class="size-btn" onclick="adjustNoticeFont(4)">+</button>
-            </div>
-          </div>
-
-          <div class="notice-content">
-            <textarea id="noticeInput" class="notice-input"></textarea>
-          </div>
-        </section>
-      </div>
-
-      <div class="col right-col">
-        <section class="right-top">
-          <div class="date-line" id="dateText"></div>
-          <div class="time-line" id="statusLine"></div>
-          <div class="count-line" id="countdownText"></div>
-        </section>
-
-        <section class="card meal-card">
-          <div class="meal-top">
-            <div class="meal-title-wrap">
-              <div class="meal-title">오늘의 급식 🍱</div>
-            </div>
-
-            <div class="meal-font-control-wrap">
-              <div class="font-control meal-font-control">
-                <button class="size-btn" onclick="adjustMealFont(-2)">-</button>
-                <input id="mealFontSizeInput" class="size-input always-spin" type="number" min="16" max="120" />
-                <button class="size-btn" onclick="adjustMealFont(2)">+</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="meal-list" id="mealList"></div>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <button class="fullscreen-btn" title="전체화면" onclick="toggleFullscreen()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
-      <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
-      <path d="M8 21H5a2 2 0 0 1-2-2v-3"/>
-      <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
-    </svg>
-  </button>
-
-  <script>
-    const BASIC_INFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=0&single=true&output=csv";
-    const NOTICE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=1154495982&single=true&output=csv";
-
-    const DEFAULT_NOTICE = {
-      morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기",
-      class: "• 가방 문 닫기\n• 연필 한 자루, 지우개 하나 꺼내기\n• 바른 자세로 앉기\n• 선생님 말씀 경청하기",
-      break: "• 책상 정리하기\n• 물 떠오기\n• 화장실 가기\n• 연필 깎기\n• 다음 시간 교과서 꺼내기",
-      lunch: "• 책상 위 정리하기\n• 의자 넣고 손 씻기\n• 예비종 치면 청소하기"
-    };
-
-    const DEFAULT_LUNCH_ACTIVITIES = {
-      "월요일":"교실놀이",
-      "화요일":"교실놀이",
-      "수요일":"위클래스",
-      "목요일":"교실놀이",
-      "금요일":"위클래스"
-    };
-
-    const TAB_NAME_TO_TYPE = {
-      "아침시간":"morning",
-      "아침활동":"morning",
-      "수업시간":"class",
-      "쉬는시간":"break",
-      "점심시간":"lunch"
-    };
-
-    let DASHBOARD = {
-      headerLines: [],
-      periods: [],
-      notices: { ...DEFAULT_NOTICE },
-      lunchActivities: { ...DEFAULT_LUNCH_ACTIVITIES },
-      officeCode: "",
-      schoolCode: "",
-      lastPeriodByDay: { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" }
-    };
-
-    const CLOCK_DELAY_MINUTES = 1;
-    let currentTab = "";
-    let noticeFontSize = parseInt(localStorage.getItem("noticeFontSize") || "64", 10);
-    let mealFontSize = parseInt(localStorage.getItem("mealFontSize") || "34", 10);
-    let lastAutoTabType = "";
-    let isInitialLoad = true;
-
-    function parseCsv(text){
-      const rows = [];
-      let row = [];
-      let cell = "";
-      let inQuotes = false;
-
-      for(let i = 0; i < text.length; i++){
-        const ch = text[i];
-        const next = text[i + 1];
-
-        if(ch === '"'){
-          if(inQuotes && next === '"'){
-            cell += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if(ch === "," && !inQuotes){
-          row.push(cell);
-          cell = "";
-        } else if((ch === "\n" || ch === "\r") && !inQuotes){
-          if(ch === "\r" && next === "\n") i++;
-          row.push(cell);
-          rows.push(row);
-          row = [];
-          cell = "";
-        } else {
-          cell += ch;
-        }
-      }
-
-      if(cell.length > 0 || row.length > 0){
-        row.push(cell);
-        rows.push(row);
-      }
-
-      return rows.map(r => r.map(c => (c || "").trim()));
-    }
-
-    async function fetchCsv(url){
-      const res = await fetch(url);
-      if(!res.ok) throw new Error("CSV 불러오기 실패");
-      return parseCsv(await res.text());
-    }
-
-    function findCell(rows, keyword){
-      for(let r = 0; r < rows.length; r++){
-        for(let c = 0; c < rows[r].length; c++){
-          if((rows[r][c] || "").trim() === keyword){
-            return { r, c };
-          }
-        }
-      }
-      return null;
-    }
-
-    function normalizeTime(value){
-      if(!value) return "";
-      const str = String(value).trim();
-      const match = str.match(/^(\d{1,2}):(\d{1,2})$/);
-      if(!match) return str;
-      return `${match[1].padStart(2, "0")}:${match[2].padStart(2, "0")}`;
-    }
-
-    function toMinutes(timeStr){
-      const [h, m] = timeStr.split(":").map(Number);
-      return h * 60 + m;
-    }
-
-    function getTypeFromLabel(label){
-      if(label.includes("아침")) return "morning";
-      if(label.includes("점심")) return "lunch";
-      if(label.includes("쉬는")) return "break";
-      if(label.includes("예비")) return "break";
-      return "class";
-    }
-
-    function extractPeriods(rows){
-      const header = findCell(rows, "교시");
-      if(!header) return [];
-      const periods = [];
-      let r = header.r + 1;
-
-      while(r < rows.length){
-        const label = (rows[r][header.c] || "").trim();
-        const start = normalizeTime(rows[r][header.c + 1] || "");
-        const end = normalizeTime(rows[r][header.c + 2] || "");
-        if(!label || !start || !end) break;
-        periods.push({ label, start, end, type:getTypeFromLabel(label) });
-        r++;
-      }
-
-      return periods;
-    }
-
-    function extractSchoolCodes(rows){
-      const office = findCell(rows, "교육청코드");
-      const school = findCell(rows, "학교코드");
-      return {
-        officeCode: office ? (rows[office.r][office.c + 1] || "").trim() : "",
-        schoolCode: school ? (rows[school.r][school.c + 1] || "").trim() : ""
-      };
-    }
-
-    function extractHeaderLines(rows){
-      const line1Cell = findCell(rows, "왼쪽 헤더문구 1");
-      const line2Cell = findCell(rows, "왼쪽 헤더문구 2");
-      const line1 = line1Cell ? (rows[line1Cell.r][line1Cell.c + 1] || "").trim() : "";
-      const line2 = line2Cell ? (rows[line2Cell.r][line2Cell.c + 1] || "").trim() : "";
-      return [line1, line2].filter(Boolean);
-    }
-
-    function extractNotices(rows){
-  const notices = { ...DEFAULT_NOTICE };
-
-  for(const row of rows){
-    const cells = row.map(v => (v || "").trim());
-
-    const labelIndex = cells.findIndex(v =>
-      v === "아침시간" || v === "아침활동" || v === "수업시간" || v === "쉬는시간" || v === "점심시간"
-    );
-
-    if(labelIndex === -1) continue;
-
-    const label = cells[labelIndex];
-    const value = cells[labelIndex + 1] || "";
-    const type = TAB_NAME_TO_TYPE[label];
-
-    if(type && value){
-      notices[type] = value;
-    }
+    .notice-input{font-size:50px;}
+    .meal-title{font-size:42px;min-width:220px;}
+    .meal-list{font-size:28px;}
   }
-
-  return notices;
-}
-
-    function extractLunchActivities(rows){
-  const result = { ...DEFAULT_LUNCH_ACTIVITIES };
-
-  for(const row of rows){
-    const cells = row.map(v => (v || "").trim());
-
-    const dayIndex = cells.findIndex(v =>
-      v === "월요일" || v === "화요일" || v === "수요일" || v === "목요일" || v === "금요일"
-    );
-
-    if(dayIndex === -1) continue;
-
-    const day = cells[dayIndex];
-    const activity = cells[dayIndex + 1] || "";
-
-    if(activity){
-      result[day] = activity;
-    }
-  }
-
-  return result;
-}
-
-    function extractLastPeriodByDay(rows){
-      const result = { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" };
-
-      rows.forEach(row => {
-        const day = (row[0] || "").trim();
-        const value = (row[1] || "").trim();
-        if(day === "월요일" && value) result[1] = value;
-        if(day === "화요일" && value) result[2] = value;
-        if(day === "수요일" && value) result[3] = value;
-        if(day === "목요일" && value) result[4] = value;
-        if(day === "금요일" && value) result[5] = value;
-      });
-
-      return result;
-    }
-
-    function renderHeader(){
-      const lines = DASHBOARD.headerLines;
-      const formatted = lines.map(t => {
-        const safe = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return `<span class="header-line">${safe.replace(/(\d+일)/g, '<span class="accent">$1</span>')}</span>`;
-      });
-      document.getElementById("sheetData").innerHTML = formatted.join("");
-    }
-
-    function getTodayLunchActivity(){
-      const dayMap = { 1:"월요일", 2:"화요일", 3:"수요일", 4:"목요일", 5:"금요일" };
-      const dayName = dayMap[new Date().getDay()];
-      return dayName ? (DASHBOARD.lunchActivities[dayName] || "점심시간 활동") : "점심시간 활동";
-    }
-
-    function buildLunchNotice(rawText){
-      const base = (rawText || DEFAULT_NOTICE.lunch)
-        .split("\n")
-        .map(v => v.trim())
-        .filter(Boolean);
-      return [`🔔 ${getTodayLunchActivity()}`, ...base].join("\n");
-    }
-
-    function getNoticeTextByType(type){
-      const text = DASHBOARD.notices[type] || DEFAULT_NOTICE[type] || "";
-      return type === "lunch" ? buildLunchNotice(text) : text;
-    }
-
-    function selectTab(type){
-      currentTab = type;
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.id === `btn-${type}`);
-      });
-      document.getElementById("noticeInput").value = getNoticeTextByType(type);
-    }
-
-    function applyNoticeFontSize(){
-      if(noticeFontSize < 28) noticeFontSize = 28;
-      if(noticeFontSize > 120) noticeFontSize = 120;
-      const input = document.getElementById("noticeInput");
-      const control = document.getElementById("noticeFontSizeInput");
-      if(input) input.style.fontSize = noticeFontSize + "px";
-      if(control) control.value = noticeFontSize;
-      localStorage.setItem("noticeFontSize", String(noticeFontSize));
-    }
-
-    function adjustNoticeFont(delta){
-      noticeFontSize += delta;
-      applyNoticeFontSize();
-    }
-
-    function applyMealFontSize(){
-      if(mealFontSize < 16) mealFontSize = 16;
-      if(mealFontSize > 120) mealFontSize = 120;
-      const mealList = document.getElementById("mealList");
-      const control = document.getElementById("mealFontSizeInput");
-      if(mealList) mealList.style.fontSize = mealFontSize + "px";
-      if(control) control.value = mealFontSize;
-      localStorage.setItem("mealFontSize", String(mealFontSize));
-    }
-
-    function adjustMealFont(delta){
-      mealFontSize += delta;
-      applyMealFontSize();
-    }
-
-    function formatDisplayTime(date){
-      const hour = date.getHours() % 12 || 12;
-      const minute = date.getMinutes();
-      return `${hour}시 ${minute}분`;
-    }
-
-    function getTodayLastPeriodLabel(){
-      const day = new Date().getDay();
-      return DASHBOARD.lastPeriodByDay[day] || "5교시";
-    }
-
-    function getTodayPeriods(){
-      const lastLabel = getTodayLastPeriodLabel();
-      const periods = [];
-      for(const p of DASHBOARD.periods){
-        periods.push(p);
-        if(p.label === lastLabel) break;
-      }
-      return periods;
-    }
-
-    function findNextPeriodInfo(nowMinutes){
-      const todayPeriods = getTodayPeriods();
-
-      for(let i = 0; i < todayPeriods.length; i++){
-        const p = todayPeriods[i];
-        const start = toMinutes(p.start);
-        const end = toMinutes(p.end);
-
-        if(nowMinutes >= start && nowMinutes < end){
-          return { current:p, next:todayPeriods[i + 1] || null, remain:end - nowMinutes };
-        }
-
-        if(nowMinutes < start){
-          return { current:null, next:p, remain:start - nowMinutes };
-        }
-      }
-
-      return { current:null, next:null, remain:0 };
-    }
-
-    function refreshCurrentTabText(){
-      if(currentTab){
-        document.getElementById("noticeInput").value = getNoticeTextByType(currentTab);
-      }
-    }
-
-    function updateTime(){
-      const realNow = new Date();
-      const now = new Date(realNow.getTime() - CLOCK_DELAY_MINUTES * 60000);
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
-      const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
-
-      document.getElementById("dateText").textContent =
-        `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
-
-      const { current, next, remain } = findNextPeriodInfo(nowMinutes);
-      const statusLineEl = document.getElementById("statusLine");
-      const countdownEl = document.getElementById("countdownText");
-
-      if(current){
-        const isClassPeriod = /교시/.test(current.label);
-        statusLineEl.innerHTML = isClassPeriod
-          ? `<span class="accent">${current.label}</span> ${formatDisplayTime(now)}`
-          : `${current.label} ${formatDisplayTime(now)}`;
-
-        const todayLastPeriod = getTodayLastPeriodLabel();
-        const isLastPeriod = current.label === todayLastPeriod;
-
-        if(isLastPeriod){
-          countdownEl.innerHTML = `마칠 때까지 <span class="accent">${remain}분</span> 남았습니다.`;
-        } else {
-          countdownEl.innerHTML = `<span class="accent">${next ? next.label : "다음 일과"}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
-        }
-
-        if(lastAutoTabType !== current.type){
-          lastAutoTabType = current.type;
-          selectTab(current.type);
-        }
-
-        isInitialLoad = false;
-        return;
-      }
-
-      if(next){
-        statusLineEl.textContent = formatDisplayTime(now);
-        countdownEl.innerHTML = `<span class="accent">${next.label}</span>까지 <span class="accent">${remain}분</span> 남았습니다.`;
-
-        if(isInitialLoad){
-          lastAutoTabType = "morning";
-          selectTab("morning");
-          isInitialLoad = false;
-        }
-        return;
-      }
-
-      statusLineEl.textContent = formatDisplayTime(now);
-      countdownEl.textContent = "오늘 일과가 끝났습니다.";
-
-      if(isInitialLoad){
-        lastAutoTabType = "morning";
-        selectTab("morning");
-        isInitialLoad = false;
-      }
-    }
-
-    async function fetchMeal(){
-      const mealEl = document.getElementById("mealList");
-
-      if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
-        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-        return;
-      }
-
-      try{
-        const now = new Date();
-        const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-        const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
-
-        if(!row?.DDISH_NM){
-          mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-          return;
-        }
-
-        const clean = row.DDISH_NM
-          .replace(/<br\/?>/gi, "\n")
-          .split("\n")
-          .map(v => v.trim())
-          .filter(Boolean)
-          .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
-          .filter(v => !v.includes("우유(급식)"))
-          .join("\n");
-
-        mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
-      } catch(e){
-        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-      }
-    }
-
-    async function loadDashboardData(){
-      try{
-        const [basicRows, noticeRows] = await Promise.all([
-          fetchCsv(BASIC_INFO_URL),
-          fetchCsv(NOTICE_URL)
-        ]);
-
-        DASHBOARD.periods = extractPeriods(basicRows);
-        DASHBOARD.headerLines = extractHeaderLines(basicRows);
-        DASHBOARD.notices = extractNotices(noticeRows);
-        DASHBOARD.lunchActivities = extractLunchActivities(noticeRows);
-        DASHBOARD.lastPeriodByDay = extractLastPeriodByDay(basicRows);
-
-        const codes = extractSchoolCodes(basicRows);
-        DASHBOARD.officeCode = codes.officeCode;
-        DASHBOARD.schoolCode = codes.schoolCode;
-
-        renderHeader();
-        refreshCurrentTabText();
-
-        if(isInitialLoad){
-          selectTab("morning");
-        }
-      } catch(e){
-        document.getElementById("sheetData").innerHTML = '<span class="header-line">데이터를 불러올 수 없습니다.</span>';
-      }
-    }
-
-    async function refreshAllData(){
-      await loadDashboardData();
-      updateTime();
-      await fetchMeal();
-      applyNoticeFontSize();
-      applyMealFontSize();
-    }
-
-    async function toggleFullscreen(){
-      try{
-        if(!document.fullscreenElement){
-          await document.documentElement.requestFullscreen();
-        } else {
-          await document.exitFullscreen();
-        }
-      } catch(e){}
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const noticeFontInput = document.getElementById("noticeFontSizeInput");
-      const mealFontInput = document.getElementById("mealFontSizeInput");
-
-      noticeFontInput.addEventListener("change", (e) => {
-        noticeFontSize = parseInt(e.target.value || "64", 10);
-        applyNoticeFontSize();
-      });
-
-      mealFontInput.addEventListener("change", (e) => {
-        mealFontSize = parseInt(e.target.value || "34", 10);
-        applyMealFontSize();
-      });
-
-      noticeFontInput.addEventListener("keydown", (e) => {
-        if(e.key === "Enter"){
-          noticeFontSize = parseInt(e.target.value || "64", 10);
-          applyNoticeFontSize();
-          e.target.blur();
-        }
-      });
-
-      mealFontInput.addEventListener("keydown", (e) => {
-        if(e.key === "Enter"){
-          mealFontSize = parseInt(e.target.value || "34", 10);
-          applyMealFontSize();
-          e.target.blur();
-        }
-      });
-    });
-
-    refreshAllData();
-
-    setInterval(updateTime, 1000);
-    setInterval(fetchMeal, 10 * 60 * 1000);
-    setInterval(loadDashboardData, 30 * 1000);
-  </script>
-</body>
-</html>
+</style>
