@@ -594,7 +594,7 @@
         .split("\n")
         .map(v => v.trim())
         .filter(Boolean);
-      return [`🔔${getTodayLunchActivity()}`, ...base].join("\n");
+      return [`🔔 ${getTodayLunchActivity()}`, ...base].join("\n");
     }
 
     function getNoticeTextByType(type){
