@@ -798,42 +798,74 @@
         isInitialLoad = false;
       }
     }
+    
+function getMealTargetDate(baseDate = new Date()){
+  const d = new Date(baseDate);
+  const hour = d.getHours();
+  const minute = d.getMinutes();
 
+  // 11:40 이후면 다음 급식으로 넘김
+  if(hour > 11 || (hour === 11 && minute >= 40)){
+    d.setDate(d.getDate() + 1);
+  }
+
+  // 토/일이면 월요일로 넘김
+  while(d.getDay() === 0 || d.getDay() === 6){
+    d.setDate(d.getDate() + 1);
+  }
+
+  return d;
+}
+
+function getMealTitleText(now = new Date(), targetDate = new Date()){
+  return now.toDateString() === targetDate.toDateString()
+    ? "오늘의 급식 🍱"
+    : "다음 급식 🍱";
+}
     async function fetchMeal(){
-      const mealEl = document.getElementById("mealList");
+  const mealEl = document.getElementById("mealList");
+  const mealTitleEl = document.querySelector(".meal-title");
 
-      if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
-        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-        return;
-      }
+  if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
+    mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+    if(mealTitleEl) mealTitleEl.textContent = "급식 정보 🍱";
+    return;
+  }
 
-      try{
-        const now = new Date();
-        const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-        const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
+  try{
+    const now = new Date();
+    const targetDate = getMealTargetDate(now);
 
-        if(!row?.DDISH_NM){
-          mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-          return;
-        }
-
-        const clean = row.DDISH_NM
-          .replace(/<br\/?>/gi, "\n")
-          .split("\n")
-          .map(v => v.trim())
-          .filter(Boolean)
-          .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
-          .filter(v => !v.includes("우유(급식)"))
-          .join("\n");
-
-        mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
-      } catch(e){
-        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-      }
+    if(mealTitleEl){
+      mealTitleEl.textContent = getMealTitleText(now, targetDate);
     }
+
+    const ymd = `${targetDate.getFullYear()}${String(targetDate.getMonth() + 1).padStart(2, "0")}${String(targetDate.getDate()).padStart(2, "0")}`;
+
+    const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+    const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
+
+    if(!row?.DDISH_NM){
+      mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+      return;
+    }
+
+    const clean = row.DDISH_NM
+      .replace(/<br\/?>/gi, "\n")
+      .split("\n")
+      .map(v => v.trim())
+      .filter(Boolean)
+      .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
+      .filter(v => !v.includes("우유(급식)"))
+      .join("\n");
+
+    mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
+  } catch(e){
+    mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+  }
+}
 
     async function loadDashboardData(){
       try{
