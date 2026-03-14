@@ -23,10 +23,6 @@
 
     --header-offset:3px;  /*헤더만 추가로 안쪽으로 넣는 값*/
 
-    /* 각 열 안 위/아래 높이 */
-    --left-top-h:150px;
-    --right-top-h:280px;
-
     --header-font:58px;
     --date-font:58px;
     --time-font:100px;
@@ -63,16 +59,16 @@
 
   .col{
     min-height:0;
-    display:grid;
-    row-gap:var(--row-gap);
+    display:flex
+    flex-direction:column;
   }
 
   .left-col{
-    grid-template-rows:var(--left-top-h) 1fr;
+    min0height:0;
   }
 
   .right-col{
-    grid-template-rows:var(--right-top-h) 1fr; row-gap:12px;
+    min0height:0;
   }
 
   .card{
@@ -89,6 +85,7 @@
   .header-card{
     padding:4px 0 0 0;
     margin-left:var(--header-offset);
+    margin-botoom:25px;
     display:flex;
     flex-direction:column;
     align-items:flex-start;
@@ -113,6 +110,7 @@
   .right-top{
     width:100%;
     padding:6px 0 0 0;
+    margin-bottom:25px;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -152,6 +150,8 @@
     flex-direction:column;
     width:100%;
     margin:0;
+    flex:1;
+    min-height:0;
   }
 
   .tab-bar{
@@ -261,6 +261,8 @@
     margin:0;
     padding:18px 28px;
     text-align:center;
+    flex:1;
+    min-height:0;
   }
 
   .meal-top{
