@@ -3,22 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>행복한 우리반</title>
+<title>행복한 우리반</title>
   <link rel="icon" type="image/png" href="icon.png">
   
 <style>
- @font-face {
-  font-family: "MyFont";
-  src: url("font.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-  
-    *{
-  box-sizing:border-box;
-  font-family:"MyFont","Pretendard",sans-serif;
-}
-  
   :root{
     --bg:#0a2a63;
     --card-bg:rgba(255,255,255,0.92);
@@ -45,6 +33,7 @@
     --tab-font:22px;
   }
 
+  *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
   html,body{margin:0;width:100%;height:100%;}
   body{
     background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
@@ -887,8 +876,8 @@ function getMealTitleText(now = new Date(), targetDate = new Date()){
           selectTab("morning");
         }
       } catch(e){
-        document.getElementById("sheetData").innerHTML = '<span class="header-line">데이터를 불러올 수 없습니다.</span>';
-      }
+  console.error("loadDashboardData error:", e);
+}
     }
 
     async function refreshAllData(){
