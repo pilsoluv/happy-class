@@ -4,6 +4,13 @@
   <link rel="icon" type="image/png" href="icon.png">
   
 <style>
+ @font-face {
+  font-family: "MyFont";
+  src: url("font.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+  
   :root{
     --bg:#0a2a63;
     --card-bg:rgba(255,255,255,0.92);
@@ -30,7 +37,10 @@
     --tab-font:22px;
   }
 
-  *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
+  *{
+  box-sizing:border-box;
+  font-family:"MyFont","Pretendard",sans-serif;
+}
   html,body{margin:0;width:100%;height:100%;}
   body{
     background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
