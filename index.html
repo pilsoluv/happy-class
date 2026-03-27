@@ -433,7 +433,7 @@
     const CLOCK_DELAY_MINUTES = 1;
     let currentTab = "";
     let noticeFontSize = parseInt(localStorage.getItem("noticeFontSize") || "64", 10);
-    let mealFontSize = parseInt(localStorage.getItem("mealFontSize") || "34", 10);
+    let mealFontSize = parseInt(localStorage.getItem("mealFontSize") || "64", 10);
     let lastAutoTabType = "";
     let isInitialLoad = true;
 
@@ -908,7 +908,7 @@ function getMealTitleText(now = new Date(), targetDate = new Date()){
       });
 
       mealFontInput.addEventListener("change", (e) => {
-        mealFontSize = parseInt(e.target.value || "34", 10);
+        mealFontSize = parseInt(e.target.value || "64", 10);
         applyMealFontSize();
       });
 
@@ -922,7 +922,7 @@ function getMealTitleText(now = new Date(), targetDate = new Date()){
 
       mealFontInput.addEventListener("keydown", (e) => {
         if(e.key === "Enter"){
-          mealFontSize = parseInt(e.target.value || "34", 10);
+          mealFontSize = parseInt(e.target.value || "64", 10);
           applyMealFontSize();
           e.target.blur();
         }
