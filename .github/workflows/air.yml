@@ -11,12 +11,13 @@ jobs:
 
     steps:
       - name: 코드 가져오기
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 에어코리아 API 호출
         shell: bash
         run: |
-          curl -L -s --fail-with-body \
+          set -e
+          curl -L -s \
             -o air_raw.json \
             "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=${{ secrets.AIR_KEY }}&returnType=json&numOfRows=1&pageNo=1&stationName=%EA%B3%A0%ED%98%84%EB%8F%99&dataTerm=DAILY&ver=1.3"
 
@@ -27,7 +28,7 @@ jobs:
       - name: JSON 가공
         shell: bash
         run: |
-          # JSON 아니면 실패시키지 말고 그냥 종료
+          # JSON 아니면 이번 실행은 건너뜀
           if ! jq empty air_raw.json >/dev/null 2>&1; then
             echo "air_raw.json이 JSON 형식이 아님. 이번 실행은 건너뜀."
             exit 0
