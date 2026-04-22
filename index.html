@@ -165,6 +165,7 @@
   font-size: 14px;
   color: rgba(255,255,255,0.7);
   margin-bottom: 4px;
+  line-height: 1;
 }
     
     .air-inline-wrap{
@@ -462,25 +463,26 @@
       </div>
 
       <div class="col right-col">
-        <section class="right-top">
-          <div class="date-line" id="dateText"></div>
-          <div class="time-line" id="statusLine"></div>
-          <div class="count-line" id="countdownText"></div>
-       
-          <div class="air-inline-wrap">
-            <div id="airInline" class="air-inline">
-              <div id="airTime"></div
-              <span class="air-label">미세먼지</span>
-              <span class="air-number" id="pm10Value">-</span>
-              <span class="badge empty" id="pm10State">-</span>
+  <section class="right-top">
+    <div class="date-line" id="dateText"></div>
+    <div class="time-line" id="statusLine"></div>
+    <div class="count-line" id="countdownText"></div>
 
-              <span class="air-gap"></span>
+    <div class="air-inline-wrap">
+  <div id="airTime" class="air-time"></div>
 
-              <span class="air-label">초미세먼지</span>
-              <span class="air-number" id="pm25Value">-</span>
-              <span class="badge empty" id="pm25State">-</span>
-            </div>
-          </div>
+  <div id="airInline" class="air-inline">
+    <span class="air-label">미세먼지</span>
+    <span class="air-number" id="pm10Value">-</span>
+    <span class="badge empty" id="pm10State">-</span>
+
+    <span class="air-gap"></span>
+
+    <span class="air-label">초미세먼지</span>
+    <span class="air-number" id="pm25Value">-</span>
+    <span class="badge empty" id="pm25State">-</span>
+  </div>
+</div>
         </section>
 
         <section class="card meal-card">
