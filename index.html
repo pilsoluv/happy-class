@@ -496,7 +496,7 @@
     const BASIC_INFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=0&single=true&output=csv";
     const NOTICE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=1154495982&single=true&output=csv";
 
-    const SERVICE_KEY = 587751fffeb679c7184b091460e67cf605d7dfaa01e1c1c8d709aa03b79d4226;
+    const SERVICE_KEY = "587751fffeb679c7184b091460e67cf605d7dfaa01e1c1c8d709aa03b79d4226";
     const STATION = "고현동";
 
     const DEFAULT_NOTICE = {
@@ -834,8 +834,6 @@
         `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
 
       const { current, next, remain } = findNextPeriodInfo(nowMinutes);
-      const statusLineEl = document.getElementById("statusLine");
-      const countdownEl = document.getElementById("countdownText");
 
       if(current){
         const isClassPeriod = /교시/.test(current.label);
@@ -999,7 +997,7 @@
     }
 
     async function fetchAirQuality(){
-      if(!SERVICE_KEY || SERVICE_KEY.includes(587751fffeb679c7184b091460e67cf605d7dfaa01e1c1c8d709aa03b79d4226)){
+      if(!SERVICE_KEY || SERVICE_KEY.includes("여기에_서비스키")){
         renderAirQuality("-", "-");
         return;
       }
