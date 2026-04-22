@@ -3,469 +3,475 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>행복한 우리반</title>
+  <title>행복한 우리반</title>
   <link rel="icon" type="image/png" href="icon.png">
-  
-<style>
-  :root{
-    --bg:#0a2a63;
-    --card-bg:rgba(255,255,255,0.92);
-    --card-border:rgba(0,0,0,0.10);
-    --text:#111;
-    --white:#fff;
-    --navy:#133a87;
-    --yellow:#ffca1b;
 
-    /* 모든 여백 기준 */
-    --gutter:42px;      /* 왼쪽 바깥 = 가운데 = 오른쪽 바깥 */
-    --row-gap:25px;     /* 위아래 간격 공통 */
-
-    /* 열 비율 */
-    --left-col:54fr;
-    --right-col:46fr;
-
-    --header-offset:3px;  /*헤더만 추가로 안쪽으로 넣는 값*/
-
-    --header-font:58px;
-    --date-font:58px;
-    --time-font:100px;
-    --count-font:58px;
-    --tab-font:22px;
-  }
-
-  *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
-  html,body{margin:0;width:100%;height:100%;}
-  body{
-    background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
-    color:var(--white);
-    overflow:hidden;
-  }
-
-  .accent{color:var(--yellow);font-weight:900;white-space:nowrap;}
-
-  /* 바깥 패딩 제거: 여백은 .page 하나가 전부 담당 */
-  .app{
-    width:100%;
-    height:100%;
-    padding:0;
-  }
-
-  /* 핵심 구조 */
-  .page{
-    width:100%;
-    height:100%;
-    display:grid;
-    grid-template-columns:var(--left-col) var(--right-col);
-    column-gap:var(--gutter);
-    padding:var(--gutter);
-  }
-
-  .col{
-    min-height:0;
-    display:grid;
-  }
-
-  .left-col{
-  min-height:0;
-  display:grid;
-  grid-template-rows:auto 1fr;
-  row-gap:25px;
-}
-
-.top-left-row{
-  display:grid;
-  grid-template-columns:minmax(0, 1fr) 150px;
-  gap:20px;
-  align-items:start;
-}
-
-  .right-col{
-    min-height:0;
-    display:grid;
-    grid-template-rows:auto 1fr;
-    row-gap:25px;
-  }
-
-  .card{
-    min-height:0;
-    width:100%;
-    background:var(--card-bg);
-    color:var(--text);
-    border-radius:28px;
-    border:2px solid var(--card-border);
-    box-shadow:0 10px 28px rgba(0,0,0,0.12);
-    overflow:hidden;
-  }
-
- .header-card{
-  padding:0;
-  margin-left:var(--header-offset);
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:flex-start;
-  gap:2px;
-  font-size:48px;   /* 기존보다 줄임 */
-  font-weight:900;
-  line-height:1.08; /* 줄간격도 살짝 압축 */
-  color:var(--white);
-  background:transparent;
-  border:none;
-  box-shadow:none;
-  min-width:0;
-}
-
-  .header-line{
-    display:block;
-    width:100%;
-    word-break:keep-all;
-    overflow-wrap:normal;
-  }
-
-  .right-top{
-    width:100%;
-    padding:6px 0 0 0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    text-align:center;
-    background:transparent;
-    border:none;
-    box-shadow:none;
-  }
-
-  .air-card{
-  width:150px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-self:start;
-}
-
-.air-item{
-  width:100%;
-  min-height:88px;
-  padding:10px 10px 12px;
-  border-radius:0;
-  border:3px solid #0e56b5;
-  box-shadow:6px 6px 0 rgba(0, 40, 110, 0.55);
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-
-.air-label{
-  font-size:19px;
-  font-weight:900;
-  line-height:1.05;
-  margin-bottom:4px;
-  word-break:keep-all;
-}
-
-.air-value-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  line-height:1;
-}
-
-.air-value{
-  font-size:24px;
-  font-weight:900;
-}
-
-.air-state{
-  font-size:24px;
-  font-weight:950;
-  margin-top:2px;
-}
-
-/* 상태별 색 */
-.air-item.good{
-  background:#2f7de1;
-}
-
-.air-item.normal{
-  background:#2ea44f;
-}
-
-.air-item.bad{
-  background:#f4b400;
-}
-
-.air-item.very-bad{
-  background:#e74c3c;
-}
-
-  .date-line{
-    font-size:var(--date-font);
-    font-weight:900;
-    line-height:1.02;
-    margin-bottom:6px;
-  }
-
-  .time-line{
-    font-size:var(--time-font);
-    font-weight:950;
-    line-height:1;
-    letter-spacing:-2px;
-    white-space:nowrap;
-  }
-
-  .time-line .accent{margin-right:14px;}
-
-  .count-line{
-    font-size:var(--count-font);
-    font-weight:900;
-    line-height:1.15;
-    margin-top:10px;
-  }
-
-  .notice-card{
-    display:flex;
-    flex-direction:column;
-    width:100%;
-    margin:0;
-    min-height:0;
-  }
-
-  .tab-bar{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:12px;
-    border-bottom:1px solid rgba(0,0,0,0.06);
-    background:#f8f8f9;
-    flex-shrink:0;
-  }
-
-  .tab-btn{
-    flex:1;
-    min-width:0;
-    border:none;
-    background:transparent;
-    color:#b9bfc8;
-    font-size:var(--tab-font);
-    font-weight:900;
-    padding:14px 10px;
-    border-radius:14px;
-    cursor:pointer;
-    transition:0.15s ease;
-  }
-
-  .tab-btn.active{
-    background:var(--navy);
-    color:var(--white);
-  }
-
-  .font-control{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:5px 12px;
-    background:#eceff2;
-    border-radius:22px;
-    flex-shrink:0;
-  }
-
-  .size-btn{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    border:2px solid #ced4da;
-    background:#fff;
-    color:#495057;
-    font-size:20px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-  }
-
-  .size-input{
-    width:58px;
-    height:34px;
-    text-align:center;
-    font-size:18px;
-    font-weight:900;
-    border:2px solid #ced4da;
-    border-radius:10px;
-    padding:2px 6px;
-    color:#495057;
-    background:#fff;
-    outline:none;
-    appearance:auto;
-    -webkit-appearance:auto;
-    -moz-appearance:auto;
-  }
-
-  .size-input.always-spin::-webkit-outer-spin-button,
-  .size-input.always-spin::-webkit-inner-spin-button{
-    opacity:1;
-    display:block;
-    margin-left:2px;
-  }
-
-  .notice-content{
-    flex:1;
-    min-height:0;
-    padding:34px 34px 30px 42px;
-  }
-
-  .notice-input{
-    width:100%;
-    height:100%;
-    border:none;
-    outline:none;
-    resize:none;
-    background:transparent;
-    color:#333;
-    font-size:64px;
-    font-weight:900;
-    line-height:1.30;
-  }
-
-  .meal-card{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    width:100%;
-    margin:0;
-    padding:18px 28px;
-    text-align:center;
-    min-height:0;
-  }
-
-  .meal-top{
-    width:100%;
-    min-height:64px;
-    margin-bottom:14px;
-  }
-
-  .meal-title-wrap{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-  }
-
-  .meal-title{
-    display:inline-block;
-    text-align:center;
-    font-size:52px;
-    font-weight:950;
-    color:var(--navy);
-    line-height:1;
-    padding-bottom:8px;
-    border-bottom:5px solid var(--yellow);
-    min-width:260px;
-  }
-
-  .meal-font-control-wrap{
-    position:absolute;
-    top:18px;
-    right:14px;
-  }
-
-  .meal-font-control{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:5px 12px;
-    background:#e1e5ea;
-    border-radius:22px;
-    box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
-  }
-
-  .meal-list{
-    width:100%;
-    text-align:center;
-    font-size:64px;
-    font-weight:900;
-    line-height:1.25;
-    white-space:pre-line;
-    color:#333;
-  }
-
-
-  @media (max-width:1500px){
+  <style>
     :root{
+      --bg:#0a2a63;
+      --card-bg:rgba(255,255,255,0.92);
+      --card-border:rgba(0,0,0,0.10);
+      --text:#111;
+      --white:#fff;
+      --navy:#133a87;
+      --yellow:#ffca1b;
+
+      /* 모든 여백 기준 */
+      --gutter:42px;
+      --row-gap:25px;
+
+      /* 열 비율 */
+      --left-col:54fr;
+      --right-col:46fr;
+
+      --header-offset:3px;
+
       --header-font:46px;
       --date-font:58px;
-     --time-font:100px;
-     --count-font:58px;
-      --tab-font:20px;
+      --time-font:100px;
+      --count-font:58px;
+      --tab-font:22px;
+
+      --dust-good:#1163EC;
+      --dust-normal:#009B24;
+      --dust-bad:#FDA60D;
+      --dust-very-bad:#DC100F;
+      --dust-empty:#6B7280;
     }
 
-    .notice-input{font-size:50px;}
-    .meal-title{font-size:42px;min-width:220px;}
-    .meal-list{font-size:64px;}
-      .top-left-row{
-    grid-template-columns:minmax(0, 1fr) 132px;
-    gap:16px;
-  }
+    *{box-sizing:border-box;font-family:"Pretendard",sans-serif;}
+    html,body{margin:0;width:100%;height:100%;}
+    body{
+      background:var(--bg) url("wallpaper.jpg") center/cover no-repeat fixed;
+      color:var(--white);
+      overflow:hidden;
+    }
 
-  .header-card{
-    font-size:42px;
-    line-height:1.08;
-  }
+    .accent{color:var(--yellow);font-weight:900;white-space:nowrap;}
 
-  .air-card{
-    width:132px;
-  }
+    .app{
+      width:100%;
+      height:100%;
+      padding:0;
+    }
 
-  .air-item{
-    min-height:80px;
-    padding:8px 8px 10px;
-  }
+    .page{
+      width:100%;
+      height:100%;
+      display:grid;
+      grid-template-columns:var(--left-col) var(--right-col);
+      column-gap:var(--gutter);
+      padding:var(--gutter);
+    }
 
-  .air-label{
-    font-size:16px;
-  }
+    .col{
+      min-height:0;
+      display:grid;
+    }
 
-  .air-value,
-  .air-state{
-    font-size:22px;
-  }
-  }
-</style>
+    .left-col{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      row-gap:25px;
+    }
 
+    .right-col{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      row-gap:25px;
+    }
+
+    .card{
+      min-height:0;
+      width:100%;
+      background:var(--card-bg);
+      color:var(--text);
+      border-radius:28px;
+      border:2px solid var(--card-border);
+      box-shadow:0 10px 28px rgba(0,0,0,0.12);
+      overflow:hidden;
+    }
+
+    /* ===== 왼쪽 상단 헤더 + 대기질 카드 ===== */
+    .top-left-wrap{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 372px;
+      align-items:start;
+      gap:26px;
+      width:100%;
+    }
+
+    .header-card{
+      padding:0;
+      margin-left:var(--header-offset);
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:flex-start;
+      gap:2px;
+      font-size:var(--header-font);
+      font-weight:900;
+      line-height:1.08;
+      color:var(--white);
+      background:transparent;
+      border:none;
+      box-shadow:none;
+      min-width:0;
+    }
+
+    .header-line{
+      display:block;
+      width:100%;
+      word-break:keep-all;
+      white-space:nowrap;
+    }
+
+    .air-card{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      width:372px;
+      padding-top:4px;
+    }
+
+    .air-item{
+      background:rgba(14, 43, 97, 0.92);
+      border:2px solid rgba(73, 146, 255, 0.75);
+      border-radius:18px;
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      color:#fff;
+      padding:18px 20px;
+      min-height:98px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .air-title{
+      font-size:22px;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:10px;
+      letter-spacing:-0.4px;
+    }
+
+    .air-main{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .air-number{
+      font-size:56px;
+      font-weight:950;
+      line-height:1;
+      letter-spacing:-1px;
+    }
+
+    .air-badge{
+      flex-shrink:0;
+      min-width:106px;
+      height:54px;
+      padding:0 18px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      font-weight:950;
+      line-height:1;
+      color:#fff;
+    }
+
+    .air-item.good .air-badge{ background:var(--dust-good); }
+    .air-item.normal .air-badge{ background:var(--dust-normal); }
+    .air-item.bad .air-badge{ background:var(--dust-bad); }
+    .air-item.very-bad .air-badge{ background:var(--dust-very-bad); }
+    .air-item.empty .air-badge{ background:var(--dust-empty); }
+
+    .right-top{
+      width:100%;
+      padding:6px 0 0 0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      text-align:center;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+    }
+
+    .date-line{
+      font-size:var(--date-font);
+      font-weight:900;
+      line-height:1.02;
+      margin-bottom:6px;
+    }
+
+    .time-line{
+      font-size:var(--time-font);
+      font-weight:950;
+      line-height:1;
+      letter-spacing:-2px;
+      white-space:nowrap;
+    }
+
+    .time-line .accent{margin-right:14px;}
+
+    .count-line{
+      font-size:var(--count-font);
+      font-weight:900;
+      line-height:1.15;
+      margin-top:10px;
+    }
+
+    .notice-card{
+      display:flex;
+      flex-direction:column;
+      width:100%;
+      margin:0;
+      min-height:0;
+    }
+
+    .tab-bar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:12px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      background:#f8f8f9;
+      flex-shrink:0;
+    }
+
+    .tab-btn{
+      flex:1;
+      min-width:0;
+      border:none;
+      background:transparent;
+      color:#b9bfc8;
+      font-size:var(--tab-font);
+      font-weight:900;
+      padding:14px 10px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:0.15s ease;
+    }
+
+    .tab-btn.active{
+      background:var(--navy);
+      color:var(--white);
+    }
+
+    .font-control{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 12px;
+      background:#eceff2;
+      border-radius:22px;
+      flex-shrink:0;
+    }
+
+    .size-btn{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      border:2px solid #ced4da;
+      background:#fff;
+      color:#495057;
+      font-size:20px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .size-input{
+      width:58px;
+      height:34px;
+      text-align:center;
+      font-size:18px;
+      font-weight:900;
+      border:2px solid #ced4da;
+      border-radius:10px;
+      padding:2px 6px;
+      color:#495057;
+      background:#fff;
+      outline:none;
+      appearance:auto;
+      -webkit-appearance:auto;
+      -moz-appearance:auto;
+    }
+
+    .size-input.always-spin::-webkit-outer-spin-button,
+    .size-input.always-spin::-webkit-inner-spin-button{
+      opacity:1;
+      display:block;
+      margin-left:2px;
+    }
+
+    .notice-content{
+      flex:1;
+      min-height:0;
+      padding:34px 34px 30px 42px;
+    }
+
+    .notice-input{
+      width:100%;
+      height:100%;
+      border:none;
+      outline:none;
+      resize:none;
+      background:transparent;
+      color:#333;
+      font-size:64px;
+      font-weight:900;
+      line-height:1.30;
+    }
+
+    .meal-card{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      margin:0;
+      padding:18px 28px;
+      text-align:center;
+      min-height:0;
+    }
+
+    .meal-top{
+      width:100%;
+      min-height:64px;
+      margin-bottom:14px;
+    }
+
+    .meal-title-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .meal-title{
+      display:inline-block;
+      text-align:center;
+      font-size:52px;
+      font-weight:950;
+      color:var(--navy);
+      line-height:1;
+      padding-bottom:8px;
+      border-bottom:5px solid var(--yellow);
+      min-width:260px;
+    }
+
+    .meal-font-control-wrap{
+      position:absolute;
+      top:18px;
+      right:14px;
+    }
+
+    .meal-font-control{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 12px;
+      background:#e1e5ea;
+      border-radius:22px;
+      box-shadow:inset 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .meal-list{
+      width:100%;
+      text-align:center;
+      font-size:64px;
+      font-weight:900;
+      line-height:1.25;
+      white-space:pre-line;
+      color:#333;
+    }
+
+    @media (max-width:1500px){
+      :root{
+        --header-font:40px;
+        --date-font:58px;
+        --time-font:100px;
+        --count-font:58px;
+        --tab-font:20px;
+      }
+
+      .top-left-wrap{
+        grid-template-columns:minmax(0, 1fr) 320px;
+        gap:20px;
+      }
+
+      .air-card{
+        width:320px;
+        gap:12px;
+      }
+
+      .air-item{
+        min-height:88px;
+        padding:15px 16px;
+      }
+
+      .air-title{
+        font-size:19px;
+        margin-bottom:8px;
+      }
+
+      .air-number{
+        font-size:46px;
+      }
+
+      .air-badge{
+        min-width:86px;
+        height:48px;
+        font-size:21px;
+      }
+
+      .notice-input{font-size:50px;}
+      .meal-title{font-size:42px;min-width:220px;}
+      .meal-list{font-size:64px;}
+    }
+  </style>
 </head>
 <body>
   <div class="app">
     <div class="page">
-<div class="col left-col">
-  <div class="top-left-row">
-    <div class="header-card" id="sheetData"></div>
+      <div class="col left-col">
+        <div class="top-left-wrap">
+          <div class="header-card" id="sheetData"></div>
 
-    <div class="air-card" id="airCard">
-      <div class="air-item pm10 good">
-        <div class="air-label">미세먼지</div>
-        <div class="air-value-wrap">
-          <span class="air-value" id="pm10Value">42</span>
-          <span class="air-state" id="pm10State">보통</span>
+          <div class="air-card">
+            <div class="air-item empty" id="pm10Card">
+              <div class="air-title">미세먼지</div>
+              <div class="air-main">
+                <span class="air-number" id="pm10Value">-</span>
+                <span class="air-badge" id="pm10State">로딩중</span>
+              </div>
+            </div>
+
+            <div class="air-item empty" id="pm25Card">
+              <div class="air-title">초미세먼지</div>
+              <div class="air-main">
+                <span class="air-number" id="pm25Value">-</span>
+                <span class="air-badge" id="pm25State">로딩중</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="air-item pm25 good">
-        <div class="air-label">초미세먼지</div>
-        <div class="air-value-wrap">
-          <span class="air-value" id="pm25Value">18</span>
-          <span class="air-state" id="pm25State">좋음</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <section class="card notice-card">
+        <section class="card notice-card">
           <div class="tab-bar">
             <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
             <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
@@ -513,11 +519,13 @@
     </div>
   </div>
 
-  </button>
-
   <script>
     const BASIC_INFO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=0&single=true&output=csv";
     const NOTICE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQidILWyuflvuPJcl_yZGj5nAs6fVNaWXGUQAwzycSegpqo7UuHhEYYQIjOzRam-w8b2-yao3YmIYxi/pub?gid=1154495982&single=true&output=csv";
+
+    /* 에어코리아 */
+    const AIRKOREA_SERVICE_KEY = "여기에_네_서비스키_넣기";
+    const AIR_STATION_NAME = "고현동";
 
     const DEFAULT_NOTICE = {
       morning: "• 핸드폰 전원 꺼서 가방에 넣기\n• 우체통과 알림장 확인하기\n• 자리 주변 정리하기\n• 아침독서하기",
@@ -541,51 +549,6 @@
       "쉬는시간":"break",
       "점심시간":"lunch"
     };
-
-    function getDustGrade(type, value){
-  const num = Number(value);
-
-  if(type === "pm10"){
-    if(num <= 30) return "good";
-    if(num <= 80) return "normal";
-    if(num <= 150) return "bad";
-    return "very-bad";
-  }
-
-  if(type === "pm25"){
-    if(num <= 15) return "good";
-    if(num <= 35) return "normal";
-    if(num <= 75) return "bad";
-    return "very-bad";
-  }
-
-  return "good";
-}
-
-function getDustGradeText(type, value){
-  const grade = getDustGrade(type, value);
-
-  if(grade === "good") return "좋음";
-  if(grade === "normal") return "보통";
-  if(grade === "bad") return "나쁨";
-  return "매우나쁨";
-}
-
-function renderAirQuality(pm10, pm25){
-  const pm10Box = document.querySelector(".air-item.pm10");
-  const pm25Box = document.querySelector(".air-item.pm25");
-
-  const pm10Grade = getDustGrade("pm10", pm10);
-  const pm25Grade = getDustGrade("pm25", pm25);
-
-  pm10Box.className = `air-item pm10 ${pm10Grade}`;
-  pm25Box.className = `air-item pm25 ${pm25Grade}`;
-
-  document.getElementById("pm10Value").textContent = pm10;
-  document.getElementById("pm25Value").textContent = pm25;
-  document.getElementById("pm10State").textContent = getDustGradeText("pm10", pm10);
-  document.getElementById("pm25State").textContent = getDustGradeText("pm25", pm25);
-}
 
     let DASHBOARD = {
       headerLines: [],
@@ -717,51 +680,51 @@ function renderAirQuality(pm10, pm25){
     }
 
     function extractNotices(rows){
-  const notices = { ...DEFAULT_NOTICE };
+      const notices = { ...DEFAULT_NOTICE };
 
-  for(const row of rows){
-    const cells = row.map(v => (v || "").trim());
+      for(const row of rows){
+        const cells = row.map(v => (v || "").trim());
 
-    const labelIndex = cells.findIndex(v =>
-      v === "아침시간" || v === "아침활동" || v === "수업시간" || v === "쉬는시간" || v === "점심시간"
-    );
+        const labelIndex = cells.findIndex(v =>
+          v === "아침시간" || v === "아침활동" || v === "수업시간" || v === "쉬는시간" || v === "점심시간"
+        );
 
-    if(labelIndex === -1) continue;
+        if(labelIndex === -1) continue;
 
-    const label = cells[labelIndex];
-    const value = cells[labelIndex + 1] || "";
-    const type = TAB_NAME_TO_TYPE[label];
+        const label = cells[labelIndex];
+        const value = cells[labelIndex + 1] || "";
+        const type = TAB_NAME_TO_TYPE[label];
 
-    if(type && value){
-      notices[type] = value;
+        if(type && value){
+          notices[type] = value;
+        }
+      }
+
+      return notices;
     }
-  }
-
-  return notices;
-}
 
     function extractLunchActivities(rows){
-  const result = { ...DEFAULT_LUNCH_ACTIVITIES };
+      const result = { ...DEFAULT_LUNCH_ACTIVITIES };
 
-  for(const row of rows){
-    const cells = row.map(v => (v || "").trim());
+      for(const row of rows){
+        const cells = row.map(v => (v || "").trim());
 
-    const dayIndex = cells.findIndex(v =>
-      v === "월요일" || v === "화요일" || v === "수요일" || v === "목요일" || v === "금요일"
-    );
+        const dayIndex = cells.findIndex(v =>
+          v === "월요일" || v === "화요일" || v === "수요일" || v === "목요일" || v === "금요일"
+        );
 
-    if(dayIndex === -1) continue;
+        if(dayIndex === -1) continue;
 
-    const day = cells[dayIndex];
-    const activity = cells[dayIndex + 1] || "";
+        const day = cells[dayIndex];
+        const activity = cells[dayIndex + 1] || "";
 
-    if(activity){
-      result[day] = activity;
+        if(activity){
+          result[day] = activity;
+        }
+      }
+
+      return result;
     }
-  }
-
-  return result;
-}
 
     function extractLastPeriodByDay(rows){
       const result = { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" };
@@ -950,74 +913,161 @@ function renderAirQuality(pm10, pm25){
         isInitialLoad = false;
       }
     }
-    
-function getMealTargetDate(baseDate = new Date()){
-  const d = new Date(baseDate);
-  const hour = d.getHours();
-  const minute = d.getMinutes();
 
-  // 11:40 이후면 다음 급식으로 넘김
-  if(hour > 11 || (hour === 11 && minute >= 40)){
-    d.setDate(d.getDate() + 1);
-  }
+    function getMealTargetDate(baseDate = new Date()){
+      const d = new Date(baseDate);
+      const hour = d.getHours();
+      const minute = d.getMinutes();
 
-  // 토/일이면 월요일로 넘김
-  while(d.getDay() === 0 || d.getDay() === 6){
-    d.setDate(d.getDate() + 1);
-  }
+      if(hour > 11 || (hour === 11 && minute >= 40)){
+        d.setDate(d.getDate() + 1);
+      }
 
-  return d;
-}
+      while(d.getDay() === 0 || d.getDay() === 6){
+        d.setDate(d.getDate() + 1);
+      }
 
-function getMealTitleText(now = new Date(), targetDate = new Date()){
-  return now.toDateString() === targetDate.toDateString()
-    ? "오늘의 급식 🍱"
-    : "다음 급식 🍱";
-}
+      return d;
+    }
+
+    function getMealTitleText(now = new Date(), targetDate = new Date()){
+      return now.toDateString() === targetDate.toDateString()
+        ? "오늘의 급식 🍱"
+        : "다음 급식 🍱";
+    }
+
     async function fetchMeal(){
-  const mealEl = document.getElementById("mealList");
-  const mealTitleEl = document.querySelector(".meal-title");
+      const mealEl = document.getElementById("mealList");
+      const mealTitleEl = document.querySelector(".meal-title");
 
-  if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
-    mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-    if(mealTitleEl) mealTitleEl.textContent = "급식 정보 🍱";
-    return;
-  }
+      if(!DASHBOARD.officeCode || !DASHBOARD.schoolCode){
+        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+        if(mealTitleEl) mealTitleEl.textContent = "급식 정보 🍱";
+        return;
+      }
 
-  try{
-    const now = new Date();
-    const targetDate = getMealTargetDate(now);
+      try{
+        const now = new Date();
+        const targetDate = getMealTargetDate(now);
 
-    if(mealTitleEl){
-      mealTitleEl.textContent = getMealTitleText(now, targetDate);
+        if(mealTitleEl){
+          mealTitleEl.textContent = getMealTitleText(now, targetDate);
+        }
+
+        const ymd = `${targetDate.getFullYear()}${String(targetDate.getMonth() + 1).padStart(2, "0")}${String(targetDate.getDate()).padStart(2, "0")}`;
+
+        const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
+
+        if(!row?.DDISH_NM){
+          mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+          return;
+        }
+
+        const clean = row.DDISH_NM
+          .replace(/<br\/?>/gi, "\n")
+          .split("\n")
+          .map(v => v.trim())
+          .filter(Boolean)
+          .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
+          .filter(v => !v.includes("우유(급식)"))
+          .join("\n");
+
+        mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
+      } catch(e){
+        mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
+      }
     }
 
-    const ymd = `${targetDate.getFullYear()}${String(targetDate.getMonth() + 1).padStart(2, "0")}${String(targetDate.getDate()).padStart(2, "0")}`;
+    function getDustGrade(type, value){
+      const num = Number(value);
 
-    const apiUrl = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=${encodeURIComponent(DASHBOARD.officeCode)}&SD_SCHUL_CODE=${encodeURIComponent(DASHBOARD.schoolCode)}&MLSV_YMD=${ymd}`;
-    const res = await fetch(apiUrl);
-    const data = await res.json();
-    const row = data?.mealServiceDietInfo?.[1]?.row?.[0];
+      if(Number.isNaN(num)) return "empty";
 
-    if(!row?.DDISH_NM){
-      mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-      return;
+      if(type === "pm10"){
+        if(num <= 30) return "good";
+        if(num <= 80) return "normal";
+        if(num <= 150) return "bad";
+        return "very-bad";
+      }
+
+      if(type === "pm25"){
+        if(num <= 15) return "good";
+        if(num <= 35) return "normal";
+        if(num <= 75) return "bad";
+        return "very-bad";
+      }
+
+      return "empty";
     }
 
-    const clean = row.DDISH_NM
-      .replace(/<br\/?>/gi, "\n")
-      .split("\n")
-      .map(v => v.trim())
-      .filter(Boolean)
-      .map(v => v.replace(/\s*\(([\d.\s]+)\)\s*$/g, "").trim())
-      .filter(v => !v.includes("우유(급식)"))
-      .join("\n");
+    function getDustGradeText(type, value){
+      const num = Number(value);
+      if(Number.isNaN(num)) return "데이터없음";
 
-    mealEl.textContent = clean || "급식 정보를 불러올 수 없습니다.";
-  } catch(e){
-    mealEl.textContent = "급식 정보를 불러올 수 없습니다.";
-  }
-}
+      const grade = getDustGrade(type, value);
+      if(grade === "good") return "좋음";
+      if(grade === "normal") return "보통";
+      if(grade === "bad") return "나쁨";
+      if(grade === "very-bad") return "매우 나쁨";
+      return "데이터없음";
+    }
+
+    function renderAirQuality(pm10, pm25){
+      const pm10Card = document.getElementById("pm10Card");
+      const pm25Card = document.getElementById("pm25Card");
+
+      const pm10Grade = getDustGrade("pm10", pm10);
+      const pm25Grade = getDustGrade("pm25", pm25);
+
+      pm10Card.className = `air-item ${pm10Grade}`;
+      pm25Card.className = `air-item ${pm25Grade}`;
+
+      document.getElementById("pm10Value").textContent = Number.isNaN(Number(pm10)) ? "-" : pm10;
+      document.getElementById("pm25Value").textContent = Number.isNaN(Number(pm25)) ? "-" : pm25;
+      document.getElementById("pm10State").textContent = getDustGradeText("pm10", pm10);
+      document.getElementById("pm25State").textContent = getDustGradeText("pm25", pm25);
+    }
+
+    async function fetchAirQuality(){
+      if(!AIRKOREA_SERVICE_KEY || AIRKOREA_SERVICE_KEY.includes("여기에_네_서비스키")){
+        renderAirQuality("-", "-");
+        return;
+      }
+
+      try{
+        const url =
+          `https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty` +
+          `?serviceKey=${AIRKOREA_SERVICE_KEY}` +
+          `&returnType=json` +
+          `&numOfRows=1` +
+          `&pageNo=1` +
+          `&stationName=${encodeURIComponent(AIR_STATION_NAME)}` +
+          `&dataTerm=DAILY` +
+          `&ver=1.3`;
+
+        const res = await fetch(url);
+        if(!res.ok) throw new Error("대기질 API 호출 실패");
+
+        const data = await res.json();
+        const row = data?.response?.body?.items?.[0];
+
+        if(!row){
+          renderAirQuality("-", "-");
+          return;
+        }
+
+        const pm10 = row.pm10Value;
+        const pm25 = row.pm25Value;
+
+        renderAirQuality(pm10, pm25);
+      } catch(e){
+        console.error("fetchAirQuality error:", e);
+        renderAirQuality("-", "-");
+      }
+    }
 
     async function loadDashboardData(){
       try{
@@ -1043,14 +1093,15 @@ function getMealTitleText(now = new Date(), targetDate = new Date()){
           selectTab("morning");
         }
       } catch(e){
-  console.error("loadDashboardData error:", e);
-}
+        console.error("loadDashboardData error:", e);
+      }
     }
 
     async function refreshAllData(){
       await loadDashboardData();
       updateTime();
       await fetchMeal();
+      await fetchAirQuality();
       applyNoticeFontSize();
       applyMealFontSize();
     }
@@ -1100,6 +1151,7 @@ function getMealTitleText(now = new Date(), targetDate = new Date()){
 
     setInterval(updateTime, 1000);
     setInterval(fetchMeal, 10 * 60 * 1000);
+    setInterval(fetchAirQuality, 10 * 60 * 1000);
     setInterval(loadDashboardData, 30 * 1000);
   </script>
 </body>
