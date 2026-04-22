@@ -140,7 +140,7 @@
   font-size:var(--date-font);
   font-weight:400;
   line-height:1.02;
-  margin-bottom:0;   /* 날짜-시계 간격 줄이기 */
+  margin-bottom:0;   
 }
 
    .time-line{
@@ -150,7 +150,7 @@
   letter-spacing:-2px;
   white-space:nowrap;
   margin-top:0;
-  margin-bottom:20px;  /* 시계-카운트 간격 늘리기 */
+  margin-bottom:8px; 
 }
 
    .count-line{
@@ -162,7 +162,7 @@
 
     /* 미세먼지 한 줄 */
     .air-inline-wrap{
-  margin-top:30px;   /* 위 3줄과는 조금 띄우고 */
+  margin-top:36px;   /* 위 3줄과는 조금 띄우고 */
   margin-bottom:0;   /* 아래 급식박스랑 붙이기 */
   width:100%;
   background:transparent;
@@ -184,32 +184,32 @@
 }
 
 .air-label{
-  font-size:0.43em;   /* 기존보다 키움 */
+  font-size:31px;   
   font-weight:400;
   letter-spacing:-0.3px;
 }
 
 .air-number{
-  font-size:0.72em;   /* 기존보다 줄임 */
+  font-size:67px;   
   font-weight:800;
   line-height:1;
   letter-spacing:-1px;
-  margin-left:3px;
-  margin-right:1px;
+  margin-left:2px;
+  margin-right:0;
 }
 
 .badge{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:0 0.58em;
-  height:1.18em;
-  border-radius:0.28em;
-  font-size:0.43em;   /* 숫자보다 조금 작은 수준 */
+  min-width:auto;      /* 글자 길이에 맞게 */
+  height:44px;         /* 배지 박스 키우기 */
+  padding:0 18px;      /* 좌우 여백 늘리기 */
+  border-radius:9px;
+  font-size:31px;      /* 배지 글자 크게 */
   font-weight:900;
   color:#fff;
   line-height:1;
-  min-width:auto;
 }
 
 .air-gap{
@@ -335,17 +335,17 @@
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:flex-start; /* 가운데정렬 말고 위로 */
+  justify-content:center; 
   width:100%;
   margin:0;
-  padding:6px 28px 18px;      /* 위 padding 줄이기 */
+  padding:18px 28px;;      /* 위 padding 줄이기 */
   text-align:center;
   min-height:0;
 }
 
     .meal-top{
   width:100%;
-  min-height:auto;
+  min-height:64px;
   margin-bottom:8px;   /* 제목 아래 간격도 살짝 줄이기 */
 }
 
