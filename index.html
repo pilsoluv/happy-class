@@ -134,13 +134,13 @@
       background:transparent;
       border:none;
       box-shadow:none;
+      gap:12px;
     }
 
     .date-line{
   font-size:var(--date-font);
   font-weight:400;
-  line-height:1.02;
-  margin-bottom:0;   
+  line-height:1.02; 
 }
 
    .time-line{
@@ -150,7 +150,6 @@
   letter-spacing:-2px;
   white-space:nowrap;
   margin-top:0;
-  margin-bottom:8px; 
 }
 
    .count-line{
@@ -164,6 +163,7 @@
     .air-inline-wrap{
   margin-top:36px;   /* 위 3줄과는 조금 띄우고 */
   margin-bottom:0;   /* 아래 급식박스랑 붙이기 */
+  transform:translateY(-12px);    
   width:100%;
   background:transparent;
   padding:0;
@@ -999,7 +999,7 @@
 
 async function fetchAirQuality(){
   try{
-    const res = await fetch("./air.json", { cache: "no-store" });
+    const res = await fetch("./air.json?t=" + Date.now(), { cache: "no-store" });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
