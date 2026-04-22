@@ -161,26 +161,31 @@
 
     /* 미세먼지 한 줄 */
 
-    .air-inline-wrap{
+.air-inline-wrap{
   margin-top: 36px;
   margin-bottom: 0;
   transform: translateY(-12px);
   width: 100%;
   background: transparent;
   padding: 0;
+  display: flex;
+  justify-content: center;   /* 전체 블록 가운데 */
+}
 
+.air-inline-box{
   display: flex;
   flex-direction: column;
-  align-items: stretch;   /* 핵심: 윗줄은 전체폭, 아랫줄은 자기 정렬 */
+  align-items: stretch;
+  width: max-content;        /* 내용만큼만 폭 */
 }
 
 .air-time {
-  display: flex-end;
+  display: block;
   width: 100%;
   font-size: 14px;
   color: rgba(255,255,255,0.72);
   line-height: 1;
-  text-align: right;      /* 윗줄만 오른쪽 정렬 */
+  text-align: right;         /* 박스 안에서 오른쪽 정렬 */
   margin-bottom: 4px;
   padding-right: 2px;
 }
@@ -188,7 +193,7 @@
 .air-inline{
   display: flex;
   align-items: center;
-  justify-content: center; /* 아랫줄은 가운데 정렬 유지 */
+  justify-content: center;   /* 아래 줄 가운데 */
   gap: 10px;
   color: #fff;
   white-space: nowrap;
@@ -472,19 +477,21 @@
     <div class="time-line" id="statusLine"></div>
     <div class="count-line" id="countdownText"></div>
 
-  <div class="air-inline-wrap">
-  <div id="airTime" class="air-time"></div>
+ <div class="air-inline-wrap">
+  <div class="air-inline-box">
+    <div id="airTime" class="air-time"></div>
 
-  <div id="airInline" class="air-inline">
-    <span class="air-label">미세먼지</span>
-    <span class="air-number" id="pm10Value">-</span>
-    <span class="badge empty" id="pm10State">-</span>
+    <div id="airInline" class="air-inline">
+      <span class="air-label">미세먼지</span>
+      <span class="air-number" id="pm10Value">-</span>
+      <span class="badge empty" id="pm10State">-</span>
 
-    <span class="air-gap"></span>
+      <span class="air-gap"></span>
 
-    <span class="air-label">초미세먼지</span>
-    <span class="air-number" id="pm25Value">-</span>
-    <span class="badge empty" id="pm25State">-</span>
+      <span class="air-label">초미세먼지</span>
+      <span class="air-number" id="pm25Value">-</span>
+      <span class="badge empty" id="pm25State">-</span>
+    </div>
   </div>
 </div>
         </section>
