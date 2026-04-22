@@ -30,7 +30,7 @@ jobs:
           head -c 500 air_raw.json || true
           echo
 
-      - name: JSON 가공
+       - name: JSON 가공
         shell: bash
         run: |
           if ! jq empty air_raw.json >/dev/null 2>&1; then
@@ -48,6 +48,7 @@ jobs:
           echo "===== items preview ====="
           jq -r '.response.body.items[] | "\(.dataTime) | pm10=\(.pm10Value) | pm25=\(.pm25Value)"' air_raw.json || true
 
+          # dataTime 형식이 "2026-04-22 22:00" 이므로 문자열 정렬로 최신 선택
           LATEST_ITEM=$(jq -c '
             .response.body.items
             | map(
@@ -56,13 +57,8 @@ jobs:
                   (.pm10Value | tostring | test("^[0-9]+$")) and
                   (.pm25Value | tostring | test("^[0-9]+$"))
                 )
-                | . + {
-                    _hour: (
-                      (.dataTime | capture("(?<h>[0-9]+)시").h | tonumber)
-                    )
-                  }
               )
-            | sort_by(._hour)
+            | sort_by(.dataTime)
             | last
           ' air_raw.json)
 
@@ -75,10 +71,16 @@ jobs:
           PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value')
           PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value')
           DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime')
-          DATA_HOUR=$(echo "$LATEST_ITEM" | jq -r '._hour')
 
+          # "2026-04-22 22:00" 형식 기준
           MONTH=$(echo "$DATATIME" | cut -d'-' -f2 | sed 's/^0//')
           DAY=$(echo "$DATATIME" | cut -d'-' -f3 | cut -d' ' -f1 | sed 's/^0//')
+          DATA_HOUR=$(echo "$DATATIME" | cut -d' ' -f2 | cut -d':' -f1 | sed 's/^0//')
+
+          if [ -z "$DATA_HOUR" ]; then
+            echo "dataHour 추출 실패. 이번 실행은 건너뜀."
+            exit 0
+          fi
 
           LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
 
