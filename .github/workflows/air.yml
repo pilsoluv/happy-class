@@ -2,7 +2,7 @@ name: Update Air Quality
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "5 7-17 * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,78 +19,95 @@ jobs:
       - name: 코드 가져오기
         uses: actions/checkout@v5
 
-      - name: 에어코리아 API 호출
+      - name: 에어코리아 반복 조회 및 JSON 저장
         shell: bash
         run: |
-          curl -L -s \
-            -o air_raw.json \
-            "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=${{ secrets.AIR_KEY }}&returnType=json&numOfRows=24&pageNo=1&stationName=%EA%B3%A0%ED%98%84%EB%8F%99&dataTerm=DAILY&ver=1.3"
+          TARGET_MINUTES=20
+          INTERVAL_SECONDS=120
 
-          echo "===== raw response preview ====="
-          head -c 500 air_raw.json || true
-          echo
-
-      - name: JSON 가공
-        shell: bash
-        run: |
-          if ! jq empty air_raw.json >/dev/null 2>&1; then
-            echo "air_raw.json이 JSON 형식이 아님. 이번 실행은 건너뜀."
-            exit 0
+          # 중요 시간대(11시)는 더 촘촘하게
+          NOW_HOUR=$(TZ=Asia/Seoul date +%H | sed 's/^0//')
+          if [ "$NOW_HOUR" = "11" ]; then
+            INTERVAL_SECONDS=60
+            TARGET_MINUTES=25
           fi
 
-          RESULT_CODE=$(jq -r '.response.header.resultCode // empty' air_raw.json)
-          if [ "$RESULT_CODE" != "00" ]; then
-            echo "API resultCode가 정상이 아님: $RESULT_CODE"
-            jq -r '.response.header' air_raw.json || true
-            exit 0
-          fi
+          MAX_TRIES=$(( TARGET_MINUTES * 60 / INTERVAL_SECONDS ))
+          echo "반복 조회 시작: 최대 ${TARGET_MINUTES}분, ${INTERVAL_SECONDS}초 간격, 총 ${MAX_TRIES}회"
 
-          echo "===== items preview ====="
-          jq -r '.response.body.items[] | "\(.dataTime) | pm10=\(.pm10Value) | pm25=\(.pm25Value)"' air_raw.json || true
+          for i in $(seq 1 $MAX_TRIES); do
+            echo "===== try $i / $MAX_TRIES ====="
 
-          LATEST_ITEM=$(jq -c '
-            .response.body.items
-            | map(
-                select(
-                  .dataTime != null and .dataTime != "" and
-                  (.pm10Value | tostring | test("^[0-9]+$")) and
-                  (.pm25Value | tostring | test("^[0-9]+$"))
+            curl -L -s \
+              -o air_raw.json \
+              "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=${{ secrets.AIR_KEY }}&returnType=json&numOfRows=24&pageNo=1&stationName=%EA%B3%A0%ED%98%84%EB%8F%99&dataTerm=DAILY&ver=1.3"
+
+            if ! jq empty air_raw.json >/dev/null 2>&1; then
+              echo "JSON 아님. 잠시 후 재시도"
+              cat air_raw.json || true
+              sleep $INTERVAL_SECONDS
+              continue
+            fi
+
+            RESULT_CODE=$(jq -r '.response.header.resultCode // empty' air_raw.json)
+            if [ "$RESULT_CODE" != "00" ]; then
+              echo "API resultCode 비정상: $RESULT_CODE"
+              jq -r '.response.header' air_raw.json || true
+              sleep $INTERVAL_SECONDS
+              continue
+            fi
+
+            echo "===== items preview ====="
+            jq -r '.response.body.items[] | "\(.dataTime) | pm10=\(.pm10Value) | pm25=\(.pm25Value)"' air_raw.json || true
+
+            LATEST_ITEM=$(jq -c '
+              .response.body.items
+              | map(
+                  select(
+                    .dataTime != null and .dataTime != "" and
+                    (.pm10Value | tostring | test("^[0-9]+$")) and
+                    (.pm25Value | tostring | test("^[0-9]+$"))
+                  )
                 )
-              )
-            | sort_by(.dataTime)
-            | last
-          ' air_raw.json)
+              | sort_by(.dataTime)
+              | last
+            ' air_raw.json)
 
-          if [ -z "$LATEST_ITEM" ] || [ "$LATEST_ITEM" = "null" ]; then
-            echo "최신 숫자 항목 추출 실패. 이번 실행은 건너뜀."
-            cat air_raw.json
-            exit 0
-          fi
+            if [ -z "$LATEST_ITEM" ] || [ "$LATEST_ITEM" = "null" ]; then
+              echo "최신 숫자 항목 추출 실패. 재시도"
+              sleep $INTERVAL_SECONDS
+              continue
+            fi
 
-          PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value')
-          PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value')
-          DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime')
+            PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value')
+            PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value')
+            DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime')
 
-          MONTH=$(echo "$DATATIME" | cut -d'-' -f2 | sed 's/^0//')
-          DAY=$(echo "$DATATIME" | cut -d'-' -f3 | cut -d' ' -f1 | sed 's/^0//')
-          DATA_HOUR=$(echo "$DATATIME" | cut -d' ' -f2 | cut -d':' -f1 | sed 's/^0//')
+            MONTH=$(echo "$DATATIME" | cut -d'-' -f2 | sed 's/^0//')
+            DAY=$(echo "$DATATIME" | cut -d'-' -f3 | cut -d' ' -f1 | sed 's/^0//')
+            DATA_HOUR=$(echo "$DATATIME" | cut -d' ' -f2 | cut -d':' -f1 | sed 's/^0//')
 
-          if [ -z "$DATA_HOUR" ]; then
-            echo "dataHour 추출 실패. 이번 실행은 건너뜀."
-            exit 0
-          fi
+            if [ -z "$DATA_HOUR" ]; then
+              echo "dataHour 추출 실패. 재시도"
+              sleep $INTERVAL_SECONDS
+              continue
+            fi
 
-          LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
+            LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
 
-          echo "===== selected latest item ====="
-          echo "$LATEST_ITEM"
-          echo "API latest dataTime: $DATATIME"
-          echo "API latest dataHour: $DATA_HOUR"
-          echo "labelTime: $LABEL_TIME"
-          echo "PM10: $PM10 / PM25: $PM25"
+            echo "===== selected latest item ====="
+            echo "$LATEST_ITEM"
+            echo "API latest dataTime: $DATATIME"
+            echo "API latest dataHour: $DATA_HOUR"
+            echo "labelTime: $LABEL_TIME"
+            echo "PM10: $PM10 / PM25: $PM25"
 
-          printf '{ "pm10": "%s", "pm25": "%s", "labelTime": "%s", "dataTime": "%s", "dataHour": %s }\n' \
-            "$PM10" "$PM25" "$LABEL_TIME" "$DATATIME" "$DATA_HOUR" > air.json
+            printf '{ "pm10": "%s", "pm25": "%s", "labelTime": "%s", "dataTime": "%s", "dataHour": %s }\n' \
+              "$PM10" "$PM25" "$LABEL_TIME" "$DATATIME" "$DATA_HOUR" > air.json
+
+            echo "air.json 저장 완료"
+            break
+          done
 
       - name: 커밋 & 푸시
         shell: bash
