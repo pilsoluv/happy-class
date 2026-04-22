@@ -66,11 +66,18 @@
   }
 
   .left-col{
-    min-height:0;
-    display:grid;
-    grid-template-rows:auto 1fr;
+  min-height:0;
+  display:grid;
+  grid-template-rows:auto 1fr;
   row-gap:25px;
-  }
+}
+
+.top-left-row{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) 150px;
+  gap:20px;
+  align-items:start;
+}
 
   .right-col{
     min-height:0;
@@ -90,22 +97,23 @@
     overflow:hidden;
   }
 
-  .header-card{
-    padding:4px 0 0 0;
-    margin-left:var(--header-offset);
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    justify-content:flex-start;
-    gap:4px;
-    font-size:var(--header-font);
-    font-weight:900;
-    line-height:1.15;
-    color:var(--white);
-    background:transparent;
-    border:none;
-    box-shadow:none;
-  }
+ .header-card{
+  padding:0;
+  margin-left:var(--header-offset);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:2px;
+  font-size:48px;   /* 기존보다 줄임 */
+  font-weight:900;
+  line-height:1.08; /* 줄간격도 살짝 압축 */
+  color:var(--white);
+  background:transparent;
+  border:none;
+  box-shadow:none;
+  min-width:0;
+}
 
   .header-line{
     display:block;
@@ -126,6 +134,73 @@
     border:none;
     box-shadow:none;
   }
+
+  .air-card{
+  width:150px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-self:start;
+}
+
+.air-item{
+  width:100%;
+  min-height:88px;
+  padding:10px 10px 12px;
+  border-radius:0;
+  border:3px solid #0e56b5;
+  box-shadow:6px 6px 0 rgba(0, 40, 110, 0.55);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.air-label{
+  font-size:19px;
+  font-weight:900;
+  line-height:1.05;
+  margin-bottom:4px;
+  word-break:keep-all;
+}
+
+.air-value-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+
+.air-value{
+  font-size:24px;
+  font-weight:900;
+}
+
+.air-state{
+  font-size:24px;
+  font-weight:950;
+  margin-top:2px;
+}
+
+/* 상태별 색 */
+.air-item.good{
+  background:#2f7de1;
+}
+
+.air-item.normal{
+  background:#2ea44f;
+}
+
+.air-item.bad{
+  background:#f4b400;
+}
+
+.air-item.very-bad{
+  background:#e74c3c;
+}
 
   .date-line{
     font-size:var(--date-font);
@@ -333,6 +408,33 @@
     .notice-input{font-size:50px;}
     .meal-title{font-size:42px;min-width:220px;}
     .meal-list{font-size:64px;}
+      .top-left-row{
+    grid-template-columns:minmax(0, 1fr) 132px;
+    gap:16px;
+  }
+
+  .header-card{
+    font-size:42px;
+    line-height:1.08;
+  }
+
+  .air-card{
+    width:132px;
+  }
+
+  .air-item{
+    min-height:80px;
+    padding:8px 8px 10px;
+  }
+
+  .air-label{
+    font-size:16px;
+  }
+
+  .air-value,
+  .air-state{
+    font-size:22px;
+  }
   }
 </style>
 
@@ -340,10 +442,30 @@
 <body>
   <div class="app">
     <div class="page">
-      <div class="col left-col">
-        <div class="header-card" id="sheetData"></div>
+<div class="col left-col">
+  <div class="top-left-row">
+    <div class="header-card" id="sheetData"></div>
 
-        <section class="card notice-card">
+    <div class="air-card" id="airCard">
+      <div class="air-item pm10 good">
+        <div class="air-label">미세먼지</div>
+        <div class="air-value-wrap">
+          <span class="air-value" id="pm10Value">42</span>
+          <span class="air-state" id="pm10State">보통</span>
+        </div>
+      </div>
+
+      <div class="air-item pm25 good">
+        <div class="air-label">초미세먼지</div>
+        <div class="air-value-wrap">
+          <span class="air-value" id="pm25Value">18</span>
+          <span class="air-state" id="pm25State">좋음</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="card notice-card">
           <div class="tab-bar">
             <button class="tab-btn" id="btn-morning" onclick="selectTab('morning')">아침활동</button>
             <button class="tab-btn" id="btn-class" onclick="selectTab('class')">수업시간</button>
@@ -419,6 +541,51 @@
       "쉬는시간":"break",
       "점심시간":"lunch"
     };
+
+    function getDustGrade(type, value){
+  const num = Number(value);
+
+  if(type === "pm10"){
+    if(num <= 30) return "good";
+    if(num <= 80) return "normal";
+    if(num <= 150) return "bad";
+    return "very-bad";
+  }
+
+  if(type === "pm25"){
+    if(num <= 15) return "good";
+    if(num <= 35) return "normal";
+    if(num <= 75) return "bad";
+    return "very-bad";
+  }
+
+  return "good";
+}
+
+function getDustGradeText(type, value){
+  const grade = getDustGrade(type, value);
+
+  if(grade === "good") return "좋음";
+  if(grade === "normal") return "보통";
+  if(grade === "bad") return "나쁨";
+  return "매우나쁨";
+}
+
+function renderAirQuality(pm10, pm25){
+  const pm10Box = document.querySelector(".air-item.pm10");
+  const pm25Box = document.querySelector(".air-item.pm25");
+
+  const pm10Grade = getDustGrade("pm10", pm10);
+  const pm25Grade = getDustGrade("pm25", pm25);
+
+  pm10Box.className = `air-item pm10 ${pm10Grade}`;
+  pm25Box.className = `air-item pm25 ${pm25Grade}`;
+
+  document.getElementById("pm10Value").textContent = pm10;
+  document.getElementById("pm25Value").textContent = pm25;
+  document.getElementById("pm10State").textContent = getDustGradeText("pm10", pm10);
+  document.getElementById("pm25State").textContent = getDustGradeText("pm25", pm25);
+}
 
     let DASHBOARD = {
       headerLines: [],
