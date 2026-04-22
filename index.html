@@ -998,11 +998,19 @@
 
 async function fetchAirQuality(){
   try{
-    const res = await fetch("air.json");
+    const res = await fetch("./air.json", { cache: "no-store" });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+
     const data = await res.json();
 
-    renderAirQuality(data.pm10, data.pm25);
+    if(
+      typeof data.pm10 === "undefined" ||
+      typeof data.pm25 === "undefined"
+    ){
+      throw new Error("pm10 또는 pm25 없음");
+    }
 
+    renderAirQuality(data.pm10, data.pm25);
   } catch(e){
     console.error("air.json 불러오기 실패", e);
     renderAirQuality("-", "-");
