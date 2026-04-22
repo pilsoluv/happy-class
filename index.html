@@ -72,12 +72,12 @@
       row-gap:25px;
     }
 
-    .right-col{
-      min-height:0;
-      display:grid;
-      grid-template-rows:auto 1fr;
-      row-gap:25px;
-    }
+   .right-col{
+  min-height:0;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  row-gap:4px;   /* 기존보다 확 줄이기 */
+}
 
     .card{
       min-height:0;
@@ -137,31 +137,33 @@
     }
 
     .date-line{
-      font-size:var(--date-font);
-      font-weight:400;
-      line-height:1.02;
-      margin-bottom:6px;
-    }
+  font-size:var(--date-font);
+  font-weight:400;
+  line-height:1.02;
+  margin-bottom:0;   /* 날짜-시계 간격 줄이기 */
+}
 
-    .time-line{
-      font-size:var(--time-font);
-      font-weight:950;
-      line-height:1;
-      letter-spacing:-2px;
-      white-space:nowrap;
-    }
+   .time-line{
+  font-size:var(--time-font);
+  font-weight:950;
+  line-height:1;
+  letter-spacing:-2px;
+  white-space:nowrap;
+  margin-top:0;
+  margin-bottom:20px;  /* 시계-카운트 간격 늘리기 */
+}
 
-    .count-line{
-      font-size:var(--count-font);
-      font-weight:400;
-      line-height:1.15;
-      margin-top:10px;
-    }
+   .count-line{
+  font-size:var(--count-font);
+  font-weight:400;
+  line-height:1.15;
+  margin-top:0;
+}
 
     /* 미세먼지 한 줄 */
     .air-inline-wrap{
-  margin-top:34px;   /* 위 텍스트와 더 멀어짐 */
-  margin-bottom:8px; /* 급식 박스와 더 가까워짐 */
+  margin-top:30px;   /* 위 3줄과는 조금 띄우고 */
+  margin-bottom:0;   /* 아래 급식박스랑 붙이기 */
   width:100%;
   background:transparent;
   padding:0;
@@ -174,7 +176,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:12px;
+  gap:10px;
   color:#fff;
   white-space:nowrap;
   flex-wrap:nowrap;
@@ -182,18 +184,18 @@
 }
 
 .air-label{
-  font-size:0.36em;   /* 라벨 더 크게 */
+  font-size:0.43em;   /* 기존보다 키움 */
   font-weight:400;
   letter-spacing:-0.3px;
 }
 
 .air-number{
-  font-size:0.88em;   /* 숫자 살짝 줄임 */
+  font-size:0.72em;   /* 기존보다 줄임 */
   font-weight:800;
   line-height:1;
   letter-spacing:-1px;
-  margin-left:4px;
-  margin-right:2px;
+  margin-left:3px;
+  margin-right:1px;
 }
 
 .badge{
@@ -201,9 +203,9 @@
   align-items:center;
   justify-content:center;
   padding:0 0.58em;
-  height:1.22em;
+  height:1.18em;
   border-radius:0.28em;
-  font-size:0.46em;   /* 너무 작지 않게 */
+  font-size:0.43em;   /* 숫자보다 조금 작은 수준 */
   font-weight:900;
   color:#fff;
   line-height:1;
@@ -211,8 +213,8 @@
 }
 
 .air-gap{
-  width:18px;
-  flex:0 0 18px;
+  width:16px;
+  flex:0 0 16px;
 }
 
     .good{ background:var(--dust-good); }
@@ -328,24 +330,24 @@
     }
 
     /* 급식 카드 */
-    .meal-card{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      margin:0;
-      padding:18px 28px;
-      text-align:center;
-      min-height:0;
-    }
+   .meal-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start; /* 가운데정렬 말고 위로 */
+  width:100%;
+  margin:0;
+  padding:6px 28px 18px;      /* 위 padding 줄이기 */
+  text-align:center;
+  min-height:0;
+}
 
     .meal-top{
-      width:100%;
-      min-height:64px;
-      margin-bottom:14px;
-    }
+  width:100%;
+  min-height:auto;
+  margin-bottom:8px;   /* 제목 아래 간격도 살짝 줄이기 */
+}
 
     .meal-title-wrap{
       width:100%;
