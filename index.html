@@ -832,7 +832,7 @@
       const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 
       document.getElementById("dateText").textContent =
-        `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${days[now.getDay()]}`;
+        `${now.getFullYear()}. ${now.getMonth() + 1}. ${now.getDate()}. ${days[now.getDay()]}`;
 
       const { current, next, remain } = findNextPeriodInfo(nowMinutes);
 
