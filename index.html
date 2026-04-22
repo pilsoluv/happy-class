@@ -161,35 +161,38 @@
 
     /* 미세먼지 한 줄 */
 
-    .air-time {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 4px;
-  line-height: 1;
-  text-align: right;
-}
-    
     .air-inline-wrap{
-  margin-top:36px;   /* 위 3줄과는 조금 띄우고 */
-  margin-bottom:0;   /* 아래 급식박스랑 붙이기 */
-  transform:translateY(-12px);    
-  width:100%;
-  background:transparent;
-  padding:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  margin-top: 36px;
+  margin-bottom: 0;
+  transform: translateY(-12px);
+  width: 100%;
+  background: transparent;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;   /* 핵심: 윗줄은 전체폭, 아랫줄은 자기 정렬 */
+}
+
+.air-time {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1;
+  text-align: right;      /* 윗줄만 오른쪽 정렬 */
+  margin-bottom: 6px;
+  padding-right: 2px;
 }
 
 .air-inline{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  color:#fff;
-  white-space:nowrap;
-  flex-wrap:nowrap;
-  font-size:60px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 아랫줄은 가운데 정렬 유지 */
+  gap: 10px;
+  color: #fff;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 
 .air-label{
@@ -469,9 +472,7 @@
     <div class="time-line" id="statusLine"></div>
     <div class="count-line" id="countdownText"></div>
 
-   <div class="air-inline-wrap">
-
-  <!-- 👉 이 줄이 위에 따로 -->
+  <div class="air-inline-wrap">
   <div id="airTime" class="air-time"></div>
 
   <div id="airInline" class="air-inline">
@@ -485,7 +486,6 @@
     <span class="air-number" id="pm25Value">-</span>
     <span class="badge empty" id="pm25State">-</span>
   </div>
-
 </div>
         </section>
 
