@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>행복한 우리반</title>
+async function fetchAirQuality(){  <title>행복한 우리반</title>
   <link rel="icon" type="image/png" href="icon.png">
 
   <style>
@@ -169,30 +169,31 @@
       align-items:center;
     }
 
-    .air-inline{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      color:#fff;
-      white-space:nowrap;
-      flex-wrap:nowrap;
-    }
+   .air-inline{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  color:#fff;
+  white-space:nowrap;
+  flex-wrap:nowrap;
+  font-size:52px;
+}
 
-    .air-label{
-      font-size:26px;
-      font-weight:400;
-      letter-spacing:-0.4px;
-    }
+.air-label{
+  font-size:0.5em;
+  font-weight:400;
+  letter-spacing:-0.4px;
+}
 
-    .air-number{
-      font-size:52px;
-      font-weight:800;
-      line-height:1;
-      letter-spacing:-1px;
-      margin-left:4px;
-      margin-right:2px;
-    }
+.air-number{
+  font-size:1em;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-1px;
+  margin-left:4px;
+  margin-right:2px;
+}
 
     .air-gap{
       width:18px;
@@ -203,11 +204,11 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-width:120px;
-      height:44px;
-      padding:0 18px;
-      border-radius:8px;
-      font-size:20px;
+      min-width:5.5em;
+      height:2.1em;
+      padding:0 0.9em;
+      border-radius:0.4em;
+      font-size::0.42em;
       font-weight:900;
       color:#fff;
       line-height:1;
@@ -1013,6 +1014,14 @@ async function fetchAirQuality(){
     renderAirQuality("-", "-");
   }
 }
+
+    async function loadDashboardData(){
+  try{
+    const [basicRows, noticeRows] = await Promise.all([
+      fetchCsv(BASIC_INFO_URL),
+      fetchCsv(NOTICE_URL)
+    ]);
+    
         DASHBOARD.periods = extractPeriods(basicRows);
         DASHBOARD.headerLines = extractHeaderLines(basicRows);
         DASHBOARD.notices = extractNotices(noticeRows);
