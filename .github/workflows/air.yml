@@ -31,8 +31,8 @@ jobs:
           echo
 
       - name: JSON 가공
-         shell: bash
-         run: |
+        shell: bash
+        run: |
           if ! jq empty air_raw.json >/dev/null 2>&1; then
             echo "air_raw.json이 JSON 형식이 아님. 이번 실행은 건너뜀."
             exit 0
