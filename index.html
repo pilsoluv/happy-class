@@ -160,53 +160,59 @@
 
     /* 미세먼지 한 줄 */
     .air-inline-wrap{
-      margin-top:18px;
-      width:100%;
-      background:transparent;
-      padding:0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
+  margin-top:34px;   /* 위 텍스트와 더 멀어짐 */
+  margin-bottom:8px; /* 급식 박스와 더 가까워짐 */
+  width:100%;
+  background:transparent;
+  padding:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
 
 .air-inline{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:10px; /* 👈 전체 간격 줄임 */
+  gap:12px;
   color:#fff;
   white-space:nowrap;
-  font-size:60px; /* 전체 기준 */
+  flex-wrap:nowrap;
+  font-size:60px;
 }
 
 .air-label{
-  font-size:0.34em;
+  font-size:0.36em;   /* 라벨 더 크게 */
   font-weight:400;
-  letter-spacing:-0.4px;
+  letter-spacing:-0.3px;
 }
 
 .air-number{
-  font-size:0.95em; /* 👈 거의 메인 크기 */
+  font-size:0.88em;   /* 숫자 살짝 줄임 */
   font-weight:800;
-  margin-left:4px;  /* 👈 간격 줄임 */
+  line-height:1;
+  letter-spacing:-1px;
+  margin-left:4px;
   margin-right:2px;
-}
-
-.air-gap{
-  width:16px; /* 👈 기존보다 줄이기 */
-  flex:0 0 16px;
 }
 
 .badge{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:0 0.6em;
-  height:1.3em;
-  border-radius:0.3em;
-  font-size:0.48em;  /* 👈 핵심 수정 (0.3 → 0.48) */
+  padding:0 0.58em;
+  height:1.22em;
+  border-radius:0.28em;
+  font-size:0.46em;   /* 너무 작지 않게 */
   font-weight:900;
+  color:#fff;
+  line-height:1;
   min-width:auto;
+}
+
+.air-gap{
+  width:18px;
+  flex:0 0 18px;
 }
 
     .good{ background:var(--dust-good); }
