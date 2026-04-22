@@ -160,6 +160,13 @@
 }
 
     /* 미세먼지 한 줄 */
+
+    .air-time {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 4px;
+}
+    
     .air-inline-wrap{
   margin-top:36px;   /* 위 3줄과는 조금 띄우고 */
   margin-bottom:0;   /* 아래 급식박스랑 붙이기 */
@@ -980,22 +987,28 @@
       return "-";
     }
 
-    function renderAirQuality(pm10, pm25){
-      const pm10State = document.getElementById("pm10State");
-      const pm25State = document.getElementById("pm25State");
+    function renderAirQuality(pm10, pm25, labelTime = ""){
+  const pm10State = document.getElementById("pm10State");
+  const pm25State = document.getElementById("pm25State");
+  const airTime = document.getElementById("airTime");
 
-      const pm10Grade = getDustGrade("pm10", pm10);
-      const pm25Grade = getDustGrade("pm25", pm25);
+  const pm10Grade = getDustGrade("pm10", pm10);
+  const pm25Grade = getDustGrade("pm25", pm25);
 
-      document.getElementById("pm10Value").textContent = Number.isNaN(Number(pm10)) ? "-" : pm10;
-      document.getElementById("pm25Value").textContent = Number.isNaN(Number(pm25)) ? "-" : pm25;
+  document.getElementById("pm10Value").textContent = Number.isNaN(Number(pm10)) ? "-" : pm10;
+  document.getElementById("pm25Value").textContent = Number.isNaN(Number(pm25)) ? "-" : pm25;
 
-      pm10State.textContent = getDustGradeText("pm10", pm10);
-      pm25State.textContent = getDustGradeText("pm25", pm25);
+  pm10State.textContent = getDustGradeText("pm10", pm10);
+  pm25State.textContent = getDustGradeText("pm25", pm25);
 
-      pm10State.className = `badge ${pm10Grade}`;
-      pm25State.className = `badge ${pm25Grade}`;
-    }
+  pm10State.className = `badge ${pm10Grade}`;
+  pm25State.className = `badge ${pm25Grade}`;
+
+  // 👉 여기 추가
+  if (airTime) {
+    airTime.textContent = labelTime ? `${labelTime} 기준` : "";
+  }
+}
 
 async function fetchAirQuality(){
   try{
@@ -1011,10 +1024,10 @@ async function fetchAirQuality(){
       throw new Error("pm10 또는 pm25 없음");
     }
 
-    renderAirQuality(data.pm10, data.pm25);
+    renderAirQuality(data.pm10, data.pm25, data.labelTime || "");
   } catch(e){
     console.error("air.json 불러오기 실패", e);
-    renderAirQuality("-", "-");
+    renderAirQuality("-", "-", "");
   }
 }
 
