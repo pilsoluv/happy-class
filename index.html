@@ -162,8 +162,8 @@
     .air-inline-wrap{
       margin-top:18px;
       width:100%;
-      background:rgba(7, 33, 79, 0.88);
-      padding:18px 26px;
+      background:transparent;
+      padding:0;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -173,7 +173,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:12px;
+      gap:16px;
       color:#fff;
       white-space:nowrap;
       flex-wrap:nowrap;
@@ -203,11 +203,11 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-width:150px;
-      height:54px;
+      min-width:120px;
+      height:44px;
       padding:0 18px;
-      border-radius:10px;
-      font-size:24px;
+      border-radius:8px;
+      font-size:20px;
       font-weight:900;
       color:#fff;
       line-height:1;
@@ -820,6 +820,11 @@
     }
 
     function updateTime(){
+        const dateEl = document.getElementById("dateText");
+        const statusLineEl = document.getElementById("statusLine");
+        const countdownEl = document.getElementById("countdownText");
+
+  if(!dateEl || !statusLineEl || !countdownEl) return;
       const realNow = new Date();
       const now = new Date(realNow.getTime() - CLOCK_DELAY_MINUTES * 60000);
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
