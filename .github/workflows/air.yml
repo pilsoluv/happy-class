@@ -62,11 +62,16 @@ jobs:
           PM25=$(jq -r '.response.body.items[0].pm25Value' air_raw.json)
           DATATIME=$(jq -r '.response.body.items[0].dataTime' air_raw.json)
 
-          # dataTime에서 시(hour)만 추출
+          # dataTime 예: 2026-04-22 21시 발표
+          MONTH=$(echo "$DATATIME" | cut -d'-' -f2 | sed 's/^0//')
+          DAY=$(echo "$DATATIME" | cut -d'-' -f3 | cut -d' ' -f1 | sed 's/^0//')
           DATA_HOUR=$(echo "$DATATIME" | grep -o '[0-9]\+시' | sed 's/시//')
+
+          LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
 
           echo "API dataTime: $DATATIME"
           echo "API dataHour: $DATA_HOUR"
+          echo "labelTime: $LABEL_TIME"
           echo "PM10: $PM10 / PM25: $PM25"
 
           # 값이 비정상이면 종료
@@ -75,7 +80,7 @@ jobs:
             exit 1
           fi
 
-          echo "{ \"pm10\": \"$PM10\", \"pm25\": \"$PM25\", \"dataTime\": \"$DATATIME\", \"dataHour\": $DATA_HOUR }" > air.json
+          echo "{ \"pm10\": \"$PM10\", \"pm25\": \"$PM25\", \"labelTime\": \"$LABEL_TIME\", \"dataTime\": \"$DATATIME\", \"dataHour\": $DATA_HOUR }" > air.json
 
       - name: 변경사항 있으면 커밋 & 푸시
         run: |
