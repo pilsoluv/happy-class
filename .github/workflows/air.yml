@@ -30,7 +30,7 @@ jobs:
           head -c 500 air_raw.json || true
           echo
 
-       - name: JSON 가공
+      - name: JSON 가공
          shell: bash
          run: |
           if ! jq empty air_raw.json >/dev/null 2>&1; then
