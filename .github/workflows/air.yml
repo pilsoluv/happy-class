@@ -5,18 +5,23 @@ on:
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
       - name: 코드 가져오기
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 에어코리아 API 호출
         shell: bash
         run: |
-          set -e
           curl -L -s \
             -o air_raw.json \
             "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=${{ secrets.AIR_KEY }}&returnType=json&numOfRows=1&pageNo=1&stationName=%EA%B3%A0%ED%98%84%EB%8F%99&dataTerm=DAILY&ver=1.3"
@@ -28,7 +33,6 @@ jobs:
       - name: JSON 가공
         shell: bash
         run: |
-          # JSON 아니면 이번 실행은 건너뜀
           if ! jq empty air_raw.json >/dev/null 2>&1; then
             echo "air_raw.json이 JSON 형식이 아님. 이번 실행은 건너뜀."
             exit 0
@@ -67,14 +71,21 @@ jobs:
           echo "labelTime: $LABEL_TIME"
           echo "PM10: $PM10 / PM25: $PM25"
 
-          echo "{ \"pm10\": \"$PM10\", \"pm25\": \"$PM25\", \"labelTime\": \"$LABEL_TIME\", \"dataTime\": \"$DATATIME\", \"dataHour\": $DATA_HOUR }" > air.json
+          printf '{ "pm10": "%s", "pm25": "%s", "labelTime": "%s", "dataTime": "%s", "dataHour": %s }\n' \
+            "$PM10" "$PM25" "$LABEL_TIME" "$DATATIME" "$DATA_HOUR" > air.json
 
       - name: 커밋 & 푸시
         shell: bash
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add air.json
-          git diff --cached --quiet && echo "no changes" && exit 0
+
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+
           git commit -m "update air quality"
           git push
