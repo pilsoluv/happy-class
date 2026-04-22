@@ -173,11 +173,10 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:18px;
+  gap:10px; /* 👈 전체 간격 줄임 */
   color:#fff;
   white-space:nowrap;
-  flex-wrap:nowrap;
-  font-size:70px;
+  font-size:60px; /* 전체 기준 */
 }
 
 .air-label{
@@ -187,31 +186,27 @@
 }
 
 .air-number{
-  font-size:1em;
+  font-size:0.95em; /* 👈 거의 메인 크기 */
   font-weight:800;
-  line-height:1;
-  letter-spacing:-1px;
-  margin-left:6px;
-  margin-right:4px;
+  margin-left:4px;  /* 👈 간격 줄임 */
+  margin-right:2px;
 }
 
 .air-gap{
-  width:18px;
-  flex:0 0 18px;
+  width:16px; /* 👈 기존보다 줄이기 */
+  flex:0 0 16px;
 }
 
 .badge{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-width:auto;     /* 고정폭 제거 */
+  padding:0 0.5em;
   height:1.2em;
-  padding:0 0.55em;   /* 여백 줄임 */
-  border-radius:0.22em;
-  font-size:0.28em;   /* 배지 글자 크기 줄임 */
+  border-radius:0.25em;
+  font-size:0.32em; /* 👈 숫자보다 확실히 작게 */
   font-weight:900;
-  color:#fff;
-  line-height:1;
+  min-width:auto;
 }
 
     .good{ background:var(--dust-good); }
