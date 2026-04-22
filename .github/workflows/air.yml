@@ -45,13 +45,27 @@ jobs:
             exit 0
           fi
 
-          PM10=$(jq -r '.response.body.items[0].pm10Value // empty' air_raw.json)
-          PM25=$(jq -r '.response.body.items[0].pm25Value // empty' air_raw.json)
-          DATATIME=$(jq -r '.response.body.items[0].dataTime // empty' air_raw.json)
+          # 목록 중 dataTime이 가장 최신인 항목 하나 선택
+          LATEST_ITEM=$(jq -c '
+            .response.body.items
+            | map(select(.dataTime != null and .dataTime != ""))
+            | sort_by(.dataTime)
+            | last
+          ' air_raw.json)
+
+          if [ -z "$LATEST_ITEM" ] || [ "$LATEST_ITEM" = "null" ]; then
+            echo "최신 항목 추출 실패. 이번 실행은 건너뜀."
+            cat air_raw.json
+            exit 0
+          fi
+
+          PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value // empty')
+          PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value // empty')
+          DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime // empty')
 
           if [ -z "$PM10" ] || [ -z "$PM25" ] || [ -z "$DATATIME" ] || [ "$PM10" = "null" ] || [ "$PM25" = "null" ]; then
             echo "필수 데이터 없음. 이번 실행은 건너뜀."
-            cat air_raw.json
+            echo "$LATEST_ITEM"
             exit 0
           fi
 
@@ -66,8 +80,8 @@ jobs:
 
           LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
 
-          echo "API dataTime: $DATATIME"
-          echo "API dataHour: $DATA_HOUR"
+          echo "API latest dataTime: $DATATIME"
+          echo "API latest dataHour: $DATA_HOUR"
           echo "labelTime: $LABEL_TIME"
           echo "PM10: $PM10 / PM25: $PM25"
 
