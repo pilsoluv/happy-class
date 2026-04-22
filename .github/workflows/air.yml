@@ -30,7 +30,7 @@ jobs:
           head -c 500 air_raw.json || true
           echo
 
-      - name: JSON 가공
+            - name: JSON 가공
         shell: bash
         run: |
           if ! jq empty air_raw.json >/dev/null 2>&1; then
@@ -45,41 +45,48 @@ jobs:
             exit 0
           fi
 
-          # 목록 중 dataTime이 가장 최신인 항목 하나 선택
+          echo "===== items preview ====="
+          jq -r '.response.body.items[] | "\(.dataTime) | pm10=\(.pm10Value) | pm25=\(.pm25Value)"' air_raw.json || true
+
+          # 1) dataTime이 있고
+          # 2) pm10/pm25가 숫자인 항목만 남김
+          # 3) 같은 날짜라면 시(hour)가 가장 큰 항목 선택
           LATEST_ITEM=$(jq -c '
             .response.body.items
-            | map(select(.dataTime != null and .dataTime != ""))
-            | sort_by(.dataTime)
+            | map(
+                select(
+                  .dataTime != null and .dataTime != "" and
+                  (.pm10Value | tostring | test("^[0-9]+$")) and
+                  (.pm25Value | tostring | test("^[0-9]+$"))
+                )
+                | . + {
+                    _hour: (
+                      (.dataTime | capture("(?<h>[0-9]+)시").h | tonumber)
+                    )
+                  }
+              )
+            | sort_by(._hour)
             | last
           ' air_raw.json)
 
           if [ -z "$LATEST_ITEM" ] || [ "$LATEST_ITEM" = "null" ]; then
-            echo "최신 항목 추출 실패. 이번 실행은 건너뜀."
+            echo "최신 숫자 항목 추출 실패. 이번 실행은 건너뜀."
             cat air_raw.json
             exit 0
           fi
 
-          PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value // empty')
-          PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value // empty')
-          DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime // empty')
-
-          if [ -z "$PM10" ] || [ -z "$PM25" ] || [ -z "$DATATIME" ] || [ "$PM10" = "null" ] || [ "$PM25" = "null" ]; then
-            echo "필수 데이터 없음. 이번 실행은 건너뜀."
-            echo "$LATEST_ITEM"
-            exit 0
-          fi
+          PM10=$(echo "$LATEST_ITEM" | jq -r '.pm10Value')
+          PM25=$(echo "$LATEST_ITEM" | jq -r '.pm25Value')
+          DATATIME=$(echo "$LATEST_ITEM" | jq -r '.dataTime')
+          DATA_HOUR=$(echo "$LATEST_ITEM" | jq -r '._hour')
 
           MONTH=$(echo "$DATATIME" | cut -d'-' -f2 | sed 's/^0//')
           DAY=$(echo "$DATATIME" | cut -d'-' -f3 | cut -d' ' -f1 | sed 's/^0//')
-          DATA_HOUR=$(echo "$DATATIME" | grep -o '[0-9]\+시' | sed 's/시//')
-
-          if [ -z "$DATA_HOUR" ]; then
-            echo "dataHour 추출 실패. 이번 실행은 건너뜀."
-            exit 0
-          fi
 
           LABEL_TIME="${MONTH}. ${DAY}. ${DATA_HOUR}시"
 
+          echo "===== selected latest item ====="
+          echo "$LATEST_ITEM"
           echo "API latest dataTime: $DATATIME"
           echo "API latest dataHour: $DATA_HOUR"
           echo "labelTime: $LABEL_TIME"
@@ -87,7 +94,6 @@ jobs:
 
           printf '{ "pm10": "%s", "pm25": "%s", "labelTime": "%s", "dataTime": "%s", "dataHour": %s }\n' \
             "$PM10" "$PM25" "$LABEL_TIME" "$DATATIME" "$DATA_HOUR" > air.json
-
       - name: 커밋 & 푸시
         shell: bash
         run: |
