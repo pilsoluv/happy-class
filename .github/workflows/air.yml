@@ -2,7 +2,7 @@ name: Update Air Quality
 
 on:
   schedule:
-    - cron: "5 7-17 * * *"
+    - cron: "2,7,13,22,35 7-17 * * *"
       timezone: "Asia/Seoul"
   workflow_dispatch:
 
@@ -26,8 +26,25 @@ jobs:
           TARGET_MINUTES=30
           INTERVAL_SECONDS=120
 
-          NOW_HOUR=$(TZ=Asia/Seoul date +%H | sed 's/^0//')
-          [ -z "$NOW_HOUR" ] && NOW_HOUR=0
+          CURRENT_HOUR=$(TZ=Asia/Seoul date +%H | sed 's/^0//')
+          [ -z "$CURRENT_HOUR" ] && CURRENT_HOUR=0
+
+          if [ -f air.json ]; then
+            SAVED_HOUR=$(jq -r '.dataHour // empty' air.json)
+          else
+            SAVED_HOUR=""
+          fi
+
+          echo "현재 시각 hour: $CURRENT_HOUR"
+          echo "기존 저장 hour: $SAVED_HOUR"
+
+          # 이미 현재 시간 데이터가 저장돼 있으면 API 호출 없이 종료
+          if [ "$SAVED_HOUR" = "$CURRENT_HOUR" ]; then
+            echo "이미 현재 시간 데이터가 저장되어 있으므로 종료"
+            exit 0
+          fi
+
+          NOW_HOUR=$CURRENT_HOUR
 
           # 11시는 더 촘촘하게
           if [ "$NOW_HOUR" = "11" ]; then
