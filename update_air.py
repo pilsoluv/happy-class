@@ -26,12 +26,10 @@ now_hour = now.hour
 print("현재 시각:", now_hour)
 
 # 7시~17시만 실행
-if False:
+if now_hour < 7 or now_hour > 17:
     print("조회 시간 아님. 종료")
-    input("엔터 누르면 종료")
     sys.exit()
 
-# 현재 폴더 기준 air.json 경로
 base_dir = os.path.dirname(os.path.abspath(__file__))
 air_json_path = os.path.join(base_dir, "air.json")
 
@@ -45,7 +43,6 @@ if os.path.exists(air_json_path):
 
         if str(saved_hour) == str(now_hour):
             print("이미 현재 시간 데이터가 저장되어 있으므로 종료")
-            input("엔터 누르면 종료")
             sys.exit()
     except Exception as e:
         print("기존 air.json 읽기 실패:", e)
@@ -61,19 +58,16 @@ try:
         data = res.json()
     except Exception:
         print("JSON 아님. 응답 내용 확인 필요")
-        input("엔터 누르면 종료")
         sys.exit()
 
     if "response" not in data or "body" not in data["response"]:
         print("응답 구조 이상")
         print(data)
-        input("엔터 누르면 종료")
         sys.exit()
 
     items = data["response"]["body"].get("items", [])
     print("items 개수:", len(items))
 
-    # 숫자값 있는 항목만 추리기
     valid = [
         i for i in items
         if str(i.get("pm10Value", "")).isdigit() and str(i.get("pm25Value", "")).isdigit()
@@ -83,21 +77,19 @@ try:
 
     if not valid:
         print("숫자 데이터 없음. 종료")
-        input("엔터 누르면 종료")
         sys.exit()
 
     latest = sorted(valid, key=lambda x: x["dataTime"])[-1]
 
-    data_time = latest["dataTime"]   # 예: 2026-04-24 16:00
+    data_time = latest["dataTime"]
     data_hour = int(data_time.split(" ")[1].split(":")[0])
 
     print("API 시간:", data_hour)
     print("API 최신 dataTime:", data_time)
 
-    # 현재 시간 데이터 아니면 종료
+    # 아직 현재 시간 데이터가 아니면 종료
     if data_hour != now_hour:
         print("아직 현재 시간 데이터 아님")
-        input("엔터 누르면 종료")
         sys.exit()
 
     result = {
@@ -113,27 +105,12 @@ try:
 
     print("air.json 저장 완료")
 
-    # Git 동기화 및 push
-    print("git pull 시작")
-subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=base_dir, check=False)
+    subprocess.run(["git", "add", "air.json"], cwd=base_dir, check=False)
+    subprocess.run(["git", "commit", "-m", "update air"], cwd=base_dir, check=False)
+    subprocess.run(["git", "push"], cwd=base_dir, check=False)
 
-with open(air_json_path, "w", encoding="utf-8") as f:
-    json.dump(result, f, ensure_ascii=False)
-
-print("air.json 저장 완료")
-
-print("git add 시작")
-subprocess.run(["git", "add", "air.json"], cwd=base_dir, check=False)
-
-print("git commit 시작")
-subprocess.run(["git", "commit", "-m", "update air"], cwd=base_dir, check=False)
-
-print("git push 시작")
-subprocess.run(["git", "push"], cwd=base_dir, check=False)
-
-print("작업 완료")
+    print("작업 완료")
 
 except Exception as e:
     print("오류 발생:", e)
-
-input("엔터 누르면 종료")
+    sys.exit()
