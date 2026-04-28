@@ -3,7 +3,8 @@ import os
 import datetime
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-log_path = os.path.join(base_dir, "air_loop_log.txt")
+today = datetime.datetime.now().strftime("%Y-%m-%d")
+log_path = os.path.join(base_dir, f"air_loop_log_{today}.txt")
 
 class Logger:
     def write(self, message):
