@@ -1005,7 +1005,7 @@
       return "-";
     }
 
-    function renderAirQuality(pm10, pm25, labelTime = ""){
+    function renderAirQuality(pm10, pm25, labelTime = "", stationName = ""){
   const pm10State = document.getElementById("pm10State");
   const pm25State = document.getElementById("pm25State");
   const airTime = document.getElementById("airTime");
@@ -1024,7 +1024,7 @@
 
   // 👉 여기 추가
   if (airTime) {
-    airTime.textContent = labelTime ? `${labelTime} 기준` : "";
+    airTime.textContent = labelTime ? `${labelTime} 기준 | ${stationName}` : "";
   }
 }
 
@@ -1042,7 +1042,7 @@ async function fetchAirQuality(){
       throw new Error("pm10 또는 pm25 없음");
     }
 
-    renderAirQuality(data.pm10, data.pm25, data.labelTime || "");
+    renderAirQuality(data.pm10, data.pm25, data.labelTime || "", data.stationName || "");
   } catch(e){
     console.error("air.json 불러오기 실패", e);
     renderAirQuality("-", "-", "");
