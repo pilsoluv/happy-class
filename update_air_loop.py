@@ -8,8 +8,9 @@ log_path = os.path.join(base_dir, f"air_loop_log_{today}.txt")
 
 class Logger:
     def write(self, message):
-        with open(log_path, "a", encoding="utf-8") as f:
+        with open(log_path, "a", encoding="utf-8", errors="ignore") as f:
             f.write(message)
+
     def flush(self):
         pass
 
@@ -47,6 +48,16 @@ STATIONS = ["고현동", "아주동"]
 base_dir = os.path.dirname(os.path.abspath(__file__))
 air_json_path = os.path.join(base_dir, "air.json")
 
+def parse_data_time(value):
+    date_part, time_part = value.split(" ")
+    hour, minute = map(int, time_part.split(":"))
+
+    if hour == 24:
+        base_date = datetime.datetime.strptime(date_part, "%Y-%m-%d")
+        next_date = base_date + datetime.timedelta(days=1)
+        return next_date.replace(hour=0, minute=minute)
+
+    return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M")
 
 def fetch_and_update():
     now = datetime.datetime.now()
@@ -111,11 +122,11 @@ def fetch_and_update():
 
             candidate = max(
                 valid,
-                key=lambda x: datetime.datetime.strptime(x["dataTime"], "%Y-%m-%d %H:%M")
-            )
-
+                key=lambda x: parse_data_time(x["dataTime"])
+)
             candidate_time = candidate["dataTime"]
-            candidate_hour = int(candidate_time.split(" ")[1].split(":")[0])
+            candidate_dt = parse_data_time(candidate["dataTime"])
+            candidate_hour = candidate_dt.hour
 
             print(f"{station} 최신 dataTime:", candidate_time)
 
@@ -132,7 +143,8 @@ def fetch_and_update():
             return False
 
         data_time = latest["dataTime"]
-        data_hour = int(data_time.split(" ")[1].split(":")[0])
+        data_dt = parse_data_time(data_time)
+        data_hour = data_dt.hour
 
         print("사용 측정소:", used_station)
         print("API 시간:", data_hour)
@@ -147,7 +159,7 @@ def fetch_and_update():
             "pm25": latest["pm25Value"],
             "dataHour": data_hour,
             "dataTime": data_time,
-            "labelTime": f"{int(data_time[5:7])}. {int(data_time[8:10])}. {data_hour}시"
+            "labelTime": f"{data_dt.month}. {data_dt.day}. {data_hour}시"
         }
 
         with open(air_json_path, "w", encoding="utf-8") as f:
