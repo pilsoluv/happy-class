@@ -105,10 +105,27 @@ def fetch_and_update():
 
             print(f"{station} 유효 데이터 개수:", len(valid))
 
-            if valid:
-                latest = sorted(valid, key=lambda x: x["dataTime"])[-1]
-                used_station = station
-                break
+            if not valid:
+                print(f"{station} 유효 데이터 없음 → 다음 측정소 확인")
+                continue
+
+            candidate = max(
+                valid,
+                key=lambda x: datetime.datetime.strptime(x["dataTime"], "%Y-%m-%d %H:%M")
+            )
+
+            candidate_time = candidate["dataTime"]
+            candidate_hour = int(candidate_time.split(" ")[1].split(":")[0])
+
+            print(f"{station} 최신 dataTime:", candidate_time)
+
+            if candidate_hour != now_hour:
+                print(f"{station} 현재 시간 데이터 아님 → 다음 측정소 확인")
+                continue
+
+            latest = candidate
+            used_station = station
+            break
 
         if latest is None:
             print("고현동/아주동 모두 유효 데이터 없음")
