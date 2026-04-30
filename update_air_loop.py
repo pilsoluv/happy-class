@@ -184,7 +184,7 @@ def fetch_and_update():
         if used_station == "고현동":
             return True
         else:
-            print("아주동 임시 저장 완료 → 2분 후 고현동 재확인")
+            print("아주동 임시 저장 완료 → 30분/40분에 고현동 재확인")
             return False
 
     except Exception as e:
@@ -199,14 +199,24 @@ while True:
     now = datetime.datetime.now()
 
     if updated:
-        # 다음 정각까지 대기
-        next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=5, microsecond=0)
+        # 다음 시간 10분까지 대기
+        next_hour = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
         wait_seconds = (next_hour - now).total_seconds()
 
-        print(f"다음 정각까지 대기: {int(wait_seconds)}초")
+        print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
         time.sleep(wait_seconds)
 
     else:
-        # 2분 후 재시도
-        print("2분 후 재시도...")
-        time.sleep(120)
+        minute = now.minute
+
+        if minute < 30:
+            next_try = now.replace(minute=30, second=5, microsecond=0)
+        elif minute < 40:
+            next_try = now.replace(minute=40, second=5, microsecond=0)
+        else:
+            next_try = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
+
+        wait_seconds = (next_try - now).total_seconds()
+
+        print(f"다음 조회까지 대기: {int(wait_seconds)}초")
+        time.sleep(wait_seconds)
