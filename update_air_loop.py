@@ -1,14 +1,24 @@
-import sys
 import os
+import sys
 import datetime
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
+
+LOCK_FILE = os.path.join(base_dir, "air_loop.lock")
+
+if os.path.exists(LOCK_FILE):
+    print("이미 실행 중입니다. 중복 실행을 종료합니다.")
+    sys.exit()
+
+with open(LOCK_FILE, "w", encoding="utf-8") as f:
+    f.write(str(os.getpid()))
+
 today = datetime.datetime.now().strftime("%Y-%m-%d")
 log_path = os.path.join(base_dir, f"air_loop_log_{today}.txt")
 
 class Logger:
     def write(self, message):
-        with open(log_path, "a", encoding="utf-8", errors="ignore") as f:
+        with open(log_path, "a", encoding="utf-8-sig", errors="ignore") as f:
             f.write(message)
 
     def flush(self):
@@ -192,31 +202,35 @@ def fetch_and_update():
         return False
 
 
-# 🔁 메인 루프
-while True:
-    updated = fetch_and_update()
+try:
+    # 🔁 메인 루프
+    while True:
+        updated = fetch_and_update()
 
-    now = datetime.datetime.now()
+        now = datetime.datetime.now()
 
-    if updated:
-        # 다음 시간 10분까지 대기
-        next_hour = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
-        wait_seconds = (next_hour - now).total_seconds()
+        if updated:
+            next_hour = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
+            wait_seconds = (next_hour - now).total_seconds()
 
-        print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
-        time.sleep(wait_seconds)
+            print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
+            time.sleep(wait_seconds)
 
-    else:
-        minute = now.minute
-
-        if minute < 30:
-            next_try = now.replace(minute=30, second=5, microsecond=0)
-        elif minute < 40:
-            next_try = now.replace(minute=40, second=5, microsecond=0)
         else:
-            next_try = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
+            minute = now.minute
 
-        wait_seconds = (next_try - now).total_seconds()
+            if minute < 30:
+                next_try = now.replace(minute=30, second=5, microsecond=0)
+            elif minute < 40:
+                next_try = now.replace(minute=40, second=5, microsecond=0)
+            else:
+                next_try = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
 
-        print(f"다음 조회까지 대기: {int(wait_seconds)}초")
-        time.sleep(wait_seconds)
+            wait_seconds = (next_try - now).total_seconds()
+
+            print(f"다음 조회까지 대기: {int(wait_seconds)}초")
+            time.sleep(wait_seconds)
+
+finally:
+    if os.path.exists(LOCK_FILE):
+        os.remove(LOCK_FILE)
