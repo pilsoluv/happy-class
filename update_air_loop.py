@@ -209,31 +209,44 @@ def fetch_and_update():
 try:
     # 🔁 메인 루프
     while True:
-        updated = fetch_and_update()
+        try:
+            updated = fetch_and_update()
 
-        now = datetime.datetime.now()
+            now = datetime.datetime.now()
 
-        if updated:
-            next_hour = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
-            wait_seconds = (next_hour - now).total_seconds()
+            if updated:
+                next_hour = (now + datetime.timedelta(hours=1)).replace(
+                    minute=10,
+                    second=5,
+                    microsecond=0
+                )
+                wait_seconds = (next_hour - now).total_seconds()
 
-            print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
-            time.sleep(wait_seconds)
+                print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
+                time.sleep(wait_seconds)
 
-        else:
-            minute = now.minute
-
-            if minute < 30:
-                next_try = now.replace(minute=30, second=5, microsecond=0)
-            elif minute < 40:
-                next_try = now.replace(minute=40, second=5, microsecond=0)
             else:
-                next_try = (now + datetime.timedelta(hours=1)).replace(minute=10, second=5, microsecond=0)
+                minute = now.minute
 
-            wait_seconds = (next_try - now).total_seconds()
+                if minute < 30:
+                    next_try = now.replace(minute=30, second=5, microsecond=0)
+                elif minute < 40:
+                    next_try = now.replace(minute=40, second=5, microsecond=0)
+                else:
+                    next_try = (now + datetime.timedelta(hours=1)).replace(
+                        minute=10,
+                        second=5,
+                        microsecond=0
+                    )
 
-            print(f"다음 조회까지 대기: {int(wait_seconds)}초")
-            time.sleep(wait_seconds)
+                wait_seconds = (next_try - now).total_seconds()
+
+                print(f"다음 조회까지 대기: {int(wait_seconds)}초")
+                time.sleep(wait_seconds)
+
+        except Exception as e:
+            print("루프 오류:", e)
+            time.sleep(60)
 
 finally:
     if os.path.exists(LOCK_FILE):
