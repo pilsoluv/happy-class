@@ -6,10 +6,14 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 
 LOCK_FILE = os.path.join(base_dir, "air_loop.lock")
 
+# 이전 실행 중 남은 lock 파일 제거
 if os.path.exists(LOCK_FILE):
-    print("이미 실행 중입니다. 중복 실행을 종료합니다.")
-    sys.exit()
+    try:
+        os.remove(LOCK_FILE)
+    except:
+        pass
 
+# 새 lock 파일 생성
 with open(LOCK_FILE, "w", encoding="utf-8") as f:
     f.write(str(os.getpid()))
 
