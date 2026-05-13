@@ -100,8 +100,4 @@ create_lock()
 
 print("새 루프 실행")
 
-# 4. 실제 메인 스크립트 실행
-subprocess.run([sys.executable, SCRIPT_NAME])
-
-# 5. 종료 시 lock 삭제
-cleanup()
+os.execv(sys.executable, [sys.executable, SCRIPT_NAME])
