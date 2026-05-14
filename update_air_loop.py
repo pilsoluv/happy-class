@@ -220,6 +220,7 @@ try:
                     second=5,
                     microsecond=0
                 )
+
                 wait_seconds = (next_hour - now).total_seconds()
 
                 print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
@@ -228,10 +229,11 @@ try:
             else:
                 minute = now.minute
 
-                if minute < 30:
-                    next_try = now.replace(minute=30, second=5, microsecond=0)
-                elif minute < 40:
-                    next_try = now.replace(minute=40, second=5, microsecond=0)
+                # 10분~30분까지는 2분마다 재조회
+                if 10 <= minute < 30:
+                    wait_seconds = 120
+
+                # 그 외 시간은 다음 시간 10분까지 대기
                 else:
                     next_try = (now + datetime.timedelta(hours=1)).replace(
                         minute=10,
@@ -239,7 +241,7 @@ try:
                         microsecond=0
                     )
 
-                wait_seconds = (next_try - now).total_seconds()
+                    wait_seconds = (next_try - now).total_seconds()
 
                 print(f"다음 조회까지 대기: {int(wait_seconds)}초")
                 time.sleep(wait_seconds)
