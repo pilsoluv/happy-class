@@ -102,9 +102,6 @@ def fetch_and_update():
             res = requests.get(URL, params=params, verify=False, timeout=15)
             print(f"{station} 응답코드:", res.status_code)
 
-            res = requests.get(URL, params=params, verify=False, timeout=15)
-            print(f"{station} 응답코드:", res.status_code)
-
             if res.status_code != 200:
                 print(f"{station} API 오류({res.status_code}) → 다음 측정소 확인")
                 continue
@@ -125,6 +122,12 @@ def fetch_and_update():
                 valid_items,
                 key=lambda x: parse_data_time(x["dataTime"])
             )
+
+            candidate_dt = parse_data_time(candidate["dataTime"])
+
+            if candidate_dt.hour != now_hour:
+                print(f"{station} 현재 시간 데이터 아님({candidate['dataTime']}) → 다음 측정소 확인")
+                continue
 
             station_data[station] = candidate
 
