@@ -73,6 +73,11 @@ def parse_data_time(value):
 
     return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M")
 
+
+def is_valid_value(value):
+    return str(value).isdigit()
+
+
 def fetch_and_update():
     now = datetime.datetime.now()
     now_hour = now.hour
@@ -83,32 +88,10 @@ def fetch_and_update():
         print("조회 시간 아님. 대기...")
         return False
 
-    if os.path.exists(air_json_path):
-        try:
-            with open(air_json_path, "r", encoding="utf-8") as f:
-                old_data = json.load(f)
-
-            saved_hour = old_data.get("dataHour")
-            saved_station = old_data.get("stationName")
-
-            print("기존 저장 hour:", saved_hour)
-            print("기존 저장 측정소:", saved_station)
-
-            if str(saved_hour) == str(now_hour) and saved_station == "고현동":
-                print("이미 현재 시간 고현동 데이터 있음")
-                return True
-
-            if str(saved_hour) == str(now_hour) and saved_station == "아주동":
-                print("현재 시간 아주동 데이터 있음 → 고현동 재확인 진행")
-
-        except Exception as e:
-            print("기존 JSON 읽기 실패:", e)
-
     print("API 호출 시작")
 
     try:
-        latest = None
-        used_station = None
+        station_data = {}
 
         for station in STATIONS:
             print(f"{station} API 호출 시작")
@@ -122,55 +105,76 @@ def fetch_and_update():
             data = res.json()
             items = data["response"]["body"].get("items", [])
 
-            valid = [
+            current_items = [
                 i for i in items
-                if str(i.get("pm10Value", "")).isdigit()
-                and str(i.get("pm25Value", "")).isdigit()
+                if parse_data_time(i["dataTime"]).hour == now_hour
             ]
 
-            print(f"{station} 유효 데이터 개수:", len(valid))
-
-            if not valid:
-                print(f"{station} 유효 데이터 없음 → 다음 측정소 확인")
+            if not current_items:
+                print(f"{station} 현재 시간 데이터 없음 → 다음 측정소 확인")
                 continue
 
             candidate = max(
-                valid,
+                current_items,
                 key=lambda x: parse_data_time(x["dataTime"])
-)
-            candidate_time = candidate["dataTime"]
-            candidate_dt = parse_data_time(candidate["dataTime"])
-            candidate_hour = candidate_dt.hour
+            )
 
-            print(f"{station} 최신 dataTime:", candidate_time)
+            station_data[station] = candidate
 
-            if candidate_hour != now_hour:
-                print(f"{station} 현재 시간 데이터 아님 → 다음 측정소 확인")
-                continue
+            print(f"{station} 현재 시간 dataTime:", candidate["dataTime"])
+            print(f"{station} pm10:", candidate.get("pm10Value"))
+            print(f"{station} pm25:", candidate.get("pm25Value"))
 
-            latest = candidate
-            used_station = station
-            break
+        gohyeon = station_data.get("고현동")
+        aju = station_data.get("아주동")
 
-        if latest is None:
-            print("고현동/아주동 모두 유효 데이터 없음")
+        if not gohyeon and not aju:
+            print("고현동/아주동 모두 현재 시간 데이터 없음")
             return False
 
-        data_time = latest["dataTime"]
+        pm10 = None
+        pm25 = None
+        pm10_station = None
+        pm25_station = None
+        data_time = None
+
+        if gohyeon:
+            data_time = gohyeon["dataTime"]
+
+            if is_valid_value(gohyeon.get("pm10Value")):
+                pm10 = gohyeon["pm10Value"]
+                pm10_station = "고현동"
+
+            if is_valid_value(gohyeon.get("pm25Value")):
+                pm25 = gohyeon["pm25Value"]
+                pm25_station = "고현동"
+
+        if aju:
+            if data_time is None:
+                data_time = aju["dataTime"]
+
+            if pm10 is None and is_valid_value(aju.get("pm10Value")):
+                pm10 = aju["pm10Value"]
+                pm10_station = "아주동"
+
+            if pm25 is None and is_valid_value(aju.get("pm25Value")):
+                pm25 = aju["pm25Value"]
+                pm25_station = "아주동"
+
+        if pm10 is None and pm25 is None:
+            print("pm10/pm25 모두 유효값 없음")
+            return False
+
         data_dt = parse_data_time(data_time)
         data_hour = data_dt.hour
-
-        print("사용 측정소:", used_station)
-        print("API 시간:", data_hour)
-
-        if data_hour != now_hour:
-            print("아직 현재 시간 데이터 아님")
-            return False
+        used_station = f"미세먼지:{pm10_station}, 초미세먼지:{pm25_station}"
 
         result = {
             "stationName": used_station,
-            "pm10": latest["pm10Value"],
-            "pm25": latest["pm25Value"],
+            "pm10": pm10,
+            "pm25": pm25,
+            "pm10Station": pm10_station,
+            "pm25Station": pm25_station,
             "dataHour": data_hour,
             "dataTime": data_time,
             "labelTime": f"{data_dt.month}. {data_dt.day}. {data_hour}시"
@@ -180,6 +184,7 @@ def fetch_and_update():
             json.dump(result, f, ensure_ascii=False)
 
         print("air.json 저장 완료")
+        print("사용 값:", used_station)
 
         subprocess.run(["git", "add", "air.json"], cwd=base_dir)
 
@@ -194,17 +199,12 @@ def fetch_and_update():
             subprocess.run(["git", "commit", "-m", "update air"], cwd=base_dir)
             subprocess.run(["git", "push"], cwd=base_dir)
             print("GitHub 업데이트 완료")
-        
-        if used_station == "고현동":
-            return True
-        else:
-            print("아주동 임시 저장 완료 → 30분/40분에 고현동 재확인")
-            return False
+
+        return pm10_station == "고현동" and pm25_station == "고현동"
 
     except Exception as e:
         print("오류 발생:", e)
         return False
-
 
 try:
     # 🔁 메인 루프
