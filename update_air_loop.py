@@ -105,17 +105,17 @@ def fetch_and_update():
             data = res.json()
             items = data["response"]["body"].get("items", [])
 
-            current_items = [
+            valid_items = [
                 i for i in items
-                if parse_data_time(i["dataTime"]).hour == now_hour
+                if is_valid_value(i.get("pm10Value")) or is_valid_value(i.get("pm25Value"))
             ]
 
-            if not current_items:
-                print(f"{station} 현재 시간 데이터 없음 → 다음 측정소 확인")
+            if not valid_items:
+                print(f"{station} 사용 가능한 pm10/pm25 데이터 없음 → 다음 측정소 확인")
                 continue
 
             candidate = max(
-                current_items,
+                valid_items,
                 key=lambda x: parse_data_time(x["dataTime"])
             )
 
