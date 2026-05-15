@@ -102,6 +102,13 @@ def fetch_and_update():
             res = requests.get(URL, params=params, verify=False, timeout=15)
             print(f"{station} 응답코드:", res.status_code)
 
+            res = requests.get(URL, params=params, verify=False, timeout=15)
+            print(f"{station} 응답코드:", res.status_code)
+
+            if res.status_code != 200:
+                print(f"{station} API 오류({res.status_code}) → 다음 측정소 확인")
+                continue
+
             data = res.json()
             items = data["response"]["body"].get("items", [])
 
