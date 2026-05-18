@@ -1,0 +1,12 @@
+git add .
+git commit -m "Fix realtime station fallback logic"
+git push
+
+taskkill /F /IM python.exe
+taskkill /F /IM pythonw.exe
+
+del air_loop.lock
+
+pythonw run_air_loop.py
+
+tasklist | findstr python

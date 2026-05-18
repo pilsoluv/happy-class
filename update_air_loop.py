@@ -78,6 +78,44 @@ def is_valid_value(value):
     return str(value).isdigit()
 
 
+def is_valid_item(item):
+    return (
+        is_valid_value(item.get("pm10Value"))
+        and is_valid_value(item.get("pm25Value"))
+    )
+
+
+def get_latest_valid_item(station):
+    print(f"{station} API 호출 시작")
+
+    params = PARAMS.copy()
+    params["stationName"] = station
+
+    res = requests.get(URL, params=params, verify=False, timeout=15)
+    print(f"{station} 응답코드:", res.status_code)
+
+    if res.status_code != 200:
+        print(f"{station} API 오류({res.status_code})")
+        return None
+
+    data = res.json()
+    items = data["response"]["body"].get("items", [])
+
+    valid_items = [i for i in items if is_valid_item(i)]
+
+    if not valid_items:
+        print(f"{station} 유효 데이터 없음")
+        return None
+
+    latest = max(valid_items, key=lambda x: parse_data_time(x["dataTime"]))
+
+    print(f"{station} 최신 dataTime:", latest["dataTime"])
+    print(f"{station} pm10:", latest.get("pm10Value"))
+    print(f"{station} pm25:", latest.get("pm25Value"))
+
+    return latest
+
+
 def fetch_and_update():
     now = datetime.datetime.now()
     now_hour = now.hour
@@ -91,100 +129,48 @@ def fetch_and_update():
     print("API 호출 시작")
 
     try:
-        station_data = {}
+        gohyeon = get_latest_valid_item("고현동")
+        aju = get_latest_valid_item("아주동")
 
-        for station in STATIONS:
-            print(f"{station} API 호출 시작")
-
-            params = PARAMS.copy()
-            params["stationName"] = station
-
-            res = requests.get(URL, params=params, verify=False, timeout=15)
-            print(f"{station} 응답코드:", res.status_code)
-
-            if res.status_code != 200:
-                print(f"{station} API 오류({res.status_code}) → 다음 측정소 확인")
-                continue
-
-            data = res.json()
-            items = data["response"]["body"].get("items", [])
-
-            valid_items = [
-                i for i in items
-                if is_valid_value(i.get("pm10Value")) or is_valid_value(i.get("pm25Value"))
-            ]
-
-            if not valid_items:
-                print(f"{station} 사용 가능한 pm10/pm25 데이터 없음 → 다음 측정소 확인")
-                continue
-
-            candidate = max(
-                valid_items,
-                key=lambda x: parse_data_time(x["dataTime"])
-            )
-
-            candidate_dt = parse_data_time(candidate["dataTime"])
-
-            if candidate_dt.hour != now_hour:
-                print(f"{station} 현재 시간 데이터 아님({candidate['dataTime']}) → 다음 측정소 확인")
-                continue
-
-            station_data[station] = candidate
-
-            print(f"{station} 현재 시간 dataTime:", candidate["dataTime"])
-            print(f"{station} pm10:", candidate.get("pm10Value"))
-            print(f"{station} pm25:", candidate.get("pm25Value"))
-
-        gohyeon = station_data.get("고현동")
-        aju = station_data.get("아주동")
-
-        if not gohyeon and not aju:
-            print("고현동/아주동 모두 현재 시간 데이터 없음")
-            return False
-
-        pm10 = None
-        pm25 = None
-        pm10_station = None
-        pm25_station = None
-        data_time = None
+        selected = None
+        used_station = None
+        source_note = None
 
         if gohyeon:
-            data_time = gohyeon["dataTime"]
+            gohyeon_dt = parse_data_time(gohyeon["dataTime"])
+            diff_hours = (now - gohyeon_dt).total_seconds() / 3600
 
-            if is_valid_value(gohyeon.get("pm10Value")):
-                pm10 = gohyeon["pm10Value"]
-                pm10_station = "고현동"
+            if gohyeon_dt.hour == now_hour:
+                selected = gohyeon
+                used_station = "고현동"
+                source_note = "고현동 현재 시간 데이터"
 
-            if is_valid_value(gohyeon.get("pm25Value")):
-                pm25 = gohyeon["pm25Value"]
-                pm25_station = "고현동"
+            elif diff_hours < 3:
+                selected = gohyeon
+                used_station = "고현동"
+                source_note = "고현동 최신 데이터"
 
-        if aju:
-            if data_time is None:
-                data_time = aju["dataTime"]
+            else:
+                print("고현동 데이터 3시간 이상 지연 → 아주동 확인")
 
-            if pm10 is None and is_valid_value(aju.get("pm10Value")):
-                pm10 = aju["pm10Value"]
-                pm10_station = "아주동"
+        if selected is None and aju:
+            selected = aju
+            used_station = "아주동"
+            source_note = "고현동 데이터 지연으로 아주동 데이터 사용"
 
-            if pm25 is None and is_valid_value(aju.get("pm25Value")):
-                pm25 = aju["pm25Value"]
-                pm25_station = "아주동"
-
-        if pm10 is None and pm25 is None:
-            print("pm10/pm25 모두 유효값 없음")
+        if selected is None:
+            print("고현동/아주동 모두 유효 데이터 없음")
             return False
 
+        data_time = selected["dataTime"]
         data_dt = parse_data_time(data_time)
         data_hour = data_dt.hour
-        used_station = f"미세먼지:{pm10_station}, 초미세먼지:{pm25_station}"
 
         result = {
             "stationName": used_station,
-            "pm10": pm10,
-            "pm25": pm25,
-            "pm10Station": pm10_station,
-            "pm25Station": pm25_station,
+            "sourceNote": source_note,
+            "pm10": selected["pm10Value"],
+            "pm25": selected["pm25Value"],
             "dataHour": data_hour,
             "dataTime": data_time,
             "labelTime": f"{data_dt.month}. {data_dt.day}. {data_hour}시"
@@ -194,7 +180,8 @@ def fetch_and_update():
             json.dump(result, f, ensure_ascii=False)
 
         print("air.json 저장 완료")
-        print("사용 값:", used_station)
+        print("사용 측정소:", used_station)
+        print("사용 기준:", source_note)
 
         subprocess.run(["git", "add", "air.json"], cwd=base_dir)
 
@@ -210,7 +197,7 @@ def fetch_and_update():
             subprocess.run(["git", "push"], cwd=base_dir)
             print("GitHub 업데이트 완료")
 
-        return pm10_station == "고현동" and pm25_station == "고현동"
+        return used_station == "고현동" and data_hour == now_hour
 
     except Exception as e:
         print("오류 발생:", e)
