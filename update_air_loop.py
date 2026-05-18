@@ -43,6 +43,8 @@ import sys
 import os
 import time
 
+CREATE_NO_WINDOW = 0x08000000
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 URL = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty"
@@ -184,18 +186,32 @@ def fetch_and_update():
         print("사용 측정소:", used_station)
         print("사용 기준:", source_note)
 
-        subprocess.run(["git", "add", "air.json"], cwd=base_dir)
+        subprocess.run(
+            ["git", "add", "air.json"],
+            cwd=base_dir,
+            creationflags=CREATE_NO_WINDOW
+        )
 
         diff_check = subprocess.run(
             ["git", "diff", "--cached", "--quiet"],
-            cwd=base_dir
+            cwd=base_dir,
+            creationflags=CREATE_NO_WINDOW
         )
 
         if diff_check.returncode == 0:
             print("변경사항 없음 → commit 안 함")
         else:
-            subprocess.run(["git", "commit", "-m", "update air"], cwd=base_dir)
-            subprocess.run(["git", "push"], cwd=base_dir)
+            subprocess.run(
+                ["git", "commit", "-m", "update air"],
+                cwd=base_dir,
+                creationflags=CREATE_NO_WINDOW
+            )
+
+            subprocess.run(
+                ["git", "push"],
+                cwd=base_dir,
+                creationflags=CREATE_NO_WINDOW
+            )
             print("GitHub 업데이트 완료")
 
         return used_station == "고현동" and data_hour == now_hour

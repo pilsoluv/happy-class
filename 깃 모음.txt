@@ -1,5 +1,5 @@
 git add .
-git commit -m "아주동 버리고 고현동 이전데이터 유지"
+git commit -m "조회 시간 바꾸기"
 git push
 
 taskkill /F /IM python.exe
