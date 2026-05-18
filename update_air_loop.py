@@ -211,38 +211,37 @@ try:
             updated = fetch_and_update()
 
             now = datetime.datetime.now()
+            minute = now.minute
 
-            if updated:
-                next_hour = (now + datetime.timedelta(hours=1)).replace(
+# 00~09분 → 10분까지 대기
+            if minute < 10:
+                next_try = now.replace(
                     minute=10,
-                    second=5,
+                    second=0,
                     microsecond=0
                 )
 
-                wait_seconds = (next_hour - now).total_seconds()
+                wait_seconds = (next_try - now).total_seconds()
 
-                print(f"다음 시간 10분까지 대기: {int(wait_seconds)}초")
-                time.sleep(wait_seconds)
+# 10~29분 → 2분마다 재조회
+            elif minute < 30:
+                wait_seconds = 120
 
+# 30분 이후 → 다음 시간 10분까지 대기
             else:
-                minute = now.minute
-
-                # 10분~30분까지는 2분마다 재조회
-                if 10 <= minute < 30:
-                    wait_seconds = 120
-
-                # 그 외 시간은 다음 시간 10분까지 대기
-                else:
-                    next_try = (now + datetime.timedelta(hours=1)).replace(
+                next_try = (
+                    now.replace(
                         minute=10,
-                        second=5,
+                        second=0,
                         microsecond=0
                     )
+                    + datetime.timedelta(hours=1)
+                )
 
-                    wait_seconds = (next_try - now).total_seconds()
+                wait_seconds = (next_try - now).total_seconds()
 
-                print(f"다음 조회까지 대기: {int(wait_seconds)}초")
-                time.sleep(wait_seconds)
+            print(f"다음 조회까지 대기: {int(wait_seconds)}초")
+            time.sleep(wait_seconds)
 
         except Exception as e:
             print("루프 오류:", e)
