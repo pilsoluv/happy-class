@@ -130,7 +130,7 @@ def fetch_and_update():
 
     try:
         gohyeon = get_latest_valid_item("고현동")
-        aju = get_latest_valid_item("아주동")
+        aju = None
 
         selected = None
         used_station = None
@@ -152,6 +152,7 @@ def fetch_and_update():
 
             else:
                 print("고현동 데이터 3시간 이상 지연 → 아주동 확인")
+                aju = get_latest_valid_item("아주동")
 
         if selected is None and aju:
             selected = aju
