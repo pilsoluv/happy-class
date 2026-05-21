@@ -672,9 +672,15 @@
     function extractHeaderLines(rows){
       const line1Cell = findCell(rows, "왼쪽 헤더문구 1");
       const line2Cell = findCell(rows, "왼쪽 헤더문구 2");
+      const line3Cell = findCell(rows, "왼쪽 헤더문구 3");
+
       const line1 = line1Cell ? (rows[line1Cell.r][line1Cell.c + 1] || "").trim() : "";
       const line2 = line2Cell ? (rows[line2Cell.r][line2Cell.c + 1] || "").trim() : "";
-      return [line1, line2].filter(Boolean);
+  const dDay = line3Cell ? (rows[line3Cell.r][line3Cell.c + 1] || "").trim() : "";
+    
+      const line2WithDday = dDay ? `${line2} ${dDay}`.trim() : line2;
+
+      return [line1, line2WithDday].filter(Boolean);
     }
 
     function extractNotices(rows){
@@ -740,10 +746,15 @@
 
     function renderHeader(){
       const lines = DASHBOARD.headerLines;
+
       const formatted = lines.map(t => {
         const safe = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return `<span class="header-line">${safe.replace(/(\d+일)/g, '<span class="accent">$1</span>')}</span>`;
+
+        return `<span class="header-line">${
+          safe.replace(/(\d+일|D-\d+)/g, '<span class="accent">$1</span>')
+        }</span>`;
       });
+
       document.getElementById("sheetData").innerHTML = formatted.join("");
     }
 
