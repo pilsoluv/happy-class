@@ -187,6 +187,12 @@ def fetch_and_update():
         print("사용 기준:", source_note)
 
         subprocess.run(
+            ["git", "pull", "--rebase", "origin", "main"],
+            cwd=base_dir,
+            creationflags=CREATE_NO_WINDOW
+        )
+ 
+        subprocess.run(
             ["git", "add", "air.json"],
             cwd=base_dir,
             creationflags=CREATE_NO_WINDOW
