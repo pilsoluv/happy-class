@@ -179,18 +179,18 @@ def fetch_and_update():
             "labelTime": f"{data_dt.month}. {data_dt.day}. {data_hour}시"
         }
 
+        subprocess.run(
+            ["git", "pull", "--rebase", "origin", "main"],
+            cwd=base_dir,
+            creationflags=CREATE_NO_WINDOW
+        )
+
         with open(air_json_path, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False)
 
         print("air.json 저장 완료")
         print("사용 측정소:", used_station)
         print("사용 기준:", source_note)
-
-        subprocess.run(
-            ["git", "pull", "--rebase", "origin", "main"],
-            cwd=base_dir,
-            creationflags=CREATE_NO_WINDOW
-        )
  
         subprocess.run(
             ["git", "add", "air.json"],
