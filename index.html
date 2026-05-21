@@ -94,7 +94,6 @@
     .header-card{
       position:relative;
       width:100%;
-      width:100%;
       padding:4px 0 0 0;
       margin-left:var(--header-offset);
       display:flex;
@@ -112,8 +111,7 @@
     }
 
     .header-line{
-      display:flex;
-      align-items:baseline;
+      display:block;
       width:100%;
       word-break:keep-all;
       overflow-wrap:normal;
@@ -779,7 +777,7 @@
         ? `<span class="header-dday">${escapeHtml(dDay)}</span>`
         : "";
 
-      document.getElementById("sheetData").innerHTML = formatted.join("");
+      document.getElementById("sheetData").innerHTML = formatted.join("") + dDayHtml;
     }
     function getTodayLunchActivity(){
       const dayMap = { 1:"월요일", 2:"화요일", 3:"수요일", 4:"목요일", 5:"금요일" };
