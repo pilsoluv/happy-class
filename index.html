@@ -92,6 +92,8 @@
 
     /* 왼쪽 상단 문구 */
     .header-card{
+      position:relative;
+      width:100%;
       width:100%;
       padding:4px 0 0 0;
       margin-left:var(--header-offset);
@@ -119,10 +121,15 @@
     }
 
     .header-dday{
+      position:absolute;
+      right:20px;
+      top:50%;
+      transform:translateY(-50%);
       color:var(--white);
-      font-weight:700;
+      font-size:76px;
+      font-weight:800;
+      line-height:1;
       white-space:nowrap;
-      margin-left:auto;
     }
 
     .accent{
@@ -685,11 +692,12 @@
 
       const line1 = line1Cell ? (rows[line1Cell.r][line1Cell.c + 1] || "").trim() : "";
       const line2 = line2Cell ? (rows[line2Cell.r][line2Cell.c + 1] || "").trim() : "";
-  const dDay = line3Cell ? (rows[line3Cell.r][line3Cell.c + 1] || "").trim() : "";
-    
-      const line2WithDday = dDay ? `${line2} ${dDay}`.trim() : line2;
+      const dDay = line3Cell ? (rows[line3Cell.r][line3Cell.c + 1] || "").trim() : "";
 
-      return [line1, line2WithDday].filter(Boolean);
+      return {
+        lines: [line1, line2].filter(Boolean),
+        dDay
+      };
     }
 
     function extractNotices(rows){
@@ -754,16 +762,22 @@
     }
 
     function renderHeader(){
-      const lines = DASHBOARD.headerLines;
+      const headerData = DASHBOARD.headerLines || {};
+      const lines = headerData.lines || [];
+      const dDay = headerData.dDay || "";
+
+      const escapeHtml = text => String(text)
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 
       const formatted = lines.map(t => {
-        let safe = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-        safe = safe.replace(/(D-\d+)/g, '<span class="header-dday">$1</span>');
-        safe = safe.replace(/(\d+일)/g, '<span class="accent">$1</span>');
-
-        return `<span class="header-line">${safe}</span>`;
+        const safe = escapeHtml(t);
+        return `<span class="header-line">${safe.replace(/(\d+일)/g, '<span class="accent">$1</span>')}</span>`;
       });
+
+      const dDayHtml = dDay
+        ? `<span class="header-dday">${escapeHtml(dDay)}</span>`
+        : "";
 
       document.getElementById("sheetData").innerHTML = formatted.join("");
     }
