@@ -92,6 +92,7 @@
 
     /* 왼쪽 상단 문구 */
     .header-card{
+      width:100%;
       padding:4px 0 0 0;
       margin-left:var(--header-offset);
       display:flex;
@@ -109,11 +110,19 @@
     }
 
     .header-line{
-      display:block;
+      display:flex;
+      align-items:baseline;
       width:100%;
       word-break:keep-all;
       overflow-wrap:normal;
       font-weight:400;
+    }
+
+    .header-dday{
+      color:var(--white);
+      font-weight:700;
+      white-space:nowrap;
+      margin-left:auto;
     }
 
     .accent{
@@ -748,16 +757,16 @@
       const lines = DASHBOARD.headerLines;
 
       const formatted = lines.map(t => {
-        const safe = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        let safe = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-        return `<span class="header-line">${
-          safe.replace(/(\d+일|D-\d+)/g, '<span class="accent">$1</span>')
-        }</span>`;
+        safe = safe.replace(/(D-\d+)/g, '<span class="header-dday">$1</span>');
+        safe = safe.replace(/(\d+일)/g, '<span class="accent">$1</span>');
+
+        return `<span class="header-line">${safe}</span>`;
       });
 
       document.getElementById("sheetData").innerHTML = formatted.join("");
     }
-
     function getTodayLunchActivity(){
       const dayMap = { 1:"월요일", 2:"화요일", 3:"수요일", 4:"목요일", 5:"금요일" };
       const dayName = dayMap[new Date().getDay()];
