@@ -573,7 +573,7 @@
       lastPeriodByDay: { 1:"4교시", 2:"5교시", 3:"5교시", 4:"5교시", 5:"4교시" }
     };
 
-    const CLOCK_DELAY_MINUTES = 0;
+    const CLOCK_OFFSET_SECONDS = 30;
     let currentTab = "";
     let noticeFontSize = parseInt(localStorage.getItem("noticeFontSize") || "64", 10);
     let mealFontSize = parseInt(localStorage.getItem("mealFontSize") || "64", 10);
@@ -885,7 +885,10 @@
 
   if(!dateEl || !statusLineEl || !countdownEl) return;
       const realNow = new Date();
-      const now = new Date(realNow.getTime() - CLOCK_DELAY_MINUTES * 60000);
+
+// 실제 시간보다 30초 빠르게 계산
+// 예: 실제 09:09:30 → 화면에서는 09:10:00으로 인식
+      const now = new Date(realNow.getTime() + CLOCK_OFFSET_SECONDS * 1000);
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 
